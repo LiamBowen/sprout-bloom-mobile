@@ -39,8 +39,23 @@ const AppLayout = () => {
     },
   ];
 
+  // Determine if we should show the logo in the header
+  const shouldShowLogo = location.pathname === "/app/profile";
+
   return (
     <div className="flex flex-col min-h-screen bg-sprout-background pb-16">
+      {shouldShowLogo && (
+        <header className="bg-white border-b border-gray-100 py-3">
+          <div className="container max-w-md mx-auto px-4 flex justify-center">
+            <img 
+              src="/sprout-logo.png" 
+              alt="Sprout" 
+              className="h-10 w-auto" 
+            />
+          </div>
+        </header>
+      )}
+      
       <main className="flex-1 container max-w-md mx-auto px-4 py-6">
         <Outlet />
       </main>
