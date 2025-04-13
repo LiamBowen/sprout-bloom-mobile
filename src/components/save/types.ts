@@ -5,7 +5,7 @@ export interface SavingPot {
   amount: number;
   target: number;
   apy: number;
-  provider?: string;
+  provider: string; // Changed from optional to required since it's used in Save.tsx
   balance?: number;
   interestRate?: number;
 }

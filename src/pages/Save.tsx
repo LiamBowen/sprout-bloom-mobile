@@ -19,7 +19,7 @@ const Save = () => {
         amount: 0,
         target: parseFloat(target),
         apy: apy,
-        provider: provider,
+        provider: provider, // This is now a required field in the SavingPot interface
       });
       setShowNewPotForm(false);
     }
