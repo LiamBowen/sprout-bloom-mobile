@@ -168,6 +168,11 @@ const Invest = () => {
 
   const totalRoundUps = mockTransactions.reduce((acc, tx) => acc + tx.roundUp * roundUpAmount, 0);
 
+  // Find the current category object
+  const currentCategory = investmentCategories.find(cat => cat.id === selectedCategory);
+  // Find the current risk level
+  const currentRiskLevel = currentCategory?.riskLevels.find(risk => risk.level === selectedRiskLevel);
+  
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
@@ -256,7 +261,10 @@ const Invest = () => {
                                   </DialogTrigger>
                                   <DialogContent className="p-0">
                                     <AddInvestment 
-                                      onSuccess={() => setAddInvestmentOpen(false)} 
+                                      onSuccess={() => setAddInvestmentOpen(false)}
+                                      category={category.name}
+                                      riskLevel={risk.level}
+                                      recommendedAssets={risk.assets}
                                     />
                                   </DialogContent>
                                 </Dialog>
