@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle, Shield, ShieldAlert, ShieldCheck, TrendingUp } from "lucide-react";
 import AddInvestment from "@/components/AddInvestment";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Clock, Calendar } from "lucide-react";
 
 // Mock transaction data
 const mockTransactions = [
@@ -126,17 +126,40 @@ const investmentCategories = [
 ];
 
 // Mock performance data for charts
-const generatePerformanceData = (growth: number) => {
+const generatePerformanceData = (growth: number, timeRange: string) => {
   const data = [];
   let value = 1000;
+  let periods;
+
+  switch (timeRange) {
+    case "24h":
+      periods = 24;
+      break;
+    case "1w":
+      periods = 7;
+      break;
+    case "1m":
+      periods = 30;
+      break;
+    case "1y":
+      periods = 365;
+      break;
+    case "12m":
+    default:
+      periods = 12;
+      break;
+  }
   
-  for (let i = 0; i < 12; i++) {
-    // Add some randomness to make the chart more realistic
-    const monthGrowth = growth / 12 + (Math.random() * 0.5 - 0.25);
-    value = value * (1 + monthGrowth / 100);
+  for (let i = 0; i < periods; i++) {
+    const periodGrowth = growth / periods + (Math.random() * 0.5 - 0.25);
+    value = value * (1 + periodGrowth / 100);
     
     data.push({
-      month: `Month ${i + 1}`,
+      period: `${timeRange === "24h" ? `Hour ${i + 1}` : 
+                timeRange === "1w" ? `Day ${i + 1}` : 
+                timeRange === "1m" ? `Day ${i + 1}` : 
+                timeRange === "1y" ? `Month ${i + 1}` : 
+                `Month ${i + 1}`}`,
       value: Math.round(value * 100) / 100,
     });
   }
@@ -152,7 +175,8 @@ const Invest = () => {
   const [investmentGoal, setInvestmentGoal] = useState(1000);
   const [roundUpAmount, setRoundUpAmount] = useState(1); // 1x, 2x, 3x
   const [addInvestmentOpen, setAddInvestmentOpen] = useState(false);
-  
+  const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
+
   const handlePortfolioSelect = (portfolio: any) => {
     setSelectedPortfolio(portfolio);
   };
@@ -309,15 +333,36 @@ const Invest = () => {
               
               {selectedPortfolio?.id === portfolio.id && (
                 <div className="mt-4 pt-4 border-t border-gray-100 animate-fade-in">
-                  <h4 className="font-semibold mb-2">12 Month Performance</h4>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold">Performance</h4>
+                    <div className="flex space-x-2">
+                      {["24h", "1w", "1m", "12m", "1y"].map((range) => (
+                        <button
+                          key={range}
+                          onClick={() => setPerformanceTimeRange(range)}
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            performanceTimeRange === range
+                              ? "bg-sprout-green text-white"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          {range === "24h" ? "24H" : 
+                           range === "1w" ? "1W" : 
+                           range === "1m" ? "1M" : 
+                           range === "12m" ? "1Y" : 
+                           "5Y"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="h-40">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
-                        data={generatePerformanceData(portfolio.growth)}
+                        data={generatePerformanceData(portfolio.growth, performanceTimeRange)}
                         margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
                       >
                         <XAxis 
-                          dataKey="month" 
+                          dataKey="period" 
                           hide={true}
                         />
                         <YAxis hide={true} />
