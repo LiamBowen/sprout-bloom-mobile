@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Sprout } from "lucide-react";
+import { Leaf } from "lucide-react";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
@@ -26,7 +26,7 @@ const Logo: React.FC<LogoProps> = ({ size = "md", showText = true }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <Sprout
+      <Leaf
         size={sizeMap[size].icon}
         className="text-sprout-green"
         strokeWidth={2.5}
