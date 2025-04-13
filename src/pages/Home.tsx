@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Confetti from "@/components/Confetti";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 const Home = () => {
   const { user, portfolios, savingPots, triggerConfetti } = useApp();
@@ -72,15 +73,30 @@ const Home = () => {
         <h2 className="text-xl font-semibold">What your friends are investing in 💸</h2>
         
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <p><strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span></p>
+          <div className="flex justify-between items-center">
+            <p>
+              <strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span>
+            </p>
+            <Badge variant="green">ETF</Badge>
+          </div>
         </div>
         
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <p><strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span></p>
+          <div className="flex justify-between items-center">
+            <p>
+              <strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span>
+            </p>
+            <Badge variant="blue">Crypto</Badge>
+          </div>
         </div>
         
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <p><strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span></p>
+          <div className="flex justify-between items-center">
+            <p>
+              <strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span>
+            </p>
+            <Badge variant="lavender">ESG</Badge>
+          </div>
         </div>
       </div>
       
