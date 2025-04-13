@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -223,6 +224,18 @@ const Invest = () => {
   // Find the current risk level
   const currentRiskLevel = currentCategory?.riskLevels.find(risk => risk.level === selectedRiskLevel);
   
+  // Default portfolio type info to handle any missing mappings
+  const defaultPortfolioType = {
+    type: "Stocks & ETFs",
+    risk: "Medium Risk",
+    icon: <Shield className="h-3 w-3 mr-1" />,
+  };
+  
+  // Helper function to safely get portfolio type info
+  const getPortfolioTypeInfo = (portfolioId: string) => {
+    return portfolioTypes[portfolioId] || defaultPortfolioType;
+  };
+  
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
@@ -365,19 +378,19 @@ const Invest = () => {
                               className="cursor-pointer"
                             >
                               <div className="flex items-center">
-                                {portfolioTypes[portfolio.id].icon}
-                                {portfolioTypes[portfolio.id].type}
+                                {getPortfolioTypeInfo(portfolio.id).icon}
+                                {getPortfolioTypeInfo(portfolio.id).type}
                               </div>
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p className="text-xs font-medium">
-                              {portfolioTypes[portfolio.id].risk}
+                              {getPortfolioTypeInfo(portfolio.id).risk}
                             </p>
                             <p className="text-xs">
-                              {portfolioTypes[portfolio.id].type === "Stocks & ETFs" ? 
+                              {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
                                 "Individual stocks or ETFs with various risk levels" :
-                              portfolioTypes[portfolio.id].type === "Cryptocurrencies" ?
+                              getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
                                 "Digital assets with high potential returns" :
                                 "Portions of expensive shares from established companies"}
                             </p>
