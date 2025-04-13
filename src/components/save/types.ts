@@ -1,11 +1,10 @@
-
 export interface SavingPot {
   id: string;
   name: string;
   amount: number;
   target: number;
   apy: number;
-  provider?: string;
+  provider?: string;  // Add the optional provider property
 }
 
 export interface GroupMember {
