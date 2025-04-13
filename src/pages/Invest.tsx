@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { useApp } from "@/contexts/AppContext";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { ArrowRight, PlusCircle } from "lucide-react";
+import { ArrowRight, PlusCircle, TrendingUp } from "lucide-react";
 
 // Mock transaction data
 const mockTransactions = [
@@ -77,6 +77,17 @@ const Invest = () => {
         <h1 className="text-2xl font-bold">Invest 📈</h1>
         <p className="text-gray-600">Grow your money with round-ups</p>
       </div>
+      
+      {/* Market Trend Card */}
+      <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
+        <div className="flex items-center justify-center mb-1">
+          <TrendingUp size={16} className="text-sprout-green mr-1" />
+          <span className="text-sm font-medium">Market Trends</span>
+        </div>
+        <p className="text-sm">
+          🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
+        </p>
+      </Card>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
         <TabsList className="grid grid-cols-2 mb-4">

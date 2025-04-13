@@ -82,10 +82,6 @@ const Home = () => {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <p><strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span></p>
         </div>
-        
-        <div className="bg-gray-50 rounded-2xl p-4 text-center text-gray-600">
-          🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
-        </div>
       </div>
       
       {/* Referral Banner */}
