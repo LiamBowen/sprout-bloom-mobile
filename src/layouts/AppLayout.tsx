@@ -1,7 +1,7 @@
-
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { Home, TrendingUp, PiggyBank, MessagesSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 
 const AppLayout = () => {
   const location = useLocation();
@@ -47,11 +47,7 @@ const AppLayout = () => {
       {shouldShowLogo && (
         <header className="bg-white border-b border-gray-100 py-3">
           <div className="container max-w-md mx-auto px-4 flex justify-center">
-            <img 
-              src="/lovable-uploads/67a4944e-bca6-4edb-94cf-a75d485d5b8f.png" 
-              alt="Sprout" 
-              className="h-10 w-auto" 
-            />
+            <Logo size="lg" />
           </div>
         </header>
       )}
