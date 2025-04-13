@@ -4,10 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from "@/contexts/AppContext";
 import HighYieldPots from "@/components/save/HighYieldPots";
 import GroupFunds from "@/components/save/GroupFunds";
+import NewSavingPotForm from "@/components/save/NewSavingPotForm";
 
 const Save = () => {
   const { savingPots, addSavingPot, groupFunds } = useApp();
   const [activeTab, setActiveTab] = useState("pots");
+  const [showNewPotForm, setShowNewPotForm] = useState(false);
   
   const handleCreateNewPot = (name: string, target: string, provider: string, apy: number) => {
     if (name && target) {
@@ -19,6 +21,7 @@ const Save = () => {
         apy: apy,
         provider: provider,
       });
+      setShowNewPotForm(false);
     }
   };
   
@@ -55,10 +58,14 @@ const Save = () => {
         </TabsList>
         
         <TabsContent value="pots" className="space-y-4">
-          <HighYieldPots 
-            savingPots={savingPots} 
-            onAddSavingPot={handleCreateNewPot} 
-          />
+          {showNewPotForm ? (
+            <NewSavingPotForm onCreatePot={handleCreateNewPot} />
+          ) : (
+            <HighYieldPots 
+              savingPots={savingPots} 
+              onAddSavingPot={handleCreateNewPot} 
+            />
+          )}
         </TabsContent>
         
         <TabsContent value="groups" className="space-y-4">
