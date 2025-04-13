@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
-import { User, Users, Gift, Book, Copy, Check, Edit, ChevronRight, Settings, CreditCard, ShieldAlert, FileText } from "lucide-react";
+import { User, Users, Gift, Book, Copy, Check, Edit, ChevronRight, Settings, CreditCard, ShieldAlert, FileText, TrendingUp, Bell } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
