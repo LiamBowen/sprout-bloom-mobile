@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -115,7 +114,8 @@ export default {
 				'slide-up': 'slide-up 0.5s ease-out'
 			},
 			fontFamily: {
-				nunito: ['"Nunito"', 'sans-serif']
+				nunito: ['"Nunito"', 'sans-serif'],
+				bierstadt: ['"Bierstadt"', 'sans-serif']
 			}
 		}
 	},

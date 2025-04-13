@@ -32,7 +32,13 @@ const Logo: React.FC<LogoProps> = ({ size = "md", showText = true }) => {
         strokeWidth={2.5}
       />
       {showText && (
-        <span className={`font-bold ${sizeMap[size].text} text-gray-800`}>
+        <span 
+          className={`font-medium ${sizeMap[size].text}`}
+          style={{ 
+            fontFamily: 'Bierstadt, sans-serif',
+            color: 'rgba(0, 0, 0, 0.7)'
+          }}
+        >
           Sprout
         </span>
       )}
