@@ -10,6 +10,7 @@ import Invest from "./pages/Invest";
 import Save from "./pages/Save";
 import Coach from "./pages/Coach";
 import Profile from "./pages/Profile";
+import FindFriends from "./pages/FindFriends";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./layouts/AppLayout";
 import Onboarding from "./pages/Onboarding";
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="save" element={<Save />} />
               <Route path="coach" element={<Coach />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="find-friends" element={<FindFriends />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

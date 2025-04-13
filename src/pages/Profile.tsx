@@ -1,17 +1,19 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
-import { User, Users, Gift, Book, Copy, Check, Edit, ChevronRight, Settings, CreditCard, ShieldAlert, FileText, TrendingUp, Bell } from "lucide-react";
+import { User, Users, Gift, Book, Copy, Check, Edit, ChevronRight, Settings, CreditCard, ShieldAlert, FileText, TrendingUp, Bell, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { user, setUser, triggerConfetti } = useApp();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [updatedName, setUpdatedName] = useState(user?.name || "");
@@ -28,6 +30,10 @@ const Profile = () => {
     security: false,
     legal: false
   });
+  
+  const friends = [
+    // Empty by default to showcase the empty state
+  ];
   
   const handleCopyReferralCode = () => {
     if (!user) return;
@@ -57,6 +63,10 @@ const Profile = () => {
       ...openSettings,
       [section]: !openSettings[section]
     });
+  };
+  
+  const handleFindFriends = () => {
+    navigate('/app/find-friends');
   };
   
   if (!user) return null;
@@ -189,8 +199,59 @@ const Profile = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Settings Section */}
-      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+        <div className="flex items-center mb-4">
+          <div className="w-8 h-8 bg-sprout-lavender/20 rounded-full flex items-center justify-center mr-2">
+            <Users size={18} className="text-sprout-lavender" />
+          </div>
+          <h3 className="font-bold">Friends</h3>
+        </div>
+        
+        {friends.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-sm text-gray-600 mb-4">
+              You haven't added any friends yet. Find and follow friends to grow your investing journey together!
+            </p>
+            <Button 
+              onClick={handleFindFriends}
+              className="bg-sprout-lavender text-white hover:bg-sprout-lavender/90"
+            >
+              <UserPlus size={18} className="mr-1" /> Find Friends
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {friends.map((friend, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center">
+                  <Avatar className="h-8 w-8 mr-2">
+                    <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">{friend.name}</p>
+                    {friend.portfolioType && (
+                      <Badge variant="lavender" className="text-xs">
+                        {friend.portfolioType}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm">View</Button>
+              </div>
+            ))}
+            <div className="flex justify-center mt-4">
+              <Button 
+                onClick={handleFindFriends}
+                className="bg-sprout-lavender text-white hover:bg-sprout-lavender/90"
+              >
+                <UserPlus size={18} className="mr-1" /> Find Friends
+              </Button>
+            </div>
+          </div>
+        )}
+      </Card>
+      
+      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 bg-sprout-blue/20 rounded-full flex items-center justify-center mr-2">
             <Settings size={18} className="text-sprout-blue" />
@@ -199,7 +260,6 @@ const Profile = () => {
         </div>
         <p className="text-sm text-gray-600 mb-6">Manage your account, investments, and preferences.</p>
         
-        {/* Personal Information */}
         <Collapsible 
           open={openSettings.personal} 
           onOpenChange={() => toggleSettingsSection('personal')}
@@ -228,7 +288,6 @@ const Profile = () => {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Bank & Payment Details */}
         <Collapsible 
           open={openSettings.bank} 
           onOpenChange={() => toggleSettingsSection('bank')}
@@ -259,7 +318,6 @@ const Profile = () => {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Investment Preferences */}
         <Collapsible 
           open={openSettings.investment} 
           onOpenChange={() => toggleSettingsSection('investment')}
@@ -284,7 +342,6 @@ const Profile = () => {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Notifications */}
         <Collapsible 
           open={openSettings.notifications} 
           onOpenChange={() => toggleSettingsSection('notifications')}
@@ -320,7 +377,6 @@ const Profile = () => {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Security */}
         <Collapsible 
           open={openSettings.security} 
           onOpenChange={() => toggleSettingsSection('security')}
@@ -345,7 +401,6 @@ const Profile = () => {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Legal & Documents */}
         <Collapsible 
           open={openSettings.legal} 
           onOpenChange={() => toggleSettingsSection('legal')}
@@ -375,12 +430,22 @@ const Profile = () => {
         </Collapsible>
       </Card>
       
-      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-        <div className="flex items-center mb-4">
-          <div className="w-8 h-8 bg-sprout-pink/20 rounded-full flex items-center justify-center mr-2">
-            <Gift size={18} className="text-sprout-pink" />
+      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-sprout-pink/20 rounded-full flex items-center justify-center mr-2">
+              <Gift size={18} className="text-sprout-pink" />
+            </div>
+            <h3 className="font-bold">Referral Program</h3>
           </div>
-          <h3 className="font-bold">Referral Program</h3>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCopyReferralCode}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            {copied ? <Check size={18} /> : <Copy size={18} />}
+          </Button>
         </div>
         
         <p className="text-sm text-gray-600 mb-4">
@@ -419,7 +484,7 @@ const Profile = () => {
         </div>
       </Card>
       
-      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>
+      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.4s" }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-sprout-lavender/20 rounded-full flex items-center justify-center mr-2">
@@ -441,7 +506,7 @@ const Profile = () => {
         </p>
       </Card>
       
-      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+      <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-sprout-blue/20 rounded-full flex items-center justify-center mr-2">
