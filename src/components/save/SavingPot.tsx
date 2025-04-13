@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
 import SavingPotDetails from "./savingPot/SavingPotDetails";
 
@@ -43,11 +42,12 @@ const SavingPot = ({ pot }: SavingPotProps) => {
       </div>
       
       <div className="flex space-x-2">
-        <DialogTrigger asChild>
-          <Button className="flex-1 btn-action btn-outline" onClick={() => setIsDetailsOpen(true)}>
-            View Details
-          </Button>
-        </DialogTrigger>
+        <Button 
+          className="flex-1 btn-action btn-outline" 
+          onClick={() => setIsDetailsOpen(true)}
+        >
+          View Details
+        </Button>
         
         <Button className="flex-1 btn-action btn-primary">
           <PlusCircle size={16} className="mr-1" /> Add Money
