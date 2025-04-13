@@ -17,7 +17,10 @@ import { useToast } from "@/hooks/use-toast";
 
 type PortfolioRecommendations = {
   [key: string]: {
-    [key: string]: string[];
+    [key: string]: {
+      description: string;
+      assets: string[];
+    };
   };
 };
 
@@ -35,19 +38,46 @@ const AddInvestment = ({ onSuccess }: { onSuccess?: () => void }) => {
   // Investment portfolio recommendations
   const portfolioRecommendations: PortfolioRecommendations = {
     'Low Risk': {
-      'Stocks & ETFs': ['S&P 500 ETFs', 'Dividend Stocks', 'Bonds'],
-      'Cryptocurrencies': ['Stablecoins (USDT, USDC)'],
-      'Fractional Shares': ['Blue-chip stocks', 'Low-risk ETFs'],
+      'Stocks & ETFs': {
+        description: 'Stable, long-term growth with minimal volatility.',
+        assets: ['S&P 500 ETFs', 'Dividend Stocks', 'Bonds'],
+      },
+      'Cryptocurrencies': {
+        description: 'Focus on stablecoins and well-established cryptos.',
+        assets: ['Stablecoins (USDT, USDC)'],
+      },
+      'Fractional Shares': {
+        description: 'Low-risk, well-known stocks.',
+        assets: ['Blue-chip stocks', 'Low-risk ETFs'],
+      },
     },
     'Medium Risk': {
-      'Stocks & ETFs': ['Growth ETFs', 'Large-cap stocks', 'Balanced funds'],
-      'Cryptocurrencies': ['Bitcoin (BTC)', 'Ethereum (ETH)'],
-      'Fractional Shares': ['Growth stocks', 'Tech stocks'],
+      'Stocks & ETFs': {
+        description: 'Diversified growth with moderate risk.',
+        assets: ['Growth ETFs', 'Large-cap stocks', 'Balanced funds'],
+      },
+      'Cryptocurrencies': {
+        description: 'A mix of established and emerging cryptos.',
+        assets: ['Bitcoin (BTC)', 'Ethereum (ETH)'],
+      },
+      'Fractional Shares': {
+        description: 'Growth-focused stocks with moderate volatility.',
+        assets: ['Growth stocks', 'Tech stocks'],
+      },
     },
     'High Risk': {
-      'Stocks & ETFs': ['Emerging tech stocks', 'Disruptive growth ETFs'],
-      'Cryptocurrencies': ['Ethereum (ETH)', 'Solana (SOL)', 'Smaller Altcoins'],
-      'Fractional Shares': ['Small-cap stocks', 'Volatile tech stocks'],
+      'Stocks & ETFs': {
+        description: 'Aggressive growth with higher risk.',
+        assets: ['Emerging tech stocks', 'Disruptive growth ETFs'],
+      },
+      'Cryptocurrencies': {
+        description: 'High volatility, potential for large returns.',
+        assets: ['Ethereum (ETH)', 'Solana (SOL)', 'Smaller Altcoins'],
+      },
+      'Fractional Shares': {
+        description: 'Highly volatile, high-reward stocks.',
+        assets: ['Small-cap stocks', 'Volatile tech stocks'],
+      },
     },
   };
   
@@ -127,11 +157,14 @@ const AddInvestment = ({ onSuccess }: { onSuccess?: () => void }) => {
         {investmentCategory && riskTolerance && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <h3 className="text-md font-semibold mb-2">Recommended for {riskTolerance}</h3>
+            <p className="text-sm text-gray-600 mb-2">
+              {portfolioRecommendations[riskTolerance][investmentCategory].description}
+            </p>
             <ul className="space-y-1">
-              {portfolioRecommendations[riskTolerance][investmentCategory]?.map((recommendation, index) => (
+              {portfolioRecommendations[riskTolerance][investmentCategory].assets.map((asset, index) => (
                 <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
                   <span className="h-1.5 w-1.5 rounded-full bg-sprout-green"></span>
-                  {recommendation}
+                  {asset}
                 </li>
               ))}
             </ul>
