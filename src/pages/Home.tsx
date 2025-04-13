@@ -67,8 +67,29 @@ const Home = () => {
         </div>
       </Card>
       
+      {/* What Friends Are Investing In Section */}
+      <div className="space-y-4 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+        <h2 className="text-xl font-semibold">What your friends are investing in 💸</h2>
+        
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <p><strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span></p>
+        </div>
+        
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <p><strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span></p>
+        </div>
+        
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <p><strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span></p>
+        </div>
+        
+        <div className="bg-gray-50 rounded-2xl p-4 text-center text-gray-600">
+          🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
+        </div>
+      </div>
+      
       {/* Referral Banner */}
-      <div className="relative">
+      <div className="relative animate-slide-up" style={{ animationDelay: "0.2s" }}>
         {showReferralSuccess && (
           <div className="absolute inset-0 bg-sprout-green rounded-lg flex items-center justify-center animate-fade-in">
             <div className="text-center p-4">
@@ -79,7 +100,7 @@ const Home = () => {
           </div>
         )}
         
-        <Card className="p-4 border-dashed border-2 border-sprout-pink bg-sprout-pink/5 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+        <Card className="p-4 border-dashed border-2 border-sprout-pink bg-sprout-pink/5">
           <div className="flex items-start">
             <div className="bg-sprout-pink/20 rounded-full p-2 mr-3">
               <User size={20} className="text-sprout-pink" />
@@ -102,7 +123,7 @@ const Home = () => {
       </div>
       
       {/* Quick Actions */}
-      <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+      <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.25s" }}>
         <h3 className="font-semibold">Quick Links</h3>
         
         <Card className="p-4" onClick={() => navigate("/app/save")}>
