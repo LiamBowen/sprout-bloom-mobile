@@ -5,6 +5,7 @@ import { useApp } from "@/contexts/AppContext";
 import HighYieldPots from "@/components/save/HighYieldPots";
 import GroupFunds from "@/components/save/GroupFunds";
 import NewSavingPotForm from "@/components/save/NewSavingPotForm";
+import { SavingPot, GroupFund } from "@/components/save/types"; // Explicitly import SavingPot type
 
 const Save = () => {
   const { savingPots, addSavingPot, groupFunds } = useApp();
@@ -19,7 +20,7 @@ const Save = () => {
         amount: 0,
         target: parseFloat(target),
         apy: apy,
-        provider: provider, // This is now a required field in the SavingPot interface
+        provider: provider, // This is a required field in the SavingPot interface
       });
       setShowNewPotForm(false);
     }

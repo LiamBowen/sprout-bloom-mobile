@@ -1,5 +1,5 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { SavingPot, GroupFund, GroupMember, Message } from "@/components/save/types";
 
 // Define the User type
 interface User {
@@ -20,36 +20,6 @@ interface Portfolio {
   growth: number;
   emoji: string;
   color: string;
-}
-
-// Define Saving Pot type
-interface SavingPot {
-  id: string;
-  name: string;
-  amount: number;
-  target: number;
-  apy: number;
-}
-
-// Define Group Fund type
-interface GroupFund {
-  id: string;
-  name: string;
-  emoji: string;
-  target: number;
-  currentAmount: number;
-  members: {
-    id: string;
-    name: string;
-    contributed: number;
-    contributionPercentage: number;
-  }[];
-  messages: {
-    id: string;
-    sender: string;
-    text: string;
-    timestamp: Date;
-  }[];
 }
 
 // Define Coach Message type
@@ -137,6 +107,7 @@ const mockSavingPots: SavingPot[] = [
     amount: 520,
     target: 1000,
     apy: 4.25,
+    provider: "Barclays Savings"
   },
   {
     id: "vacation",
@@ -144,6 +115,7 @@ const mockSavingPots: SavingPot[] = [
     amount: 350,
     target: 800,
     apy: 4.25,
+    provider: "Monzo Savings Pot"
   },
 ];
 
@@ -268,7 +240,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     
     setCoachMessages((prev) => [...prev, newMessage]);
     
-    // If user sent a message, simulate coach response
     if (message.sender === "user") {
       setTimeout(() => {
         let response: CoachMessage = {
@@ -278,7 +249,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           timestamp: new Date(),
         };
         
-        // Simple pattern matching for basic responses
         const lowerCaseText = message.text.toLowerCase();
         
         if (lowerCaseText.includes("stock")) {
