@@ -10,6 +10,8 @@ import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle, Shield, ShieldAle
 import AddInvestment from "@/components/AddInvestment";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Clock, Calendar } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 // Mock transaction data
 const mockTransactions = [
@@ -124,6 +126,30 @@ const investmentCategories = [
     ]
   }
 ];
+
+// Define portfolio investment types map
+const portfolioTypes = {
+  "green-growth": {
+    type: "Stocks & ETFs",
+    risk: "Low Risk",
+    icon: <ShieldCheck className="h-3 w-3 mr-1" />,
+  },
+  "future-tech": {
+    type: "Stocks & ETFs",
+    risk: "High Risk",
+    icon: <ShieldAlert className="h-3 w-3 mr-1" />,
+  },
+  "travel-freedom": {
+    type: "Stocks & ETFs",
+    risk: "Medium Risk",
+    icon: <Shield className="h-3 w-3 mr-1" />,
+  },
+  "ethical-brands": {
+    type: "Fractional Shares",
+    risk: "Low Risk",
+    icon: <ShieldCheck className="h-3 w-3 mr-1" />,
+  },
+};
 
 // Mock performance data for charts
 const generatePerformanceData = (growth: number, timeRange: string) => {
@@ -323,7 +349,42 @@ const Invest = () => {
                   </div>
                   <div>
                     <h3 className="font-bold">{portfolio.name}</h3>
-                    <p className="text-sm text-gray-600">£{portfolio.value.toFixed(2)}</p>
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
+                      
+                      {/* Investment Type Badge with Tooltip */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge 
+                              variant={
+                                portfolio.color === "bg-sprout-green" ? "green" :
+                                portfolio.color === "bg-sprout-blue" ? "blue" :
+                                portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                              }
+                              className="cursor-pointer"
+                            >
+                              <div className="flex items-center">
+                                {portfolioTypes[portfolio.id].icon}
+                                {portfolioTypes[portfolio.id].type}
+                              </div>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs font-medium">
+                              {portfolioTypes[portfolio.id].risk}
+                            </p>
+                            <p className="text-xs">
+                              {portfolioTypes[portfolio.id].type === "Stocks & ETFs" ? 
+                                "Individual stocks or ETFs with various risk levels" :
+                              portfolioTypes[portfolio.id].type === "Cryptocurrencies" ?
+                                "Digital assets with high potential returns" :
+                                "Portions of expensive shares from established companies"}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </div>
                 <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
