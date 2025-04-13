@@ -75,7 +75,7 @@ const Home = () => {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex justify-between items-center">
             <p>
-              <strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">{portfolios[0].name}</span>
+              <strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span>
             </p>
             <Badge variant="green">ETF</Badge>
           </div>
@@ -84,7 +84,7 @@ const Home = () => {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex justify-between items-center">
             <p>
-              <strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">{portfolios[1].name}</span>
+              <strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span>
             </p>
             <Badge variant="blue">Crypto</Badge>
           </div>
@@ -93,7 +93,7 @@ const Home = () => {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex justify-between items-center">
             <p>
-              <strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">{portfolios[2].name}</span>
+              <strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span>
             </p>
             <Badge variant="lavender">ESG</Badge>
           </div>
