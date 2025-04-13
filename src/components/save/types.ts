@@ -5,6 +5,7 @@ export interface SavingPot {
   amount: number;
   target: number;
   apy: number;
+  provider?: string;
 }
 
 export interface GroupMember {
@@ -29,4 +30,10 @@ export interface GroupFund {
   target: number;
   members: GroupMember[];
   messages: Message[];
+}
+
+export interface FundProvider {
+  id: string;
+  name: string;
+  apy: number;
 }

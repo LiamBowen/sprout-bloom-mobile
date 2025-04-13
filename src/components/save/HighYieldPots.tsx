@@ -2,16 +2,11 @@
 import { Card } from "@/components/ui/card";
 import SavingPot from "./SavingPot";
 import NewSavingPotDialog from "./NewSavingPotDialog";
+import { SavingPot as SavingPotType } from "./types";
 
 interface HighYieldPotsProps {
-  savingPots: Array<{
-    id: string;
-    name: string;
-    amount: number;
-    target: number;
-    apy: number;
-  }>;
-  onAddSavingPot: (name: string, target: string) => void;
+  savingPots: SavingPotType[];
+  onAddSavingPot: (name: string, target: string, provider: string, apy: number) => void;
 }
 
 const HighYieldPots = ({ savingPots, onAddSavingPot }: HighYieldPotsProps) => {
@@ -23,7 +18,7 @@ const HighYieldPots = ({ savingPots, onAddSavingPot }: HighYieldPotsProps) => {
             <h3 className="font-semibold">High-Yield Savings</h3>
             <p className="text-sm text-gray-600 mb-1">Get more from your money</p>
             <div className="inline-block bg-sprout-blue/20 px-2 py-0.5 rounded text-sm font-medium">
-              4.25% APY
+              Up to 4.25% APY
             </div>
           </div>
           <div className="text-2xl">💰</div>

@@ -9,14 +9,15 @@ const Save = () => {
   const { savingPots, addSavingPot, groupFunds } = useApp();
   const [activeTab, setActiveTab] = useState("pots");
   
-  const handleCreateNewPot = (name: string, target: string) => {
+  const handleCreateNewPot = (name: string, target: string, provider: string, apy: number) => {
     if (name && target) {
       addSavingPot({
         id: `pot_${Date.now()}`,
         name: name,
         amount: 0,
         target: parseFloat(target),
-        apy: 4.25,
+        apy: apy,
+        provider: provider,
       });
     }
   };
