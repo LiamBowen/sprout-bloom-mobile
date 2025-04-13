@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -246,6 +247,10 @@ const Onboarding = () => {
             ))}
           </div>
           <div className="w-8" /> {/* Spacer for alignment */}
+        </div>
+        
+        <div className="flex justify-center mb-8">
+          <Logo size="lg" />
         </div>
         
         {renderStep()}
