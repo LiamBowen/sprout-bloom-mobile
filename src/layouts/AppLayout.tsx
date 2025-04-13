@@ -48,7 +48,7 @@ const AppLayout = () => {
         <header className="bg-white border-b border-gray-100 py-3">
           <div className="container max-w-md mx-auto px-4 flex justify-center">
             <img 
-              src="/sprout-logo.png" 
+              src="/lovable-uploads/67a4944e-bca6-4edb-94cf-a75d485d5b8f.png" 
               alt="Sprout" 
               className="h-10 w-auto" 
             />
