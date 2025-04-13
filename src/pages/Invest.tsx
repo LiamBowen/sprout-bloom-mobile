@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle, Shield, ShieldAlert, ShieldCheck, TrendingUp } from "lucide-react";
 import AddInvestment from "@/components/AddInvestment";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -427,7 +427,7 @@ const Invest = () => {
                           hide={true}
                         />
                         <YAxis hide={true} />
-                        <Tooltip
+                        <RechartsTooltip
                           formatter={(value) => [`£${value}`, "Value"]}
                           labelFormatter={() => ""}
                         />
