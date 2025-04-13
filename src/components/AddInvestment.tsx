@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Card, 
   CardContent, 
@@ -14,6 +14,17 @@ import { Label } from "@/components/ui/label";
 import { ChevronRight, Leaf } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 type PortfolioRecommendations = {
   [key: string]: {
@@ -24,12 +35,32 @@ type PortfolioRecommendations = {
   };
 };
 
+// Define form validation schema
+const investmentFormSchema = z.object({
+  category: z.string({
+    required_error: "Please select an investment type",
+  }),
+  riskLevel: z.string({
+    required_error: "Please select a risk tolerance level",
+  }),
+  amount: z.string().min(1, "Please enter an investment amount"),
+});
+
+type InvestmentFormValues = z.infer<typeof investmentFormSchema>;
+
 const AddInvestment = ({ onSuccess }: { onSuccess?: () => void }) => {
-  const [investmentCategory, setInvestmentCategory] = useState('');
-  const [riskTolerance, setRiskTolerance] = useState('');
-  const [investmentAmount, setInvestmentAmount] = useState('');
   const { toast } = useToast();
   const { selectedPortfolio } = useApp();
+  
+  // Form definition
+  const form = useForm<InvestmentFormValues>({
+    resolver: zodResolver(investmentFormSchema),
+    defaultValues: {
+      category: "",
+      riskLevel: "",
+      amount: "",
+    },
+  });
   
   // Investment categories and risk levels
   const categories = ['Stocks & ETFs', 'Cryptocurrencies', 'Fractional Shares'];
@@ -81,25 +112,20 @@ const AddInvestment = ({ onSuccess }: { onSuccess?: () => void }) => {
     },
   };
   
-  const handleAddInvestment = () => {
-    if (!investmentCategory || !riskTolerance || !investmentAmount) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all fields to continue",
-        variant: "destructive"
-      });
-      return;
-    }
-    
+  const handleAddInvestment = (data: InvestmentFormValues) => {
     toast({
       title: "Investment added",
-      description: `£${investmentAmount} added to your ${selectedPortfolio?.name || 'portfolio'}`,
+      description: `£${data.amount} added to your ${selectedPortfolio?.name || 'portfolio'}`,
     });
     
     if (onSuccess) {
       onSuccess();
     }
   };
+  
+  // Watch form values to show recommendations
+  const selectedCategory = form.watch("category");
+  const selectedRiskLevel = form.watch("riskLevel");
   
   return (
     <Card className="w-full animate-fade-in">
@@ -110,77 +136,110 @@ const AddInvestment = ({ onSuccess }: { onSuccess?: () => void }) => {
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="investment-category">Investment Type</Label>
-          <Select value={investmentCategory} onValueChange={setInvestmentCategory}>
-            <SelectTrigger id="investment-category">
-              <SelectValue placeholder="Select investment type" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="risk-tolerance">Risk Tolerance</Label>
-          <Select value={riskTolerance} onValueChange={setRiskTolerance}>
-            <SelectTrigger id="risk-tolerance">
-              <SelectValue placeholder="Select risk level" />
-            </SelectTrigger>
-            <SelectContent>
-              {riskLevels.map((level) => (
-                <SelectItem key={level} value={level}>
-                  {level}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="investment-amount">Investment Amount (£)</Label>
-          <Input
-            id="investment-amount"
-            type="number"
-            value={investmentAmount}
-            onChange={(e) => setInvestmentAmount(e.target.value)}
-            placeholder="Enter amount in GBP"
-          />
-        </div>
-        
-        {investmentCategory && riskTolerance && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <h3 className="text-md font-semibold mb-2">Recommended for {riskTolerance}</h3>
-            <p className="text-sm text-gray-600 mb-2">
-              {portfolioRecommendations[riskTolerance][investmentCategory].description}
-            </p>
-            <ul className="space-y-1">
-              {portfolioRecommendations[riskTolerance][investmentCategory].assets.map((asset, index) => (
-                <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                  <span className="h-1.5 w-1.5 rounded-full bg-sprout-green"></span>
-                  {asset}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleAddInvestment)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Investment Type</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select investment type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="riskLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Risk Tolerance</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select risk level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {riskLevels.map((level) => (
+                        <SelectItem key={level} value={level}>
+                          {level}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Investment Amount (£)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter amount in GBP"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {selectedCategory && selectedRiskLevel && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <h3 className="text-md font-semibold mb-2">Recommended for {selectedRiskLevel}</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  {portfolioRecommendations[selectedRiskLevel][selectedCategory].description}
+                </p>
+                <ul className="space-y-1">
+                  {portfolioRecommendations[selectedRiskLevel][selectedCategory].assets.map((asset, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                      <span className="h-1.5 w-1.5 rounded-full bg-sprout-green"></span>
+                      {asset}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            <Button 
+              type="submit" 
+              className="w-full btn-action btn-primary mt-4"
+              disabled={!form.formState.isValid}
+            >
+              Add Investment <ChevronRight size={18} />
+            </Button>
+          </form>
+        </Form>
       </CardContent>
-      
-      <CardFooter>
-        <Button 
-          onClick={handleAddInvestment} 
-          className="w-full btn-action btn-primary"
-          disabled={!investmentCategory || !riskTolerance || !investmentAmount}
-        >
-          Add Investment <ChevronRight size={18} />
-        </Button>
-      </CardFooter>
     </Card>
   );
 };
