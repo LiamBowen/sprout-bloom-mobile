@@ -1,12 +1,13 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ArrowRight, PlusCircle, TrendingUp } from "lucide-react";
+import AddInvestment from "@/components/AddInvestment";
 
 // Mock transaction data
 const mockTransactions = [
@@ -64,6 +65,7 @@ const Invest = () => {
   const [activeTab, setActiveTab] = useState("portfolios");
   const [investmentGoal, setInvestmentGoal] = useState(1000);
   const [roundUpAmount, setRoundUpAmount] = useState(1); // 1x, 2x, 3x
+  const [addInvestmentOpen, setAddInvestmentOpen] = useState(false);
   
   const handlePortfolioSelect = (portfolio: any) => {
     setSelectedPortfolio(portfolio);
@@ -178,9 +180,18 @@ const Invest = () => {
                       ></div>
                     </div>
                     
-                    <Button className="w-full btn-action btn-primary">
-                      Add Investment <PlusCircle size={18} />
-                    </Button>
+                    <Dialog open={addInvestmentOpen} onOpenChange={setAddInvestmentOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="w-full btn-action btn-primary">
+                          Add Investment <PlusCircle size={18} />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="p-0">
+                        <AddInvestment 
+                          onSuccess={() => setAddInvestmentOpen(false)} 
+                        />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               )}
