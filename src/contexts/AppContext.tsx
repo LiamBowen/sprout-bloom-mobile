@@ -1,46 +1,16 @@
 
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext } from "react";
 import { useAuth } from "./AuthContext";
 import { usePortfolio } from "./PortfolioContext";
 import { useSavings } from "./SavingsContext";
 
-// Create an interface for AppContext that combines all our other contexts
-interface AppContextType {
-  user: any;
-  setUser: (user: any) => void;
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  isOnboarded: boolean;
-  setIsOnboarded: (value: boolean) => void;
-  initializeAuth: () => void;
-  
-  // Portfolio context
-  portfolios: any[];
-  selectedPortfolio: any;
-  setSelectedPortfolio: (portfolio: any) => void;
-  
-  // Savings context
-  savingPots: any[];
-  addSavingPot: (pot: any) => void;
-  updateSavingPot: (id: string, updates: any) => void;
-  groupFunds: any[];
-  
-  // Additional app functionality that needs to be merged
-  coachMessages: any[];
-  addCoachMessage: (message: any) => void;
-  showConfetti: boolean;
-  triggerConfetti: () => void;
-}
-
-const AppContext = createContext<AppContextType | undefined>(undefined);
-
-// Create a single Hook that combines all functionality
+// Create a hook that combines all our other contexts
 export const useApp = () => {
   const auth = useAuth();
   const portfolio = usePortfolio();
   const savings = useSavings();
   
-  // These were in the original AppContext but not yet in our modular contexts
+  // Mocked data for coach functionality that isn't yet in modular contexts
   const coachMessages = [
     {
       sender: "coach",
@@ -72,9 +42,10 @@ export const useApp = () => {
   };
 };
 
-// This is needed so we can reuse AppContext in other files
-export const AppProvider = ({ children }: { children: ReactNode }) => {
+// This provider is no longer needed since we're using the individual providers
+// It's kept here for backward compatibility but doesn't add any functionality
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default AppContext;
+export default useApp;

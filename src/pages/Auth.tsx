@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -15,26 +16,79 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { setUser } = useAuth();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = isSignUp 
-        ? await supabase.auth.signUp({ email, password })
-        : await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) throw error;
-
-      toast({
-        title: isSignUp ? "Account created!" : "Welcome back!",
-        description: isSignUp 
-          ? "Please check your email to confirm your account." 
-          : "You've been successfully logged in.",
-      });
-
-      if (!isSignUp) navigate("/app/home");
+      if (isSignUp) {
+        // Sign up flow
+        const { data, error } = await supabase.auth.signUp({ 
+          email, 
+          password 
+        });
+        
+        if (error) throw error;
+        
+        if (data.user) {
+          // Create a basic user object for the auth context
+          setUser({
+            id: data.user.id,
+            name: email.split('@')[0], // Use part of email as temporary name
+            email: email,
+            dateOfBirth: "",
+            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
+            friendsReferred: 0,
+            rewardsEarned: 0
+          });
+          
+          toast({
+            title: "Account created!",
+            description: "Please complete your profile setup.",
+          });
+          
+          navigate("/onboarding");
+        }
+      } else {
+        // Sign in flow
+        const { data, error } = await supabase.auth.signInWithPassword({ 
+          email, 
+          password 
+        });
+        
+        if (error) throw error;
+        
+        if (data.user) {
+          // Fetch user profile or create basic user info
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+            
+          // Set user in auth context
+          setUser({
+            id: data.user.id,
+            name: profileData?.display_name || email.split('@')[0],
+            email: data.user.email || "",
+            dateOfBirth: "",
+            referralCode: profileData?.referral_code || `USER${Math.floor(1000 + Math.random() * 9000)}`,
+            friendsReferred: 0,
+            rewardsEarned: 0,
+            avatar_url: profileData?.avatar_url,
+            mobile_number: profileData?.mobile_number
+          });
+          
+          toast({
+            title: "Welcome back!",
+            description: "You've been successfully logged in.",
+          });
+          
+          navigate("/app");
+        }
+      }
     } catch (error: any) {
       toast({
         title: "Error",

@@ -3,16 +3,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Logo from "@/components/Logo";
+import { useToast } from "@/hooks/use-toast";
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { setUser, setIsOnboarded } = useApp();
+  const { user, setUser, setIsOnboarded } = useAuth();
+  const { toast } = useToast();
   
   const [step, setStep] = useState(1);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(user?.name || "");
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
@@ -24,6 +26,11 @@ const Onboarding = () => {
   
   const handleNextStep = () => {
     if (step === 1 && !name) {
+      toast({
+        title: "Name required",
+        description: "Please enter your name to continue",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -48,17 +55,34 @@ const Onboarding = () => {
     
     if (step === totalSteps) {
       // Complete onboarding
-      setUser({
-        id: `user_${Date.now()}`,
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "User information is missing. Please try logging in again.",
+          variant: "destructive"
+        });
+        navigate("/auth");
+        return;
+      }
+      
+      // Update user with onboarding information
+      const updatedUser = {
+        ...user,
         name,
-        email: "",
         dateOfBirth: `${day}/${month}/${year}`,
-        referralCode: `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`,
-        friendsReferred: 0,
-        rewardsEarned: 0,
-      });
+        referralCode: referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`,
+        financialGoal: financialGoal || "Not specified"
+      };
+      
+      setUser(updatedUser);
       setIsOnboarded(true);
-      navigate("/app/home");
+      
+      toast({
+        title: "Welcome to Sprout!",
+        description: "Your profile has been set up successfully."
+      });
+      
+      navigate("/app");
       return;
     }
     
