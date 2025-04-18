@@ -6,6 +6,8 @@ import { ChevronRight, CreditCard } from "lucide-react";
 import { useBankConnections } from "@/hooks/use-bank-connections";
 import { BankConnectionsList } from "@/components/profile/bank/BankConnectionsList";
 import { ConnectBankDialog } from "@/components/profile/bank/ConnectBankDialog";
+import { logAnalyticsEvent } from "@/utils/analytics";
+import { logError } from "@/utils/error-logging";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -24,21 +26,35 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const [isRedirectDialogOpen, setIsRedirectDialogOpen] = useState(false);
 
   const handleConnectBank = async () => {
-    const generatedAuthUrl = await generateAuthLink();
-    if (generatedAuthUrl) {
-      setIsRedirectDialogOpen(true);
+    try {
+      const generatedAuthUrl = await generateAuthLink();
+      if (generatedAuthUrl) {
+        await logAnalyticsEvent('bank_connect_initiated', {
+          timestamp: new Date().toISOString()
+        });
+        setIsRedirectDialogOpen(true);
+      }
+    } catch (error: any) {
+      await logError(error, {
+        component: 'BankSection',
+        action: 'handleConnectBank'
+      });
     }
   };
 
-  const handleConfirmRedirect = () => {
-    // Close the dialog first
-    setIsRedirectDialogOpen(false);
-    
-    // Log before redirect
-    console.log("BankSection: Redirecting to TrueLayer auth page:", authUrl);
-    
-    // Use window.location.href to ensure proper navigation
-    window.location.href = authUrl;
+  const handleConfirmRedirect = async () => {
+    try {
+      setIsRedirectDialogOpen(false);
+      await logAnalyticsEvent('bank_connect_confirmed', {
+        timestamp: new Date().toISOString()
+      });
+      window.location.href = authUrl;
+    } catch (error: any) {
+      await logError(error, {
+        component: 'BankSection',
+        action: 'handleConfirmRedirect'
+      });
+    }
   };
 
   return (

@@ -1,9 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { logAnalyticsEvent } from "@/utils/analytics";
+import { logError } from "@/utils/error-logging";
 
 enum ConnectionStatus {
   PROCESSING = "Processing your bank connection...",
@@ -21,7 +22,6 @@ const BankCallback = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extract code from URL search params
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');
         const error = searchParams.get('error');
@@ -36,7 +36,10 @@ const BankCallback = () => {
         
         if (error || errorDescription) {
           const errorMsg = errorDescription || error || "Bank connection failed";
-          console.error("Bank connection error from provider:", errorMsg);
+          await logAnalyticsEvent('bank_connect_failed', {
+            error: errorMsg,
+            timestamp: new Date().toISOString()
+          });
           throw new Error(errorMsg);
         }
         
@@ -46,7 +49,6 @@ const BankCallback = () => {
         
         setStatus(ConnectionStatus.CONNECTING);
         
-        // Get the origin for callback URL consistency
         const origin = window.location.origin;
         const callbackUrl = `${origin}/app/bank-callback`;
         
@@ -55,7 +57,6 @@ const BankCallback = () => {
           callbackUrl 
         });
         
-        // Exchange the authorization code for tokens
         const response = await supabase.functions.invoke('truelayer', {
           body: { 
             action: 'exchangeToken', 
@@ -65,9 +66,12 @@ const BankCallback = () => {
         });
         
         if (response.error) {
-          console.error("Token exchange error:", response.error);
           throw new Error(response.error.message || "Failed to connect bank account");
         }
+        
+        await logAnalyticsEvent('bank_connect_successful', {
+          timestamp: new Date().toISOString()
+        });
         
         console.log("Token exchange successful:", response.data ? "Data received" : "No data");
         
@@ -78,10 +82,12 @@ const BankCallback = () => {
           description: "Your bank account was connected successfully"
         });
         
-        // Redirect back to profile page after short delay to show success message
         setTimeout(() => navigate("/app/profile"), 1500);
       } catch (error: any) {
-        console.error("Error in bank connection callback:", error);
+        await logError(error, {
+          component: 'BankCallback',
+          action: 'handleCallback'
+        });
         setStatus(ConnectionStatus.FAILED);
         
         toast({
@@ -94,7 +100,6 @@ const BankCallback = () => {
       }
     };
     
-    console.log("BankCallback: Component mounted, processing callback");
     handleCallback();
   }, [location, navigate, toast]);
   
