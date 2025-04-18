@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -19,7 +20,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 bg-gradient-to-b from-white to-sprout-green/20">
       <div className="w-full max-w-md text-center">
         <div className="mb-8 animate-fade-in flex flex-col items-center">
-          <Logo size="lg" showText={false} />
+          <Logo size="lg" />
           <p className="text-xl text-gray-600 mt-4">
             Investing and saving, but make it fun
           </p>
