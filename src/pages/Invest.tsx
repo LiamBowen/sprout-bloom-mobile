@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Clock, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
+// Mock transaction data
 const mockTransactions = [
   {
     id: "tx1",
@@ -44,6 +46,7 @@ const mockTransactions = [
   },
 ];
 
+// Investment category details with risk levels
 const investmentCategories = [
   {
     id: "stocks-etfs",
@@ -125,6 +128,7 @@ const investmentCategories = [
   }
 ];
 
+// Define portfolio investment types map
 const portfolioTypes = {
   "green-growth": {
     type: "Stocks & ETFs",
@@ -148,6 +152,7 @@ const portfolioTypes = {
   },
 };
 
+// Mock performance data for charts
 const generatePerformanceData = (growth: number, timeRange: string) => {
   const data = [];
   let value = 1000;
@@ -189,19 +194,6 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
   return data;
 };
 
-const getInvestmentIcon = (type: string) => {
-  switch (type) {
-    case "Stocks & ETFs":
-      return <BarChart2 className="h-4 w-4 mr-2" />;
-    case "Cryptocurrencies":
-      return <Bitcoin className="h-4 w-4 mr-2" />;
-    case "Fractional Shares":
-      return <PieChart className="h-4 w-4 mr-2" />;
-    default:
-      return <TrendingUp className="h-4 w-4 mr-2" />;
-  }
-};
-
 const Invest = () => {
   const { portfolios, selectedPortfolio, setSelectedPortfolio } = useApp();
   const [activeTab, setActiveTab] = useState("portfolios");
@@ -227,19 +219,23 @@ const Invest = () => {
 
   const totalRoundUps = mockTransactions.reduce((acc, tx) => acc + tx.roundUp * roundUpAmount, 0);
 
+  // Find the current category object
   const currentCategory = investmentCategories.find(cat => cat.id === selectedCategory);
+  // Find the current risk level
   const currentRiskLevel = currentCategory?.riskLevels.find(risk => risk.level === selectedRiskLevel);
-
+  
+  // Default portfolio type info to handle any missing mappings
   const defaultPortfolioType = {
     type: "Stocks & ETFs",
     risk: "Medium Risk",
     icon: <Shield className="h-3 w-3 mr-1" />,
   };
-
+  
+  // Helper function to safely get portfolio type info
   const getPortfolioTypeInfo = (portfolioId: string) => {
     return portfolioTypes[portfolioId] || defaultPortfolioType;
   };
-
+  
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
@@ -247,6 +243,7 @@ const Invest = () => {
         <p className="text-gray-600">Grow your money with round-ups</p>
       </div>
       
+      {/* Market Trend Card */}
       <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
         <div className="flex items-center justify-center mb-1">
           <TrendingUp size={16} className="text-sprout-green mr-1" />
@@ -264,12 +261,14 @@ const Invest = () => {
         </TabsList>
         
         <TabsContent value="portfolios" className="space-y-4">
+          {/* Investment Categories */}
           <div className="space-y-4">
             {investmentCategories.map((category) => (
               <Card 
                 key={category.id}
                 className={`overflow-hidden`}
               >
+                {/* Category Header */}
                 <div 
                   className={`p-4 cursor-pointer transition-all flex items-center justify-between ${
                     selectedCategory === category.id ? "bg-sprout-green/10" : ""
@@ -287,6 +286,7 @@ const Invest = () => {
                   </div>
                 </div>
                 
+                {/* Risk Levels */}
                 {selectedCategory === category.id && (
                   <div className="border-t p-4 animate-fade-in">
                     <h4 className="text-sm font-semibold mb-3">Select Risk Tolerance</h4>
@@ -343,6 +343,7 @@ const Invest = () => {
             ))}
           </div>
           
+          {/* Portfolio Performance */}
           <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
           {portfolios.map((portfolio) => (
             <Card 
@@ -355,32 +356,52 @@ const Invest = () => {
               onClick={() => handlePortfolioSelect(portfolio)}
             >
               <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xl">{portfolio.emoji}</span>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold">{portfolio.name}</h3>
-                      <Badge 
-                        variant={
-                          portfolio.color === "bg-sprout-green" ? "green" :
-                          portfolio.color === "bg-sprout-blue" ? "blue" :
-                          portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
-                        }
-                        className="text-xs"
-                      >
-                        <div className="flex items-center">
-                          {getInvestmentIcon(getPortfolioTypeInfo(portfolio.id).type)}
-                          {getPortfolioTypeInfo(portfolio.id).type}
-                        </div>
-                      </Badge>
-                    </div>
+                <div className="flex items-center">
+                  <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
+                    <span>{portfolio.emoji}</span>
                   </div>
                   <div>
-                    <p className="font-semibold">£{portfolio.value.toFixed(2)}</p>
-                    <p className={`text-sm ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
-                    </p>
+                    <h3 className="font-bold">{portfolio.name}</h3>
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
+                      
+                      {/* Investment Type Badge with Tooltip */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge 
+                              variant={
+                                portfolio.color === "bg-sprout-green" ? "green" :
+                                portfolio.color === "bg-sprout-blue" ? "blue" :
+                                portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                              }
+                              className="cursor-pointer"
+                            >
+                              <div className="flex items-center">
+                                {getPortfolioTypeInfo(portfolio.id).icon}
+                                {getPortfolioTypeInfo(portfolio.id).type}
+                              </div>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs font-medium">
+                              {getPortfolioTypeInfo(portfolio.id).risk}
+                            </p>
+                            <p className="text-xs">
+                              {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
+                                "Individual stocks or ETFs with various risk levels" :
+                              getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
+                                "Digital assets with high potential returns" :
+                                "Portions of expensive shares from established companies"}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
+                </div>
+                <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
+                  {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
                 </div>
               </div>
               
@@ -389,7 +410,7 @@ const Invest = () => {
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold">Performance</h4>
                     <div className="flex space-x-2">
-                      {["24h", "1w", "1m", "12m"].map((range) => (
+                      {["24h", "1w", "1m", "12m", "1y"].map((range) => (
                         <button
                           key={range}
                           onClick={() => setPerformanceTimeRange(range)}
@@ -402,7 +423,8 @@ const Invest = () => {
                           {range === "24h" ? "24H" : 
                            range === "1w" ? "1W" : 
                            range === "1m" ? "1M" : 
-                           "1Y"}
+                           range === "12m" ? "1Y" : 
+                           "5Y"}
                         </button>
                       ))}
                     </div>
