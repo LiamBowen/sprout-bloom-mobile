@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -19,12 +19,12 @@ import NotFound from './pages/NotFound';
 import Onboarding from './pages/Onboarding';
 import FindFriends from './pages/FindFriends';
 import AppLayout from './layouts/AppLayout';
-import { useApp } from './contexts/AppContext';
-import { Toaster } from "@/components/ui/sonner"
+import { useAuth } from './contexts/AppProvider';
+import { Toaster } from "@/components/ui/sonner";
 import BankCallback from './pages/BankCallback';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn, isLoading } = useApp();
+  const { isLoggedIn, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,11 +42,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  const { user } = useApp();
+  const { initializeAuth } = useAuth();
   
   useEffect(() => {
-    // Initialize authentication is handled within AppContext
-  }, []);
+    initializeAuth();
+  }, [initializeAuth]);
 
   return (
     <Router>
