@@ -1,10 +1,11 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
+import { useApp } from "@/contexts/AppContext";
 
 export const SecuritySettings = () => {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -12,7 +13,9 @@ export const SecuritySettings = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [facialRecognition, setFacialRecognition] = useState(false);
   const { toast } = useToast();
+  const { user } = useApp();
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +68,31 @@ export const SecuritySettings = () => {
     }
   };
 
+  const toggleFacialRecognition = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ facial_recognition_enabled: !facialRecognition })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setFacialRecognition(!facialRecognition);
+      toast({
+        title: "Success",
+        description: `Facial recognition ${!facialRecognition ? 'enabled' : 'disabled'} successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -77,6 +105,14 @@ export const SecuritySettings = () => {
         >
           Change
         </Button>
+      </div>
+
+      <div className="flex justify-between items-center mt-3">
+        <span className="text-sm text-gray-600">Facial Recognition Login</span>
+        <Switch
+          checked={facialRecognition}
+          onCheckedChange={toggleFacialRecognition}
+        />
       </div>
 
       <div className="flex justify-between items-center mt-3">
