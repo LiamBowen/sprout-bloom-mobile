@@ -42,12 +42,15 @@ async function generateAuthLink(req: Request) {
   const clientId = Deno.env.get('TRUELAYER_CLIENT_ID');
   const redirectUri = `${req.headers.get('origin')}/app/profile`;
 
+  // Using the correct TrueLayer authorization URL
   const authUrl = new URL(`${TRUELAYER_AUTH_URL}/connect/token`);
   authUrl.searchParams.append('client_id', clientId!);
   authUrl.searchParams.append('response_type', 'code');
   authUrl.searchParams.append('scope', 'info accounts balance cards transactions');
   authUrl.searchParams.append('redirect_uri', redirectUri);
   authUrl.searchParams.append('providers', 'uk-ob-all uk-oauth-all');
+
+  console.log('Generated auth URL:', authUrl.toString());
 
   return new Response(
     JSON.stringify({ authUrl: authUrl.toString() }),
@@ -62,6 +65,9 @@ async function exchangeToken(req: Request) {
   const clientId = Deno.env.get('TRUELAYER_CLIENT_ID');
   const clientSecret = Deno.env.get('TRUELAYER_CLIENT_SECRET');
   const redirectUri = `${req.headers.get('origin')}/app/profile`;
+
+  console.log('Exchanging token with code:', code);
+  console.log('Redirect URI:', redirectUri);
 
   const response = await fetch(`${TRUELAYER_AUTH_URL}/connect/token`, {
     method: 'POST',
@@ -80,6 +86,7 @@ async function exchangeToken(req: Request) {
   const data = await response.json();
 
   if (!response.ok) {
+    console.error('Token exchange failed:', data);
     throw new Error(data.error || 'Failed to exchange token');
   }
 
