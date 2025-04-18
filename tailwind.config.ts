@@ -64,7 +64,7 @@ export default {
 				},
 				// Sprout Theme Colors
 				sprout: {
-					green: '#A8D5BA',
+					green: '#A3B18C', // New green color
 					pink: '#F8C4B4',
 					lavender: '#E0BBE4',
 					blue: '#B8D8EB',

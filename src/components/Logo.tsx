@@ -5,7 +5,7 @@ import { Leaf } from "lucide-react";
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   showText?: boolean;
-  className?: string; // Add className prop
+  className?: string;
 }
 
 const Logo: React.FC<LogoProps> = ({ size = "md", showText = true, className = "" }) => {
@@ -29,7 +29,7 @@ const Logo: React.FC<LogoProps> = ({ size = "md", showText = true, className = "
     <div className={`flex items-center gap-2 ${className}`}>
       <Leaf
         size={sizeMap[size].icon}
-        className="text-sprout-green"
+        className="text-sprout-green" // This will now use the new #A3B18C green
         strokeWidth={2.5}
       />
       {showText && (
