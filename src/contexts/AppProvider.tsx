@@ -19,3 +19,4 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 export { useAuth } from "./AuthContext";
 export { usePortfolio } from "./PortfolioContext";
 export { useSavings } from "./SavingsContext";
+export { useApp } from "./AppContext";
