@@ -1,4 +1,3 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,14 @@ const NotFound = () => {
     );
   }, [location.pathname]);
 
+  const handleGoHome = () => {
+    if (location.pathname.includes('/app')) {
+      navigate("/app");
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-sprout-background p-6">
       <div className="text-center max-w-md">
@@ -24,7 +31,7 @@ const NotFound = () => {
           We couldn't find the page you're looking for.
         </p>
         <Button 
-          onClick={() => navigate("/")}
+          onClick={handleGoHome}
           className="btn-action btn-primary"
         >
           <ArrowLeft size={18} className="mr-2" />
