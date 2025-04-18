@@ -1,44 +1,60 @@
+
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronRight, User, Upload } from "lucide-react";
+import { ChevronRight, User, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 interface PersonalInfoSectionProps {
   isOpen: boolean;
   onOpenChange: () => void;
 }
+
 export const PersonalInfoSection = ({
   isOpen,
   onOpenChange
 }: PersonalInfoSectionProps) => {
-  const {
-    user,
-    setUser
-  } = useApp();
-  const {
-    toast
-  } = useToast();
+  const { user, setUser } = useApp();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [mobile, setMobile] = useState(user?.mobile_number || '');
   const [loading, setLoading] = useState(false);
+
   const handleUpdateProfile = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      const {
-        error
-      } = await supabase.from('profiles').update({
-        display_name: name
-      }).eq('id', user.id);
-      if (error) throw error;
+      // Update auth email if changed
+      if (email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({ 
+          email: email 
+        });
+        if (emailError) throw emailError;
+      }
+
+      // Update profile data
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          display_name: name,
+          mobile_number: mobile
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
       setUser({
         ...user,
-        name
+        name,
+        email,
+        mobile_number: mobile
       });
+
       setIsEditing(false);
       toast({
         title: "Success",
@@ -54,47 +70,9 @@ export const PersonalInfoSection = ({
       setLoading(false);
     }
   };
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !user) return;
-    setLoading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-      const {
-        error: uploadError
-      } = await supabase.storage.from('profile-pictures').upload(filePath, file);
-      if (uploadError) throw uploadError;
-      const {
-        data: {
-          publicUrl
-        }
-      } = supabase.storage.from('profile-pictures').getPublicUrl(filePath);
-      const {
-        error: updateError
-      } = await supabase.from('profiles').update({
-        avatar_url: publicUrl
-      }).eq('id', user.id);
-      if (updateError) throw updateError;
-      setUser({
-        ...user,
-        avatar_url: publicUrl
-      });
-      toast({
-        title: "Success",
-        description: "Profile picture updated successfully"
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  return <Collapsible open={isOpen} onOpenChange={onOpenChange} className="mb-4 border-b pb-2">
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={onOpenChange} className="mb-4 border-b pb-2">
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
         <div className="flex items-center">
           <User size={16} className="mr-2 text-gray-600" />
@@ -103,12 +81,36 @@ export const PersonalInfoSection = ({
         <ChevronRight size={18} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </CollapsibleTrigger>
       <CollapsibleContent className="pt-2 pb-4 space-y-4">
-        
-
-        {isEditing ? <div className="space-y-4">
+        {isEditing ? (
+          <div className="space-y-4">
             <div>
               <label className="text-sm text-gray-600 block mb-1">Name</label>
-              <Input value={name} onChange={e => setName(e.target.value)} className="max-w-sm" />
+              <Input 
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                className="max-w-sm" 
+                placeholder="Enter your name"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-gray-600 block mb-1">Email</label>
+              <Input 
+                type="email"
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                className="max-w-sm"
+                placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-gray-600 block mb-1">Mobile Number</label>
+              <Input 
+                type="tel"
+                value={mobile} 
+                onChange={e => setMobile(e.target.value)} 
+                className="max-w-sm"
+                placeholder="Enter your mobile number"
+              />
             </div>
             <div className="flex space-x-2">
               <Button onClick={handleUpdateProfile} disabled={loading}>
@@ -118,19 +120,36 @@ export const PersonalInfoSection = ({
                 Cancel
               </Button>
             </div>
-          </div> : <div className="space-y-3">
+          </div>
+        ) : (
+          <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Name</span>
+              <div className="flex items-center">
+                <User size={16} className="mr-2 text-gray-600" />
+                <span className="text-sm text-gray-600">Name</span>
+              </div>
               <span className="text-sm font-medium">{user?.name}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Email</span>
+              <div className="flex items-center">
+                <Mail size={16} className="mr-2 text-gray-600" />
+                <span className="text-sm text-gray-600">Email</span>
+              </div>
               <span className="text-sm font-medium">{user?.email}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <Phone size={16} className="mr-2 text-gray-600" />
+                <span className="text-sm text-gray-600">Mobile</span>
+              </div>
+              <span className="text-sm font-medium">{user?.mobile_number || 'Not set'}</span>
             </div>
             <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="mt-2">
               Edit Profile
             </Button>
-          </div>}
+          </div>
+        )}
       </CollapsibleContent>
-    </Collapsible>;
+    </Collapsible>
+  );
 };

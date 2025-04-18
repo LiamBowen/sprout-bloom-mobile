@@ -52,6 +52,7 @@ export type Database = {
           display_name: string | null
           facial_recognition_enabled: boolean | null
           id: string
+          mobile_number: string | null
           updated_at: string
         }
         Insert: {
@@ -60,6 +61,7 @@ export type Database = {
           display_name?: string | null
           facial_recognition_enabled?: boolean | null
           id: string
+          mobile_number?: string | null
           updated_at?: string
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           display_name?: string | null
           facial_recognition_enabled?: boolean | null
           id?: string
+          mobile_number?: string | null
           updated_at?: string
         }
         Relationships: []
