@@ -17,21 +17,24 @@ const BankCallback = () => {
         // Extract code from URL search params
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');
+        const error = searchParams.get('error');
+        const errorDescription = searchParams.get('error_description');
         
-        console.log("BankCallback: URL params received", { 
-          code: code ? "exists" : "missing",
+        console.log("BankCallback: Starting callback processing", { 
+          code: code ? "present" : "missing",
+          error,
+          errorDescription,
           fullSearch: location.search
         });
         
+        if (error || errorDescription) {
+          const errorMsg = errorDescription || error || "Bank connection failed";
+          console.error("Bank connection error from provider:", errorMsg);
+          throw new Error(errorMsg);
+        }
+        
         if (!code) {
-          setStatus("Error: No authorization code found");
-          toast({
-            title: "Connection Failed",
-            description: "No authorization code was received from your bank",
-            variant: "destructive"
-          });
-          setTimeout(() => navigate("/app/profile"), 3000);
-          return;
+          throw new Error("No authorization code was received from your bank");
         }
         
         setStatus("Establishing secure connection with your bank...");
@@ -40,7 +43,7 @@ const BankCallback = () => {
         const origin = window.location.origin;
         const callbackUrl = `${origin}/app/bank-callback`;
         
-        console.log("Exchanging token with code and callback URL:", { 
+        console.log("BankCallback: Exchanging token with code", { 
           codeLength: code.length,
           callbackUrl 
         });
@@ -50,7 +53,7 @@ const BankCallback = () => {
           body: { 
             action: 'exchangeToken', 
             code,
-            redirectUri: callbackUrl 
+            redirectUri: callbackUrl
           }
         });
         
@@ -59,7 +62,7 @@ const BankCallback = () => {
           throw new Error(response.error.message || "Failed to connect bank account");
         }
         
-        console.log("Token exchange response successful:", response.data ? "Data received" : "No data");
+        console.log("Token exchange successful:", response.data ? "Data received" : "No data");
         
         setStatus("Connection successful! Redirecting...");
         
@@ -70,7 +73,7 @@ const BankCallback = () => {
         
         // Redirect back to profile page after short delay to show success message
         setTimeout(() => navigate("/app/profile"), 1500);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in bank connection callback:", error);
         setStatus("Connection failed. Redirecting back...");
         
@@ -84,7 +87,7 @@ const BankCallback = () => {
       }
     };
     
-    console.log("BankCallback component mounted with search params:", location.search);
+    console.log("BankCallback: Component mounted, processing callback");
     handleCallback();
   }, [location, navigate, toast]);
   
