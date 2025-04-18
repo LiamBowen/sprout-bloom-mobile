@@ -68,13 +68,14 @@ const Auth = () => {
             .eq('id', data.user.id)
             .single();
             
-          // Set user in auth context
+          // Set user in auth context - fix: generate referralCode instead of accessing it from profile
           setUser({
             id: data.user.id,
             name: profileData?.display_name || email.split('@')[0],
             email: data.user.email || "",
             dateOfBirth: "",
-            referralCode: profileData?.referral_code || `USER${Math.floor(1000 + Math.random() * 9000)}`,
+            // Generate a referral code as it doesn't exist in the profiles table
+            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
             friendsReferred: 0,
             rewardsEarned: 0,
             avatar_url: profileData?.avatar_url,
