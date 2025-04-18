@@ -11,10 +11,15 @@ interface FinnhubQuote {
   pc: number; // Previous close price
 }
 
-export async function fetchLivePrice(symbol: string): Promise<number | null> {
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export async function fetchLivePrice(symbol: string, retries = 2): Promise<number | null> {
   try {
+    // Format symbol to handle special cases
+    const formattedSymbol = symbol.replace('&', '');
+    
     const response = await fetch(
-      `${FINNHUB_BASE_URL}/quote?symbol=${encodeURIComponent(symbol)}`,
+      `${FINNHUB_BASE_URL}/quote?symbol=${encodeURIComponent(formattedSymbol)}`,
       {
         headers: {
           'X-Finnhub-Token': 'd012td9r01qv3oh2c3mgd012td9r01qv3oh2c3n0'
@@ -23,7 +28,11 @@ export async function fetchLivePrice(symbol: string): Promise<number | null> {
     );
     
     if (!response.ok) {
-      throw new Error('Failed to fetch price');
+      if (retries > 0) {
+        await delay(1000); // Wait 1 second before retrying
+        return fetchLivePrice(symbol, retries - 1);
+      }
+      throw new Error(`Failed to fetch price: ${response.statusText}`);
     }
     
     const data: FinnhubQuote = await response.json();

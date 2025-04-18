@@ -9,11 +9,14 @@ interface LivePriceProps {
 
 export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
   const [price, setPrice] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadPrice = async () => {
+      setIsLoading(true);
       const livePrice = await fetchLivePrice(symbol);
       setPrice(livePrice);
+      setIsLoading(false);
     };
 
     if (symbol) {
@@ -23,6 +26,10 @@ export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
       return () => clearInterval(interval);
     }
   }, [symbol]);
+
+  if (isLoading) {
+    return <span className={className}>Loading price...</span>;
+  }
 
   if (!price) {
     return <span className={className}>Price temporarily unavailable</span>;
