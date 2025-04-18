@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,12 +6,10 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
 import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
-import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle, Shield, ShieldAlert, ShieldCheck, TrendingUp } from "lucide-react";
+import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle } from "lucide-react";
 import AddInvestment from "@/components/AddInvestment";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Clock, Calendar } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { InvestmentExplorer } from "@/components/invest/InvestmentExplorer";
+import { RiskTolerancePicker } from "@/components/invest/RiskTolerancePicker";
 
 // Mock transaction data
 const mockTransactions = [
@@ -203,6 +200,7 @@ const Invest = () => {
   const [roundUpAmount, setRoundUpAmount] = useState(1); // 1x, 2x, 3x
   const [addInvestmentOpen, setAddInvestmentOpen] = useState(false);
   const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
+  const [riskTolerance, setRiskTolerance] = useState("medium");
 
   const handlePortfolioSelect = (portfolio: any) => {
     setSelectedPortfolio(portfolio);
@@ -243,17 +241,6 @@ const Invest = () => {
         <p className="text-gray-600">Grow your money with round-ups</p>
       </div>
       
-      {/* Market Trend Card */}
-      <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
-        <div className="flex items-center justify-center mb-1">
-          <TrendingUp size={16} className="text-sprout-green mr-1" />
-          <span className="text-sm font-medium">Market Trends</span>
-        </div>
-        <p className="text-sm">
-          🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
-        </p>
-      </Card>
-      
       <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
         <TabsList className="grid grid-cols-2 mb-4">
           <TabsTrigger value="portfolios">Portfolios</TabsTrigger>
@@ -261,89 +248,18 @@ const Invest = () => {
         </TabsList>
         
         <TabsContent value="portfolios" className="space-y-4">
-          {/* Investment Categories */}
-          <div className="space-y-4">
-            {investmentCategories.map((category) => (
-              <Card 
-                key={category.id}
-                className={`overflow-hidden`}
-              >
-                {/* Category Header */}
-                <div 
-                  className={`p-4 cursor-pointer transition-all flex items-center justify-between ${
-                    selectedCategory === category.id ? "bg-sprout-green/10" : ""
-                  }`}
-                  onClick={() => handleCategorySelect(category.id)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="bg-sprout-green/10 p-2 rounded-full">
-                      {category.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-bold">{category.name}</h3>
-                      <p className="text-sm text-gray-600">{category.description}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Risk Levels */}
-                {selectedCategory === category.id && (
-                  <div className="border-t p-4 animate-fade-in">
-                    <h4 className="text-sm font-semibold mb-3">Select Risk Tolerance</h4>
-                    <div className="space-y-3">
-                      {category.riskLevels.map((risk) => (
-                        <div 
-                          key={risk.level}
-                          className={`p-3 border rounded-md cursor-pointer transition-all flex items-start gap-3 ${
-                            selectedRiskLevel === risk.level ? "border-sprout-green bg-sprout-green/5" : "hover:bg-gray-50"
-                          }`}
-                          onClick={() => handleRiskLevelSelect(risk.level)}
-                        >
-                          {risk.icon}
-                          <div>
-                            <h5 className="font-medium">{risk.level}</h5>
-                            <p className="text-xs text-gray-600">{risk.description}</p>
-                            
-                            {selectedRiskLevel === risk.level && (
-                              <div className="mt-2 pt-2 border-t animate-fade-in">
-                                <h6 className="text-xs font-medium mb-1">Recommended Assets:</h6>
-                                <ul className="text-xs space-y-1">
-                                  {risk.assets.map((asset, idx) => (
-                                    <li key={idx} className="flex items-center gap-2">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-sprout-green"></span>
-                                      {asset}
-                                    </li>
-                                  ))}
-                                </ul>
-                                
-                                <Dialog open={addInvestmentOpen} onOpenChange={setAddInvestmentOpen}>
-                                  <DialogTrigger asChild>
-                                    <Button className="w-full btn-action btn-primary mt-3 text-xs py-1 h-auto">
-                                      Add Investment <PlusCircle size={14} className="ml-1" />
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="p-0">
-                                    <AddInvestment 
-                                      onSuccess={() => setAddInvestmentOpen(false)}
-                                      category={category.name}
-                                      riskLevel={risk.level}
-                                      recommendedAssets={risk.assets}
-                                    />
-                                  </DialogContent>
-                                </Dialog>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
+              <InvestmentExplorer />
+            </div>
+            <div>
+              <RiskTolerancePicker 
+                value={riskTolerance}
+                onChange={setRiskTolerance}
+              />
+            </div>
           </div>
-          
-          {/* Portfolio Performance */}
+
           <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
           {portfolios.map((portfolio) => (
             <Card 
