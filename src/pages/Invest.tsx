@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from "@/contexts/AppContext";
 import { InvestmentCategory } from "@/components/invest/InvestmentCategory";

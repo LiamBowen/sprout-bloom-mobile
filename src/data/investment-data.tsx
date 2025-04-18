@@ -1,3 +1,5 @@
+
+import React from 'react';
 import { BarChart2, Bitcoin, PieChart, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { InvestmentCategory, Transaction, PortfolioType } from "@/types/investment";
 

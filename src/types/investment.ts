@@ -36,4 +36,3 @@ export interface PortfolioType {
   risk: string;
   icon: JSX.Element;
 }
-
