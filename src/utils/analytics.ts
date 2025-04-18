@@ -12,7 +12,7 @@ export async function logAnalyticsEvent(
       p_event_data: Record<string, any>;
     };
 
-    const { data, error } = await supabase.rpc<any, LogAnalyticsParams>(
+    const { data, error } = await supabase.rpc<void, LogAnalyticsParams>(
       'log_analytics_event',
       {
         p_event_type: eventType,

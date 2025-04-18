@@ -13,7 +13,7 @@ export async function logError(
       p_context: Record<string, any>;
     };
 
-    const { data, error: logError } = await supabase.rpc<any, LogErrorParams>(
+    const { data, error: logError } = await supabase.rpc<void, LogErrorParams>(
       'log_error',
       {
         p_error_message: error.message,
