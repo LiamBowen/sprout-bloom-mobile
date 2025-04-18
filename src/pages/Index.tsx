@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Logo from "@/components/Logo";  // Import the Logo component
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,8 +19,9 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 bg-gradient-to-b from-white to-sprout-green/20">
       <div className="w-full max-w-md text-center">
-        <div className="mb-8 animate-fade-in">
-          <div className="text-6xl mb-2">🌱</div>
+        <div className="mb-8 animate-fade-in flex flex-col items-center">
+          <Logo size="lg" />  {/* Add Logo component */}
+          <div className="text-6xl mb-2 mt-4">🌱</div>
           <h1 className="text-4xl font-bold mb-2">sprout</h1>
           <p className="text-xl text-gray-600">
             Investing and saving, but make it fun
@@ -72,3 +74,4 @@ const Index = () => {
 };
 
 export default Index;
+
