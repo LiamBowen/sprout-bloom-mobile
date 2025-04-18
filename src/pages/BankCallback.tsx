@@ -13,29 +13,45 @@ const BankCallback = () => {
   
   useEffect(() => {
     const handleCallback = async () => {
-      // Extract code from URL search params
-      const searchParams = new URLSearchParams(location.search);
-      const code = searchParams.get('code');
-      
-      if (!code) {
-        setStatus("Error: No authorization code found");
-        toast({
-          title: "Connection Failed",
-          description: "No authorization code was received from your bank",
-          variant: "destructive"
-        });
-        setTimeout(() => navigate("/app/profile"), 3000);
-        return;
-      }
-      
       try {
+        // Extract code from URL search params
+        const searchParams = new URLSearchParams(location.search);
+        const code = searchParams.get('code');
+        
+        console.log("BankCallback: URL params received", { 
+          code: code ? "exists" : "missing",
+          fullSearch: location.search
+        });
+        
+        if (!code) {
+          setStatus("Error: No authorization code found");
+          toast({
+            title: "Connection Failed",
+            description: "No authorization code was received from your bank",
+            variant: "destructive"
+          });
+          setTimeout(() => navigate("/app/profile"), 3000);
+          return;
+        }
+        
         setStatus("Establishing secure connection with your bank...");
         
-        console.log("Exchanging token with code:", code);
+        // Get the origin for callback URL consistency
+        const origin = window.location.origin;
+        const callbackUrl = `${origin}/app/bank-callback`;
+        
+        console.log("Exchanging token with code and callback URL:", { 
+          codeLength: code.length,
+          callbackUrl 
+        });
         
         // Exchange the authorization code for tokens
         const response = await supabase.functions.invoke('truelayer', {
-          body: { action: 'exchangeToken', code }
+          body: { 
+            action: 'exchangeToken', 
+            code,
+            redirectUri: callbackUrl 
+          }
         });
         
         if (response.error) {
@@ -43,7 +59,7 @@ const BankCallback = () => {
           throw new Error(response.error.message || "Failed to connect bank account");
         }
         
-        console.log("Token exchange response:", response.data);
+        console.log("Token exchange response successful:", response.data ? "Data received" : "No data");
         
         setStatus("Connection successful! Redirecting...");
         
@@ -68,7 +84,7 @@ const BankCallback = () => {
       }
     };
     
-    console.log("BankCallback rendered with search params:", location.search);
+    console.log("BankCallback component mounted with search params:", location.search);
     handleCallback();
   }, [location, navigate, toast]);
   

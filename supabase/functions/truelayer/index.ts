@@ -17,18 +17,19 @@ serve(async (req) => {
 
   try {
     const requestData = await req.json();
+    console.log("TrueLayer function received request:", JSON.stringify(requestData));
     const { action, code, redirectUri } = requestData;
 
     switch (action) {
       case 'generateAuthLink':
         return await generateAuthLink(req, redirectUri);
       case 'exchangeToken':
-        return await exchangeToken(req, code);
+        return await exchangeToken(req, code, redirectUri);
       default:
         throw new Error('Invalid action');
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in TrueLayer function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
@@ -53,7 +54,7 @@ async function generateAuthLink(req: Request, redirectUri: string) {
       redirectUri = `${origin}/app/bank-callback`;
     }
     
-    console.log("Using redirect URI:", redirectUri);
+    console.log("TrueLayer generateAuthLink: Using redirect URI:", redirectUri);
     
     // Build TrueLayer authorization URL with correct parameters
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/auth`);
@@ -63,7 +64,7 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     authUrl.searchParams.append('redirect_uri', redirectUri);
     authUrl.searchParams.append('providers', 'uk-oauth-all uk-ob-all');
     
-    console.log('Generated auth URL:', authUrl.toString());
+    console.log('TrueLayer generateAuthLink: Generated auth URL:', authUrl.toString());
     
     return new Response(
       JSON.stringify({ 
@@ -89,7 +90,7 @@ async function generateAuthLink(req: Request, redirectUri: string) {
   }
 }
 
-async function exchangeToken(req: Request, code: string) {
+async function exchangeToken(req: Request, code: string, redirectUri?: string) {
   try {
     if (!code) {
       throw new Error("Authorization code is required");
@@ -102,13 +103,16 @@ async function exchangeToken(req: Request, code: string) {
       throw new Error("Missing TrueLayer credentials");
     }
     
-    // Extract the origin from the request headers
-    const origin = req.headers.get('origin') || '';
-    // Set the redirect URI to the callback page (must match what was used in the auth request)
-    const redirectUri = `${origin}/app/bank-callback`;
+    // Use provided redirectUri or extract from the request headers
+    if (!redirectUri) {
+      const origin = req.headers.get('origin') || '';
+      redirectUri = `${origin}/app/bank-callback`;
+    }
     
-    console.log('Exchanging token with code:', code);
-    console.log('Redirect URI:', redirectUri);
+    console.log('TrueLayer exchangeToken: Exchanging token with parameters:', {
+      code: code ? code.substring(0, 5) + '...' : 'missing',
+      redirectUri
+    });
     
     const response = await fetch(`${TRUELAYER_AUTH_URL}/connect/token`, {
       method: 'POST',
@@ -126,10 +130,14 @@ async function exchangeToken(req: Request, code: string) {
     
     const data = await response.json();
     
+    console.log('TrueLayer exchangeToken: Token exchange response status:', response.status);
+    
     if (!response.ok) {
-      console.error('Token exchange failed:', data);
+      console.error('TrueLayer exchangeToken: Token exchange failed:', JSON.stringify(data));
       throw new Error(data.error || 'Failed to exchange token');
     }
+    
+    console.log('TrueLayer exchangeToken: Token exchange successful');
     
     // Insert the bank connection into the database
     const { supabaseClient } = await getSupabaseClient();

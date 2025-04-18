@@ -58,7 +58,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       const origin = window.location.origin;
       const callbackUrl = `${origin}/app/bank-callback`;
       
-      console.log("Using callback URL:", callbackUrl);
+      console.log("BankSection: Initiating bank connection with callback URL:", callbackUrl);
       
       const response = await supabase.functions.invoke('truelayer', {
         body: { 
@@ -73,7 +73,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         throw new Error("No authorization URL received from server");
       }
       
-      console.log("Received auth URL:", response.data.authUrl);
+      console.log("BankSection: Received auth URL from TrueLayer:", response.data.authUrl);
       
       // Store the auth URL and show confirmation dialog
       setAuthUrl(response.data.authUrl);
@@ -96,7 +96,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     setIsRedirectDialogOpen(false);
     
     // Log before redirect
-    console.log("Redirecting to TrueLayer:", authUrl);
+    console.log("BankSection: Redirecting to TrueLayer auth page:", authUrl);
     
     // Use window.location.href to ensure proper navigation
     window.location.href = authUrl;
