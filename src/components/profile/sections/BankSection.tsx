@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
-import { ChevronRight, CreditCard, ExternalLink } from "lucide-react";
+import { ChevronRight, CreditCard, ExternalLink, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -25,19 +25,23 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isRedirectDialogOpen, setIsRedirectDialogOpen] = useState(false);
   const [authUrl, setAuthUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchBankConnections();
   }, []);
 
   const fetchBankConnections = async () => {
+    setIsLoading(true);
     try {
+      console.log("BankSection: Fetching bank connections");
       const { data, error } = await supabase
         .from('bank_connections')
         .select('*');
 
       if (error) throw error;
+      
+      console.log("BankSection: Bank connections fetched", { count: data?.length || 0 });
       setBankConnections(data || []);
     } catch (error) {
       console.error("Error fetching bank connections:", error);
@@ -46,13 +50,14 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         description: "Could not fetch bank connections",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleConnectBank = async () => {
     try {
       setIsConnecting(true);
-      setIsLoading(true);
       
       // Get the current origin for proper redirect
       const origin = window.location.origin;
@@ -67,7 +72,10 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         }
       });
 
-      if (response.error) throw response.error;
+      if (response.error) {
+        console.error("Error generating auth link:", response.error);
+        throw response.error;
+      }
       
       if (!response.data?.authUrl) {
         throw new Error("No authorization URL received from server");
@@ -78,7 +86,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       // Store the auth URL and show confirmation dialog
       setAuthUrl(response.data.authUrl);
       setIsRedirectDialogOpen(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating auth link:", error);
       toast({
         title: "Error",
@@ -87,7 +95,6 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       });
     } finally {
       setIsConnecting(false);
-      setIsLoading(false);
     }
   };
 
@@ -117,7 +124,12 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
           <ChevronRight size={18} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          {bankConnections.length === 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-2">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <span className="text-sm text-gray-500">Loading bank connections...</span>
+            </div>
+          ) : bankConnections.length === 0 ? (
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Connect Bank Account</span>
               <Button 
@@ -125,22 +137,34 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
                 size="sm" 
                 className="h-7 text-xs"
                 onClick={handleConnectBank}
-                disabled={isConnecting || isLoading}
+                disabled={isConnecting}
               >
-                {isConnecting || isLoading ? "Connecting..." : "Connect Bank"}
+                {isConnecting ? "Connecting..." : "Connect Bank"}
               </Button>
             </div>
           ) : (
             <>
-              {bankConnections.map((connection) => (
+              {bankConnections.map((connection: any) => (
                 <div 
                   key={connection.id} 
                   className="flex justify-between items-center"
                 >
-                  <span className="text-sm text-gray-600">{connection.account_name}</span>
-                  <span className="text-xs text-gray-500">{connection.account_type}</span>
+                  <span className="text-sm text-gray-600">{connection.account_name || 'Bank Account'}</span>
+                  <span className="text-xs text-gray-500">{connection.account_type || 'Connected Account'}</span>
                 </div>
               ))}
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-sm text-gray-600">Add Another Account</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-7 text-xs"
+                  onClick={handleConnectBank}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? "Connecting..." : "Connect"}
+                </Button>
+              </div>
             </>
           )}
           <div className="flex justify-between items-center">
