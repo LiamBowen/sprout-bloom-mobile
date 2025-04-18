@@ -115,7 +115,8 @@ export default {
 			},
 			fontFamily: {
 				nunito: ['"Nunito"', 'sans-serif'],
-				bierstadt: ['"Bierstadt"', 'sans-serif']
+				bierstadt: ['"Bierstadt"', 'sans-serif'],
+				inter: ['Inter', 'sans-serif']
 			}
 		}
 	},

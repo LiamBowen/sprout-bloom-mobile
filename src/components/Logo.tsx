@@ -29,15 +29,14 @@ const Logo: React.FC<LogoProps> = ({ size = "md", showText = true, className = "
     <div className={`flex items-center gap-2 ${className}`}>
       <Leaf
         size={sizeMap[size].icon}
-        className="text-sprout-green" // This will now use the new #A3B18C green
+        className="text-sprout-green"
         strokeWidth={2.5}
       />
       {showText && (
         <span 
-          className={`font-medium ${sizeMap[size].text}`}
+          className={`font-inter font-semibold ${sizeMap[size].text}`}
           style={{ 
-            fontFamily: 'Bierstadt, sans-serif',
-            color: 'rgba(0, 0, 0, 0.7)'
+            color: '#3C5A3D'
           }}
         >
           Sprout
