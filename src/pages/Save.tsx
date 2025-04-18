@@ -48,7 +48,7 @@ const Save = () => {
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
-        <h1 className="text-2xl font-bold">Save 💰</h1>
+        <h1 className="text-2xl font-bold">Save</h1>
         <p className="text-gray-600">Reach your goals faster</p>
       </div>
       

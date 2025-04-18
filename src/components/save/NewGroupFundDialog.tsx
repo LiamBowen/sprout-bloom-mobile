@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, PalmTree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
+import { Plus, Palmtree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
 
 interface NewGroupFundDialogProps {
   onCreateGroupFund: (name: string, emoji: string, target: string) => void;
@@ -12,11 +12,11 @@ interface NewGroupFundDialogProps {
 const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupEmoji, setNewGroupEmoji] = useState("PalmTree");
+  const [newGroupEmoji, setNewGroupEmoji] = useState("Palmtree");
   const [newGroupTarget, setNewGroupTarget] = useState("");
   
   const availableIcons = [
-    { name: "PalmTree", icon: PalmTree },
+    { name: "Palmtree", icon: Palmtree },
     { name: "Home", icon: Home },
     { name: "Car", icon: Car },
     { name: "Laptop", icon: Laptop },
@@ -30,7 +30,7 @@ const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
     if (newGroupName && newGroupTarget) {
       onCreateGroupFund(newGroupName, newGroupEmoji, newGroupTarget);
       setNewGroupName("");
-      setNewGroupEmoji("PalmTree");
+      setNewGroupEmoji("Palmtree");
       setNewGroupTarget("");
       setIsOpen(false);
     }

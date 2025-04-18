@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { Users, MessageSquare, PalmTree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
+import { Users, MessageSquare, Palmtree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
 import { GroupFund } from "./types";
 
 interface GroupFundsListProps {
@@ -9,7 +9,7 @@ interface GroupFundsListProps {
 }
 
 const iconMap = {
-  PalmTree,
+  Palmtree,
   Home,
   Car,
   Laptop,
@@ -21,7 +21,7 @@ const iconMap = {
 
 const GroupFundsList = ({ groupFunds, onSelectFund }: GroupFundsListProps) => {
   const getIconComponent = (iconName: string) => {
-    const Icon = iconMap[iconName as keyof typeof iconMap] || PalmTree;
+    const Icon = iconMap[iconName as keyof typeof iconMap] || Palmtree;
     return <Icon size={20} className="mr-2" />;
   };
 
