@@ -1,83 +1,86 @@
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
+import './App.css';
+import Auth from './pages/Auth';
+import Index from './pages/Index';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Invest from './pages/Invest';
+import Save from './pages/Save';
+import Coach from './pages/Coach';
+import NotFound from './pages/NotFound';
+import Onboarding from './pages/Onboarding';
+import FindFriends from './pages/FindFriends';
+import AppLayout from './components/layout/AppLayout';
+import { useApp } from './contexts/AppContext';
+import { Toaster } from "@/components/ui/sonner"
+import BankCallback from './pages/BankCallback';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import Index from "./pages/Index";
-import Home from "./pages/Home";
-import Auth from "./pages/Auth";
-import Invest from "./pages/Invest";
-import Save from "./pages/Save";
-import Coach from "./pages/Coach";
-import Profile from "./pages/Profile";
-import FindFriends from "./pages/FindFriends";
-import NotFound from "./pages/NotFound";
-import AppLayout from "./layouts/AppLayout";
-import Onboarding from "./pages/Onboarding";
-import { AppProvider } from "./contexts/AppContext";
-
-const queryClient = new QueryClient();
-
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn, isLoading } = useApp();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    if (!isLoading && !isLoggedIn) {
+      navigate('/auth', { replace: true, state: { from: location } });
+    }
+  }, [isLoggedIn, isLoading, navigate, location]);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (loading) return null;
-
-  if (!session) {
-    return <Navigate to="/auth" replace />;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  return <>{children}</>;
-};
+  return isLoggedIn ? <>{children}</> : null;
+}
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AppProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+function App() {
+  const { initializeAuth } = useApp();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  return (
+    <Router>
+      <div className="App">
+        <main>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/app" element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Navigate to="/app/home" replace />} />
-              <Route path="home" element={<Home />} />
+            
+            {/* Protected routes */}
+            <Route
+              path="/app"
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Home />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="invest" element={<Invest />} />
               <Route path="save" element={<Save />} />
               <Route path="coach" element={<Coach />} />
-              <Route path="profile" element={<Profile />} />
               <Route path="find-friends" element={<FindFriends />} />
+              <Route path="bank-callback" element={<BankCallback />} />
             </Route>
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AppProvider>
-  </QueryClientProvider>
-);
+        </main>
+        <Toaster />
+      </div>
+    </Router>
+  );
+}
 
 export default App;

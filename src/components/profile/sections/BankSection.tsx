@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -29,13 +28,6 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
 
   useEffect(() => {
     fetchBankConnections();
-
-    // Check for TrueLayer auth code in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-      handleTrueLayerCallback(code);
-    }
   }, []);
 
   const fetchBankConnections = async () => {
@@ -73,8 +65,18 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       
       console.log("Received auth URL:", response.data.authUrl);
       
-      // Store the auth URL and show confirmation dialog
-      setAuthUrl(response.data.authUrl);
+      // Use the app/bank-callback path for the redirect URI
+      const currentUrl = window.location.origin;
+      const baseAuthUrl = response.data.authUrl;
+      
+      // Update redirect URI to point to our internal callback route
+      const updatedUrl = baseAuthUrl.replace(
+        /redirect_uri=([^&]*)/,
+        `redirect_uri=${encodeURIComponent(`${currentUrl}/app/bank-callback`)}`
+      );
+      
+      // Store the updated auth URL and show confirmation dialog
+      setAuthUrl(updatedUrl);
       setIsRedirectDialogOpen(true);
     } catch (error) {
       console.error("Error generating auth link:", error);
@@ -96,42 +98,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     // Log before redirect
     console.log("Redirecting to TrueLayer:", authUrl);
     
-    // Fix: Use window.location.href instead of window.open to ensure proper navigation
+    // Use window.location.href to ensure proper navigation
     window.location.href = authUrl;
-  };
-
-  const handleTrueLayerCallback = async (code: string) => {
-    try {
-      setIsConnecting(true);
-      toast({
-        title: "Processing",
-        description: "Connecting your bank account..."
-      });
-      
-      const response = await supabase.functions.invoke('truelayer', {
-        body: { action: 'exchangeToken', code }
-      });
-
-      if (response.error) throw response.error;
-
-      await fetchBankConnections();
-      toast({
-        title: "Success",
-        description: "Bank connected successfully"
-      });
-
-      // Clean up URL
-      window.history.replaceState({}, '', '/app/profile');
-    } catch (error) {
-      console.error("Error exchanging token:", error);
-      toast({
-        title: "Error",
-        description: "Could not complete bank connection: " + (error.message || "Unknown error"),
-        variant: "destructive"
-      });
-    } finally {
-      setIsConnecting(false);
-    }
   };
 
   return (

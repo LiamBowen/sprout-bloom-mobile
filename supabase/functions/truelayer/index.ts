@@ -45,7 +45,10 @@ async function generateAuthLink(req: Request) {
       throw new Error("Missing TRUELAYER_CLIENT_ID environment variable");
     }
     
-    const redirectUri = `${req.headers.get('origin')}/app/profile`;
+    // Extract the origin from the request headers
+    const origin = req.headers.get('origin') || '';
+    // Set the redirect URI to the callback page
+    const redirectUri = `${origin}/app/bank-callback`;
     
     // Build TrueLayer authorization URL with correct parameters
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/auth`);
@@ -94,7 +97,10 @@ async function exchangeToken(req: Request, code: string) {
       throw new Error("Missing TrueLayer credentials");
     }
     
-    const redirectUri = `${req.headers.get('origin')}/app/profile`;
+    // Extract the origin from the request headers
+    const origin = req.headers.get('origin') || '';
+    // Set the redirect URI to the callback page (must match what was used in the auth request)
+    const redirectUri = `${origin}/app/bank-callback`;
     
     console.log('Exchanging token with code:', code);
     console.log('Redirect URI:', redirectUri);
@@ -120,6 +126,26 @@ async function exchangeToken(req: Request, code: string) {
       throw new Error(data.error || 'Failed to exchange token');
     }
     
+    // Insert the bank connection into the database
+    const { supabaseClient } = await getSupabaseClient();
+    
+    // TODO: Fetch bank account details from TrueLayer API
+    // For now, insert a placeholder record
+    const { error: insertError } = await supabaseClient
+      .from('bank_connections')
+      .insert({
+        provider: 'TrueLayer',
+        account_id: `tl-${Date.now()}`,
+        account_name: 'Connected Bank Account',
+        account_type: 'Current Account',
+        currency: 'GBP',
+        user_id: extractUserIdFromRequest(req)
+      });
+    
+    if (insertError) {
+      console.error('Error storing bank connection:', insertError);
+    }
+    
     return new Response(
       JSON.stringify({ 
         ...data,
@@ -142,4 +168,35 @@ async function exchangeToken(req: Request, code: string) {
       }
     );
   }
+}
+
+// Helper function to get a Supabase client
+async function getSupabaseClient() {
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.39.1');
+  
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase credentials');
+  }
+  
+  const supabaseClient = createClient(supabaseUrl, supabaseServiceKey);
+  return { supabaseClient };
+}
+
+// Helper function to extract the user ID from the request authorization header
+function extractUserIdFromRequest(req: Request): string {
+  // This is a simplified example. In production, you'd properly decode the JWT
+  // and extract the user's ID. For now, we'll use a placeholder.
+  const authHeader = req.headers.get('authorization');
+  
+  if (!authHeader) {
+    // Return a placeholder or generate a random ID for demo purposes
+    return crypto.randomUUID();
+  }
+  
+  // In production, you'd decode the JWT and extract sub claim
+  // For now, just return a placeholder
+  return 'placeholder-user-id';
 }
