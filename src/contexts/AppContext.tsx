@@ -10,7 +10,8 @@ interface User {
   referralCode: string;
   friendsReferred: number;
   rewardsEarned: number;
-  avatar_url?: string; // Added this property
+  avatar_url?: string;
+  mobile_number?: string;
 }
 
 // Define Portfolio type
@@ -64,7 +65,8 @@ const mockUser: User = {
   referralCode: "ALEXSPROUT",
   friendsReferred: 3,
   rewardsEarned: 15,
-  avatar_url: null, // Initialize with null
+  avatar_url: null,
+  mobile_number: "1234567890",
 };
 
 const mockPortfolios: Portfolio[] = [
