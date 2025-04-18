@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 
 interface User {
   id: string;
@@ -29,17 +29,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOnboarded, setIsOnboarded] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
-  const initializeAuth = () => {
+  // Use useCallback to prevent the function from being recreated on every render
+  const initializeAuth = useCallback(() => {
+    // Only initialize once
+    if (initialized) return;
+    
     setIsLoading(true);
-    const storedUser = localStorage.getItem("sprout_user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
     const storedUser = localStorage.getItem("sprout_user");
     const storedOnboarded = localStorage.getItem("sprout_onboarded");
     
@@ -50,7 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (storedOnboarded) {
       setIsOnboarded(JSON.parse(storedOnboarded));
     }
-  }, []);
+    
+    setIsLoading(false);
+    setInitialized(true);
+  }, [initialized]);
 
   useEffect(() => {
     if (user) {

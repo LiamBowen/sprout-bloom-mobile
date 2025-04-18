@@ -41,7 +41,7 @@ const AppLayout = () => {
   ];
 
   // Determine if we should show the logo in the header
-  const shouldShowLogo = location.pathname === "/app/profile";
+  const shouldShowLogo = location.pathname.includes("/app/profile");
 
   return (
     <div className="flex flex-col min-h-screen bg-sprout-background pb-16">

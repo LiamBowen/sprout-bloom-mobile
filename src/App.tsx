@@ -44,10 +44,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const { initializeAuth } = useAuth();
   
+  // Run initializeAuth only once when the component mounts
   useEffect(() => {
     initializeAuth();
-  }, [initializeAuth]);
-
+  }, []); // Empty dependency array ensures this runs only once
+  
   return (
     <Router>
       <div className="App">
