@@ -6,10 +6,12 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useApp } from "@/contexts/AppContext";
 import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
-import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle } from "lucide-react";
+import { ArrowRight, BarChart2, Bitcoin, PieChart, PlusCircle, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import AddInvestment from "@/components/AddInvestment";
 import { InvestmentExplorer } from "@/components/invest/InvestmentExplorer";
 import { RiskTolerancePicker } from "@/components/invest/RiskTolerancePicker";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Mock transaction data
 const mockTransactions = [
