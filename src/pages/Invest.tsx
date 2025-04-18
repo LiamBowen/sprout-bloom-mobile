@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -233,7 +234,7 @@ const Invest = () => {
   
   // Helper function to safely get portfolio type info
   const getPortfolioTypeInfo = (portfolioId: string) => {
-    return portfolioTypes[portfolioId] || defaultPortfolioType;
+    return portfolioTypes[portfolioId as keyof typeof portfolioTypes] || defaultPortfolioType;
   };
   
   return (
@@ -249,12 +250,13 @@ const Invest = () => {
           <TabsTrigger value="round-ups">Round-ups</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="portfolios" className="space-y-4">
+        <TabsContent value="portfolios" className="space-y-6">
+          {/* Exploration and Risk Tolerance Section */}
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 shadow-sm rounded-lg overflow-hidden">
               <InvestmentExplorer />
             </div>
-            <div>
+            <div className="shadow-sm">
               <RiskTolerancePicker 
                 value={riskTolerance}
                 onChange={setRiskTolerance}
@@ -262,156 +264,171 @@ const Invest = () => {
             </div>
           </div>
 
-          <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
-          {portfolios.map((portfolio) => (
-            <Card 
-              key={portfolio.id}
-              className={`p-4 cursor-pointer transition-all ${
-                selectedPortfolio?.id === portfolio.id
-                  ? `border-2 border-${portfolio.color} bg-${portfolio.color}/5`
-                  : ""
-              }`}
-              onClick={() => handlePortfolioSelect(portfolio)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
-                    <span>{portfolio.emoji}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold">{portfolio.name}</h3>
+          {/* Portfolio Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Your Investment Portfolios</h3>
+              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                <PlusCircle className="h-4 w-4" /> Add New
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              {portfolios.map((portfolio) => (
+                <Card 
+                  key={portfolio.id}
+                  className={`p-4 cursor-pointer transition-all hover:shadow-md ${
+                    selectedPortfolio?.id === portfolio.id
+                      ? `border-2 border-${portfolio.color} bg-${portfolio.color}/5`
+                      : ""
+                  }`}
+                  onClick={() => handlePortfolioSelect(portfolio)}
+                >
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
-                      
-                      {/* Investment Type Badge with Tooltip */}
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge 
-                              variant={
-                                portfolio.color === "bg-sprout-green" ? "green" :
-                                portfolio.color === "bg-sprout-blue" ? "blue" :
-                                portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
-                              }
-                              className="cursor-pointer"
-                            >
-                              <div className="flex items-center">
-                                {getPortfolioTypeInfo(portfolio.id).icon}
-                                {getPortfolioTypeInfo(portfolio.id).type}
-                              </div>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs font-medium">
-                              {getPortfolioTypeInfo(portfolio.id).risk}
-                            </p>
-                            <p className="text-xs">
-                              {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
-                                "Individual stocks or ETFs with various risk levels" :
-                              getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
-                                "Digital assets with high potential returns" :
-                                "Portions of expensive shares from established companies"}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <div className={`text-xl mr-3 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
+                        <span>{portfolio.emoji}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold">{portfolio.name}</h3>
+                        <div className="flex items-center mt-1">
+                          <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
+                          
+                          {/* Investment Type Badge with Tooltip */}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Badge 
+                                  variant={
+                                    portfolio.color === "bg-sprout-green" ? "green" :
+                                    portfolio.color === "bg-sprout-blue" ? "blue" :
+                                    portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                                  }
+                                  className="cursor-pointer"
+                                >
+                                  <div className="flex items-center">
+                                    {getPortfolioTypeInfo(portfolio.id).icon}
+                                    {getPortfolioTypeInfo(portfolio.id).type}
+                                  </div>
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-xs font-medium">
+                                  {getPortfolioTypeInfo(portfolio.id).risk}
+                                </p>
+                                <p className="text-xs">
+                                  {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
+                                    "Individual stocks or ETFs with various risk levels" :
+                                  getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
+                                    "Digital assets with high potential returns" :
+                                    "Portions of expensive shares from established companies"}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
-                </div>
-              </div>
-              
-              {selectedPortfolio?.id === portfolio.id && (
-                <div className="mt-4 pt-4 border-t border-gray-100 animate-fade-in">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold">Performance</h4>
-                    <div className="flex space-x-2">
-                      {["24h", "1w", "1m", "12m", "1y"].map((range) => (
-                        <button
-                          key={range}
-                          onClick={() => setPerformanceTimeRange(range)}
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            performanceTimeRange === range
-                              ? "bg-sprout-green text-white"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {range === "24h" ? "24H" : 
-                           range === "1w" ? "1W" : 
-                           range === "1m" ? "1M" : 
-                           range === "12m" ? "1Y" : 
-                           "5Y"}
-                        </button>
-                      ))}
+                    <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
                     </div>
-                  </div>
-                  <div className="h-40">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={generatePerformanceData(portfolio.growth, performanceTimeRange)}
-                        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-                      >
-                        <XAxis 
-                          dataKey="period" 
-                          hide={true}
-                        />
-                        <YAxis hide={true} />
-                        <RechartsTooltip
-                          formatter={(value) => [`£${value}`, "Value"]}
-                          labelFormatter={() => ""}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="value"
-                          stroke={portfolio.color === "bg-sprout-green" ? "#A8D5BA" : 
-                                  portfolio.color === "bg-sprout-blue" ? "#B8D8EB" :
-                                  portfolio.color === "bg-sprout-lavender" ? "#E0BBE4" : "#F8C4B4"}
-                          strokeWidth={2}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
                   </div>
                   
-                  <div className="mt-4">
-                    <h4 className="font-semibold mb-4">Your Investment Goal</h4>
-                    <div className="mb-2 flex justify-between text-sm">
-                      <span>Current: £{portfolio.value.toFixed(2)}</span>
-                      <span>Goal: £{investmentGoal}</span>
+                  {selectedPortfolio?.id === portfolio.id && (
+                    <div className="mt-6 pt-4 border-t border-gray-100 animate-fade-in">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold">Performance</h4>
+                        <div className="flex space-x-2">
+                          {["24h", "1w", "1m", "12m"].map((range) => (
+                            <button
+                              key={range}
+                              onClick={() => setPerformanceTimeRange(range)}
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                performanceTimeRange === range
+                                  ? "bg-sprout-green text-white"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {range === "24h" ? "24H" : 
+                               range === "1w" ? "1W" : 
+                               range === "1m" ? "1M" : 
+                               "1Y"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="h-40 mb-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart
+                            data={generatePerformanceData(portfolio.growth, performanceTimeRange)}
+                            margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                          >
+                            <XAxis 
+                              dataKey="period" 
+                              hide={true}
+                            />
+                            <YAxis hide={true} />
+                            <RechartsTooltip
+                              formatter={(value) => [`£${value}`, "Value"]}
+                              labelFormatter={() => ""}
+                            />
+                            <Line
+                              type="monotone"
+                              dataKey="value"
+                              stroke={portfolio.color === "bg-sprout-green" ? "#A8D5BA" : 
+                                      portfolio.color === "bg-sprout-blue" ? "#B8D8EB" :
+                                      portfolio.color === "bg-sprout-lavender" ? "#E0BBE4" : "#F8C4B4"}
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-3">Your Investment Goal</h4>
+                        <div className="mb-2 flex justify-between text-sm">
+                          <span>Current: £{portfolio.value.toFixed(2)}</span>
+                          <span>Goal: £{investmentGoal}</span>
+                        </div>
+                        <Slider
+                          value={[investmentGoal]}
+                          min={500}
+                          max={5000}
+                          step={100}
+                          onValueChange={(value) => setInvestmentGoal(value[0])}
+                          className="mb-3"
+                        />
+                        
+                        <div className="progress-bar mt-2 mb-4">
+                          <div
+                            className={`progress-fill ${
+                              portfolio.color === "bg-sprout-green" ? "bg-sprout-green" : 
+                              portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue" :
+                              portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender" : "bg-sprout-pink"
+                            }`}
+                            style={{ width: `${Math.min(100, (portfolio.value / investmentGoal) * 100)}%` }}
+                          ></div>
+                        </div>
+                        
+                        <div className="flex gap-3 mt-4">
+                          <Button variant="outline" className="flex-1">Add Money</Button>
+                          <Button className="flex-1 btn-primary">See Details</Button>
+                        </div>
+                      </div>
                     </div>
-                    <Slider
-                      value={[investmentGoal]}
-                      min={500}
-                      max={5000}
-                      step={100}
-                      onValueChange={(value) => setInvestmentGoal(value[0])}
-                      className="mb-4"
-                    />
-                    
-                    <div className="progress-bar mt-2 mb-4">
-                      <div
-                        className={`progress-fill ${
-                          portfolio.color === "bg-sprout-green" ? "bg-sprout-green" : 
-                          portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue" :
-                          portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender" : "bg-sprout-pink"
-                        }`}
-                        style={{ width: `${Math.min(100, (portfolio.value / investmentGoal) * 100)}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Card>
-          ))}
+                  )}
+                </Card>
+              ))}
+            </div>
+          </div>
         </TabsContent>
         
         <TabsContent value="round-ups" className="space-y-4">
-          <Card className="p-4">
+          <Card className="p-6">
             <h3 className="font-bold mb-4">Round-up Multiplier</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Round up your purchases and invest the spare change.
+              Round up your purchases and invest the spare change automatically.
             </p>
             
             <div className="flex justify-between space-x-3 mb-6">
@@ -430,10 +447,10 @@ const Invest = () => {
               ))}
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-3 mb-4">
+            <div className="bg-gray-50 rounded-lg p-4 mb-5">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">This week's round-ups:</span>
-                <span className="font-bold">£{(totalRoundUps).toFixed(2)}</span>
+                <span className="font-bold text-lg">£{(totalRoundUps).toFixed(2)}</span>
               </div>
             </div>
             
@@ -442,24 +459,28 @@ const Invest = () => {
             </Button>
           </Card>
           
-          <h3 className="font-semibold mt-4">Recent Transactions</h3>
-          
-          {mockTransactions.map((tx) => (
-            <Card key={tx.id} className="p-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h4 className="font-semibold">{tx.merchant}</h4>
-                  <p className="text-xs text-gray-500">{tx.date}</p>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold">£{tx.amount.toFixed(2)}</div>
-                  <div className="text-xs text-sprout-green">
-                    +£{(tx.roundUp * roundUpAmount).toFixed(2)} round-up
+          <div className="mt-6">
+            <h3 className="font-semibold mb-3">Recent Transactions</h3>
+            
+            <div className="space-y-3">
+              {mockTransactions.map((tx) => (
+                <Card key={tx.id} className="p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-semibold">{tx.merchant}</h4>
+                      <p className="text-xs text-gray-500">{tx.date}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold">£{tx.amount.toFixed(2)}</div>
+                      <div className="text-xs text-sprout-green">
+                        +£{(tx.roundUp * roundUpAmount).toFixed(2)} round-up
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </Card>
-          ))}
+                </Card>
+              ))}
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
