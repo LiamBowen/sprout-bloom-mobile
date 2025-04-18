@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogDescription
 } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -63,10 +64,11 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
 
       if (response.error) throw response.error;
       
-      // Store the auth URL and show confirmation dialog instead of immediate redirect
+      // Store the auth URL and show confirmation dialog
       setAuthUrl(response.data.authUrl);
       setIsRedirectDialogOpen(true);
     } catch (error) {
+      console.error("Error generating auth link:", error);
       toast({
         title: "Error",
         description: "Could not initiate bank connection",
@@ -82,7 +84,15 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     console.log("Redirecting to TrueLayer:", authUrl);
     
     // Redirect to TrueLayer auth page
-    window.location.href = authUrl;
+    if (authUrl) {
+      window.location.href = authUrl;
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid authorization URL",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleTrueLayerCallback = async (code: string) => {
@@ -108,6 +118,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       // Clean up URL
       window.history.replaceState({}, '', '/app/profile');
     } catch (error) {
+      console.error("Error exchanging token:", error);
       toast({
         title: "Error",
         description: "Could not complete bank connection",
