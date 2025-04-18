@@ -62,6 +62,7 @@ const AppLayout = () => {
           <NavLink
             key={tab.path}
             to={tab.path}
+            end={tab.path === "/app"} // This ensures exact matching for the home route
             className={({ isActive }) =>
               cn("tab-item", isActive && "active")
             }
