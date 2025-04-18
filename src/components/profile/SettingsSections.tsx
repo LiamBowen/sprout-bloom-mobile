@@ -1,12 +1,11 @@
 
-import { useState, useEffect } from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
-import { Toggle } from "@/components/ui/toggle";
-import { ChevronRight, User, CreditCard, TrendingUp, Bell, ShieldAlert, FileText } from "lucide-react";
-import { SecuritySettings } from "./SecuritySettings";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { PersonalInfoSection } from "./sections/PersonalInfoSection";
+import { BankSection } from "./sections/BankSection";
+import { InvestmentSection } from "./sections/InvestmentSection";
+import { NotificationsSection } from "./sections/NotificationsSection";
+import { SecuritySection } from "./sections/SecuritySection";
+import { LegalSection } from "./sections/LegalSection";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
@@ -18,37 +17,6 @@ export const SettingsSections = () => {
     legal: false
   });
 
-  const { toast } = useToast();
-  const [bankConnections, setBankConnections] = useState([]);
-
-  useEffect(() => {
-    fetchBankConnections();
-  }, []);
-
-  const fetchBankConnections = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('bank_connections')
-        .select('*');
-
-      if (error) throw error;
-      setBankConnections(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Could not fetch bank connections",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleConnectBank = () => {
-    toast({
-      title: "Coming Soon",
-      description: "TrueLayer bank connection feature is being implemented"
-    });
-  };
-
   const toggleSettingsSection = (section: keyof typeof openSettings) => {
     setOpenSettings({
       ...openSettings,
@@ -58,188 +26,35 @@ export const SettingsSections = () => {
 
   return (
     <>
-      <Collapsible 
-        open={openSettings.personal} 
+      <PersonalInfoSection 
+        isOpen={openSettings.personal}
         onOpenChange={() => toggleSettingsSection('personal')}
-        className="mb-4 border-b pb-2"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <User size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Personal Information</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.personal ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Name</span>
-            <span className="text-sm font-medium">Alex Example</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Email</span>
-            <span className="text-sm font-medium">alex@example.com</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Phone</span>
-            <span className="text-sm font-medium">+44 7123 456 789</span>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      />
       
-      <Collapsible 
-        open={openSettings.bank} 
+      <BankSection 
+        isOpen={openSettings.bank}
         onOpenChange={() => toggleSettingsSection('bank')}
-        className="mb-4 border-b pb-2"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <CreditCard size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Bank & Payment Details</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.bank ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          {bankConnections.length === 0 ? (
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Connect Bank Account</span>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-7 text-xs"
-                onClick={handleConnectBank}
-              >
-                Connect Bank
-              </Button>
-            </div>
-          ) : (
-            <>
-              {bankConnections.map((connection) => (
-                <div 
-                  key={connection.id} 
-                  className="flex justify-between items-center"
-                >
-                  <span className="text-sm text-gray-600">{connection.account_name}</span>
-                  <span className="text-xs text-gray-500">{connection.account_type}</span>
-                </div>
-              ))}
-            </>
-          )}
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Round-up Settings</span>
-            <Toggle 
-              aria-label="Toggle round-up"
-              className="data-[state=on]:bg-sprout-green"
-              defaultPressed
-            >
-              <span className="text-xs">Enabled</span>
-            </Toggle>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      />
       
-      <Collapsible 
-        open={openSettings.investment} 
+      <InvestmentSection 
+        isOpen={openSettings.investment}
         onOpenChange={() => toggleSettingsSection('investment')}
-        className="mb-4 border-b pb-2"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <TrendingUp size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Investment Preferences</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.investment ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Portfolio Themes</span>
-            <span className="text-sm font-medium">Tech I Use, Crypto Growth</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Risk Level</span>
-            <span className="text-sm font-medium">Medium</span>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      />
       
-      <Collapsible 
-        open={openSettings.notifications} 
+      <NotificationsSection 
+        isOpen={openSettings.notifications}
         onOpenChange={() => toggleSettingsSection('notifications')}
-        className="mb-4 border-b pb-2"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <Bell size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Notifications</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.notifications ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Investment Alerts</span>
-            <Toggle 
-              aria-label="Toggle investment alerts"
-              className="data-[state=on]:bg-sprout-green"
-              defaultPressed
-            >
-              <span className="text-xs">ON</span>
-            </Toggle>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Round-up Confirmations</span>
-            <Toggle 
-              aria-label="Toggle round-up confirmations"
-              className="data-[state=on]:bg-sprout-green"
-            >
-              <span className="text-xs">OFF</span>
-            </Toggle>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      />
       
-      <Collapsible 
-        open={openSettings.security} 
+      <SecuritySection 
+        isOpen={openSettings.security}
         onOpenChange={() => toggleSettingsSection('security')}
-        className="mb-4 border-b pb-2"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <ShieldAlert size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Security</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.security ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <SecuritySettings />
-        </CollapsibleContent>
-      </Collapsible>
+      />
       
-      <Collapsible 
-        open={openSettings.legal} 
+      <LegalSection 
+        isOpen={openSettings.legal}
         onOpenChange={() => toggleSettingsSection('legal')}
-        className="mb-4"
-      >
-        <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
-          <div className="flex items-center">
-            <FileText size={16} className="mr-2 text-gray-600" />
-            <span className="font-medium">Legal & Documents</span>
-          </div>
-          <ChevronRight size={18} className={`transition-transform ${openSettings.legal ? 'rotate-90' : ''}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Terms & Conditions</span>
-            <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Privacy Policy</span>
-            <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Close Account</span>
-            <Button variant="outline" size="sm" className="h-7 text-xs text-destructive border-destructive hover:bg-destructive/10">Close</Button>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      />
     </>
   );
 };
