@@ -13,6 +13,11 @@ export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
 
   useEffect(() => {
     const loadPrice = async () => {
+      if (!symbol) {
+        setIsLoading(false);
+        return;
+      }
+      
       setIsLoading(true);
       const livePrice = await fetchLivePrice(symbol);
       setPrice(livePrice);
@@ -24,6 +29,8 @@ export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
       // Refresh price every minute
       const interval = setInterval(loadPrice, 60000);
       return () => clearInterval(interval);
+    } else {
+      setIsLoading(false);
     }
   }, [symbol]);
 
@@ -31,7 +38,7 @@ export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
     return <span className={className}>Loading price...</span>;
   }
 
-  if (!price) {
+  if (price === null) {
     return <span className={className}>Price temporarily unavailable</span>;
   }
 
