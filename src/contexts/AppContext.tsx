@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 import { useAuth } from "./AuthContext";
 import { usePortfolio } from "./PortfolioContext";
 import { useSavings } from "./SavingsContext";
+import { fetchLivePrice } from "@/integrations/finnhub/client";
 
 // Create a hook that combines all our other contexts
 export const useApp = () => {
@@ -30,6 +31,17 @@ export const useApp = () => {
     // In a real app, we would update state here
   };
   
+  // Function to fetch asset price
+  const getAssetPrice = async (assetName: string) => {
+    try {
+      const price = await fetchLivePrice(assetName);
+      return price;
+    } catch (error) {
+      console.error(`Error fetching price for ${assetName}:`, error);
+      return null;
+    }
+  };
+  
   // Combine all the context values
   return {
     ...auth,
@@ -38,7 +50,8 @@ export const useApp = () => {
     coachMessages,
     addCoachMessage,
     showConfetti,
-    triggerConfetti
+    triggerConfetti,
+    getAssetPrice
   };
 };
 

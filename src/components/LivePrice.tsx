@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchLivePrice } from '@/integrations/finnhub/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface LivePriceProps {
   symbol: string;
@@ -10,18 +11,28 @@ interface LivePriceProps {
 export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
   const [price, setPrice] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPrice = async () => {
       if (!symbol) {
         setIsLoading(false);
+        setError("No symbol provided");
         return;
       }
       
       setIsLoading(true);
-      const livePrice = await fetchLivePrice(symbol);
-      setPrice(livePrice);
-      setIsLoading(false);
+      setError(null);
+      
+      try {
+        const livePrice = await fetchLivePrice(symbol);
+        setPrice(livePrice);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Failed to load price:", err);
+        setError("Failed to fetch price");
+        setIsLoading(false);
+      }
     };
 
     if (symbol) {
@@ -31,15 +42,16 @@ export const LivePrice = ({ symbol, className = '' }: LivePriceProps) => {
       return () => clearInterval(interval);
     } else {
       setIsLoading(false);
+      setError("No symbol provided");
     }
   }, [symbol]);
 
   if (isLoading) {
-    return <span className={className}>Loading price...</span>;
+    return <Skeleton className={`h-4 w-16 ${className}`} />;
   }
 
-  if (price === null) {
-    return <span className={className}>Price temporarily unavailable</span>;
+  if (error || price === null) {
+    return <span className={`text-yellow-500 ${className}`}>Price unavailable</span>;
   }
 
   return (
