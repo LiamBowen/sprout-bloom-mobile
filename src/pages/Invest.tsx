@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -356,52 +355,50 @@ const Invest = () => {
               onClick={() => handlePortfolioSelect(portfolio)}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
+                <div className="flex items-center gap-4 flex-1">
+                  <div className={`text-xl ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
                     <span>{portfolio.emoji}</span>
                   </div>
-                  <div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 flex-1">
                     <h3 className="font-bold">{portfolio.name}</h3>
-                    <div className="flex items-center">
-                      <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
-                      
-                      {/* Investment Type Badge with Tooltip */}
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge 
-                              variant={
-                                portfolio.color === "bg-sprout-green" ? "green" :
-                                portfolio.color === "bg-sprout-blue" ? "blue" :
-                                portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
-                              }
-                              className="cursor-pointer"
-                            >
-                              <div className="flex items-center">
-                                {getPortfolioTypeInfo(portfolio.id).icon}
-                                {getPortfolioTypeInfo(portfolio.id).type}
-                              </div>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs font-medium">
-                              {getPortfolioTypeInfo(portfolio.id).risk}
-                            </p>
-                            <p className="text-xs">
-                              {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
-                                "Individual stocks or ETFs with various risk levels" :
-                              getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
-                                "Digital assets with high potential returns" :
-                                "Portions of expensive shares from established companies"}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge 
+                            variant={
+                              portfolio.color === "bg-sprout-green" ? "green" :
+                              portfolio.color === "bg-sprout-blue" ? "blue" :
+                              portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                            }
+                            className="cursor-pointer text-xs"
+                          >
+                            <div className="flex items-center">
+                              {getPortfolioTypeInfo(portfolio.id).icon}
+                              {getPortfolioTypeInfo(portfolio.id).type}
+                            </div>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs font-medium">
+                            {getPortfolioTypeInfo(portfolio.id).risk}
+                          </p>
+                          <p className="text-xs">
+                            {getPortfolioTypeInfo(portfolio.id).type === "Stocks & ETFs" ? 
+                              "Individual stocks or ETFs with various risk levels" :
+                            getPortfolioTypeInfo(portfolio.id).type === "Cryptocurrencies" ?
+                              "Digital assets with high potential returns" :
+                              "Portions of expensive shares from established companies"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
-                <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium">£{portfolio.value.toFixed(2)}</p>
+                  <span className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
+                  </span>
                 </div>
               </div>
               
@@ -410,7 +407,7 @@ const Invest = () => {
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold">Performance</h4>
                     <div className="flex space-x-2">
-                      {["24h", "1w", "1m", "12m", "1y"].map((range) => (
+                      {["24h", "1w", "1m", "12m"].map((range) => (
                         <button
                           key={range}
                           onClick={() => setPerformanceTimeRange(range)}
@@ -423,8 +420,7 @@ const Invest = () => {
                           {range === "24h" ? "24H" : 
                            range === "1w" ? "1W" : 
                            range === "1m" ? "1M" : 
-                           range === "12m" ? "1Y" : 
-                           "5Y"}
+                           "1Y"}
                         </button>
                       ))}
                     </div>
