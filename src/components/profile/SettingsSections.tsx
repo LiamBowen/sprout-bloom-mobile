@@ -1,11 +1,12 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { ChevronRight, User, CreditCard, TrendingUp, Bell, ShieldAlert, FileText } from "lucide-react";
 import { SecuritySettings } from "./SecuritySettings";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
