@@ -7,7 +7,6 @@ import { SettingsCard } from "@/components/profile/SettingsCard";
 import { ReferralCard } from "@/components/profile/ReferralCard";
 import { GroupFundsCard } from "@/components/profile/GroupFundsCard";
 import { LearnCard } from "@/components/profile/LearnCard";
-import { BankConnectionCard } from "@/components/profile/BankConnectionCard";
 
 const Profile = () => {
   const { user } = useApp();
@@ -20,7 +19,6 @@ const Profile = () => {
       <UserInfoCard />
       <FriendsCard />
       <SettingsCard />
-      <BankConnectionCard />
       <ReferralCard />
       <GroupFundsCard />
       <LearnCard />

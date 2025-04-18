@@ -1,10 +1,11 @@
-
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { ChevronRight, User, CreditCard, TrendingUp, Bell, ShieldAlert, FileText } from "lucide-react";
 import { SecuritySettings } from "./SecuritySettings";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
@@ -15,6 +16,37 @@ export const SettingsSections = () => {
     security: false,
     legal: false
   });
+
+  const { toast } = useToast();
+  const [bankConnections, setBankConnections] = useState([]);
+
+  useEffect(() => {
+    fetchBankConnections();
+  }, []);
+
+  const fetchBankConnections = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bank_connections')
+        .select('*');
+
+      if (error) throw error;
+      setBankConnections(data || []);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not fetch bank connections",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleConnectBank = () => {
+    toast({
+      title: "Coming Soon",
+      description: "TrueLayer bank connection feature is being implemented"
+    });
+  };
 
   const toggleSettingsSection = (section: keyof typeof openSettings) => {
     setOpenSettings({
@@ -66,10 +98,31 @@ export const SettingsSections = () => {
           <ChevronRight size={18} className={`transition-transform ${openSettings.bank ? 'rotate-90' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2 pb-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Linked Bank</span>
-            <Button variant="outline" size="sm" className="h-7 text-xs">Connect Bank</Button>
-          </div>
+          {bankConnections.length === 0 ? (
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Connect Bank Account</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-7 text-xs"
+                onClick={handleConnectBank}
+              >
+                Connect Bank
+              </Button>
+            </div>
+          ) : (
+            <>
+              {bankConnections.map((connection) => (
+                <div 
+                  key={connection.id} 
+                  className="flex justify-between items-center"
+                >
+                  <span className="text-sm text-gray-600">{connection.account_name}</span>
+                  <span className="text-xs text-gray-500">{connection.account_type}</span>
+                </div>
+              ))}
+            </>
+          )}
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Round-up Settings</span>
             <Toggle 
