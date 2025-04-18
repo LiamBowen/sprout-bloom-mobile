@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -423,8 +422,7 @@ const Invest = () => {
                           {range === "24h" ? "24H" : 
                            range === "1w" ? "1W" : 
                            range === "1m" ? "1M" : 
-                           range === "12m" ? "1Y" : 
-                           "5Y"}
+                           range === "12m" ? "1Y" : ""}
                         </button>
                       ))}
                     </div>
