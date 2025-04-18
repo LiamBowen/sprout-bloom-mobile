@@ -1,4 +1,5 @@
-import { createContext, useContext, ReactNode } from "react";
+
+import { createContext, useContext, ReactNode, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { usePortfolio } from "./PortfolioContext";
 import { useSavings } from "./SavingsContext";
@@ -71,7 +72,7 @@ export const useApp = () => {
   };
 };
 
-// Keep this for backward compatibility, but we'll use the hooks directly in new code
+// This is needed so we can reuse AppContext in other files
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
