@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
@@ -17,7 +18,7 @@ import Coach from './pages/Coach';
 import NotFound from './pages/NotFound';
 import Onboarding from './pages/Onboarding';
 import FindFriends from './pages/FindFriends';
-import AppLayout from './components/layout/AppLayout';
+import AppLayout from './layouts/AppLayout';
 import { useApp } from './contexts/AppContext';
 import { Toaster } from "@/components/ui/sonner"
 import BankCallback from './pages/BankCallback';
@@ -41,11 +42,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  const { initializeAuth } = useApp();
-
+  const { user } = useApp();
+  
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+    // Initialize authentication is handled within AppContext
+  }, []);
 
   return (
     <Router>

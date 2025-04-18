@@ -1,3 +1,4 @@
+
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { Home, TrendingUp, PiggyBank, MessagesSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -8,7 +9,7 @@ const AppLayout = () => {
   
   const tabs = [
     {
-      path: "/app/home",
+      path: "/app",
       icon: <Home size={22} />,
       label: "Home",
       emoji: "🏡",

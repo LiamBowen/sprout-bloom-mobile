@@ -36,6 +36,8 @@ interface CoachMessage {
 interface AppContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  isLoggedIn: boolean;
+  isLoading: boolean;
   isOnboarded: boolean;
   setIsOnboarded: (value: boolean) => void;
   portfolios: Portfolio[];
@@ -51,6 +53,7 @@ interface AppContextType {
   addCoachMessage: (message: Omit<CoachMessage, "id" | "timestamp">) => void;
   showConfetti: boolean;
   triggerConfetti: () => void;
+  initializeAuth: () => void;
 }
 
 // Create the context
@@ -179,6 +182,7 @@ const mockCoachMessages: CoachMessage[] = [
 // Create the provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isOnboarded, setIsOnboarded] = useState(false);
   const [portfolios, setPortfolios] = useState(mockPortfolios);
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(mockPortfolios[0]);
@@ -186,6 +190,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [groupFunds, setGroupFunds] = useState(mockGroupFunds);
   const [coachMessages, setCoachMessages] = useState(mockCoachMessages);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Initialize authentication
+  const initializeAuth = () => {
+    setIsLoading(true);
+    // Simulate authentication check
+    const storedUser = localStorage.getItem("sprout_user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
+  };
+
+  // Computed property for isLoggedIn
+  const isLoggedIn = !!user;
 
   // Check localStorage for existing state on component mount
   useEffect(() => {
@@ -279,6 +297,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const contextValue: AppContextType = {
     user,
     setUser,
+    isLoggedIn,
+    isLoading,
     isOnboarded,
     setIsOnboarded,
     portfolios,
@@ -294,6 +314,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     addCoachMessage,
     showConfetti,
     triggerConfetti,
+    initializeAuth,
   };
 
   // Return the provider
