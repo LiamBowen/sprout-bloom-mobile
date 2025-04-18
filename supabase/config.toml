@@ -1,1 +1,5 @@
+
 project_id = "trhazvxbpwecywvxkkqj"
+
+[functions.truelayer]
+verify_jwt = false

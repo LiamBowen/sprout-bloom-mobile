@@ -15,9 +15,17 @@ interface BankSectionProps {
 export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const { toast } = useToast();
   const [bankConnections, setBankConnections] = useState([]);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     fetchBankConnections();
+
+    // Check for TrueLayer auth code in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+      handleTrueLayerCallback(code);
+    }
   }, []);
 
   const fetchBankConnections = async () => {
@@ -37,11 +45,54 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     }
   };
 
-  const handleConnectBank = () => {
-    toast({
-      title: "Coming Soon",
-      description: "TrueLayer bank connection feature is being implemented"
-    });
+  const handleConnectBank = async () => {
+    try {
+      setIsConnecting(true);
+      const response = await supabase.functions.invoke('truelayer', {
+        body: { action: 'generateAuthLink' }
+      });
+
+      if (response.error) throw response.error;
+      
+      // Redirect to TrueLayer auth page
+      window.location.href = response.data.authUrl;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not initiate bank connection",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleTrueLayerCallback = async (code: string) => {
+    try {
+      setIsConnecting(true);
+      const response = await supabase.functions.invoke('truelayer', {
+        body: { action: 'exchangeToken', code }
+      });
+
+      if (response.error) throw response.error;
+
+      await fetchBankConnections();
+      toast({
+        title: "Success",
+        description: "Bank connected successfully"
+      });
+
+      // Clean up URL
+      window.history.replaceState({}, '', '/app/profile');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not complete bank connection",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   return (
@@ -66,8 +117,9 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
               size="sm" 
               className="h-7 text-xs"
               onClick={handleConnectBank}
+              disabled={isConnecting}
             >
-              Connect Bank
+              {isConnecting ? "Connecting..." : "Connect Bank"}
             </Button>
           </div>
         ) : (
