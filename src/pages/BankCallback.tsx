@@ -31,12 +31,19 @@ const BankCallback = () => {
       try {
         setStatus("Establishing secure connection with your bank...");
         
+        console.log("Exchanging token with code:", code);
+        
         // Exchange the authorization code for tokens
         const response = await supabase.functions.invoke('truelayer', {
           body: { action: 'exchangeToken', code }
         });
         
-        if (response.error) throw new Error(response.error.message || "Failed to connect bank account");
+        if (response.error) {
+          console.error("Token exchange error:", response.error);
+          throw new Error(response.error.message || "Failed to connect bank account");
+        }
+        
+        console.log("Token exchange response:", response.data);
         
         setStatus("Connection successful! Redirecting...");
         
@@ -61,6 +68,7 @@ const BankCallback = () => {
       }
     };
     
+    console.log("BankCallback rendered with search params:", location.search);
     handleCallback();
   }, [location, navigate, toast]);
   

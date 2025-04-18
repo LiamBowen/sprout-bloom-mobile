@@ -16,11 +16,12 @@ serve(async (req) => {
   }
 
   try {
-    const { action, code } = await req.json();
+    const requestData = await req.json();
+    const { action, code, redirectUri } = requestData;
 
     switch (action) {
       case 'generateAuthLink':
-        return await generateAuthLink(req);
+        return await generateAuthLink(req, redirectUri);
       case 'exchangeToken':
         return await exchangeToken(req, code);
       default:
@@ -38,17 +39,21 @@ serve(async (req) => {
   }
 });
 
-async function generateAuthLink(req: Request) {
+async function generateAuthLink(req: Request, redirectUri: string) {
   try {
     const clientId = Deno.env.get('TRUELAYER_CLIENT_ID');
     if (!clientId) {
       throw new Error("Missing TRUELAYER_CLIENT_ID environment variable");
     }
     
-    // Extract the origin from the request headers
-    const origin = req.headers.get('origin') || '';
-    // Set the redirect URI to the callback page
-    const redirectUri = `${origin}/app/bank-callback`;
+    if (!redirectUri) {
+      // Extract the origin from the request headers
+      const origin = req.headers.get('origin') || '';
+      // Set the default redirect URI to the callback page
+      redirectUri = `${origin}/app/bank-callback`;
+    }
+    
+    console.log("Using redirect URI:", redirectUri);
     
     // Build TrueLayer authorization URL with correct parameters
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/auth`);

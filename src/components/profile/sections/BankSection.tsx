@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -53,8 +54,17 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       setIsConnecting(true);
       setIsLoading(true);
       
+      // Get the current origin for proper redirect
+      const origin = window.location.origin;
+      const callbackUrl = `${origin}/app/bank-callback`;
+      
+      console.log("Using callback URL:", callbackUrl);
+      
       const response = await supabase.functions.invoke('truelayer', {
-        body: { action: 'generateAuthLink' }
+        body: { 
+          action: 'generateAuthLink',
+          redirectUri: callbackUrl 
+        }
       });
 
       if (response.error) throw response.error;
@@ -65,18 +75,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       
       console.log("Received auth URL:", response.data.authUrl);
       
-      // Use the app/bank-callback path for the redirect URI
-      const currentUrl = window.location.origin;
-      const baseAuthUrl = response.data.authUrl;
-      
-      // Update redirect URI to point to our internal callback route
-      const updatedUrl = baseAuthUrl.replace(
-        /redirect_uri=([^&]*)/,
-        `redirect_uri=${encodeURIComponent(`${currentUrl}/app/bank-callback`)}`
-      );
-      
-      // Store the updated auth URL and show confirmation dialog
-      setAuthUrl(updatedUrl);
+      // Store the auth URL and show confirmation dialog
+      setAuthUrl(response.data.authUrl);
       setIsRedirectDialogOpen(true);
     } catch (error) {
       console.error("Error generating auth link:", error);
