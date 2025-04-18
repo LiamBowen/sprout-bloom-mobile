@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, TrendingUp, Users, Bot } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const Index = () => {
@@ -30,7 +30,7 @@ const Index = () => {
           <div className="flex flex-col gap-4">
             <div className="card bg-sprout-green/10 border-sprout-green/20">
               <div className="flex items-center mb-2">
-                <span className="text-xl mr-2">📈</span>
+                <TrendingUp className="w-5 h-5 mr-2" />
                 <h3 className="font-bold">Grow your money</h3>
               </div>
               <p className="text-sm text-gray-600">
@@ -40,7 +40,7 @@ const Index = () => {
             
             <div className="card bg-sprout-pink/10 border-sprout-pink/20">
               <div className="flex items-center mb-2">
-                <span className="text-xl mr-2">👥</span>
+                <Users className="w-5 h-5 mr-2" />
                 <h3 className="font-bold">Save together</h3>
               </div>
               <p className="text-sm text-gray-600">
@@ -50,7 +50,7 @@ const Index = () => {
             
             <div className="card bg-sprout-lavender/10 border-sprout-lavender/20">
               <div className="flex items-center mb-2">
-                <span className="text-xl mr-2">🤖</span>
+                <Bot className="w-5 h-5 mr-2" />
                 <h3 className="font-bold">Personal coach</h3>
               </div>
               <p className="text-sm text-gray-600">
