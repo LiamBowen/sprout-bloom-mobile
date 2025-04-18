@@ -5,11 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
+enum ConnectionStatus {
+  PROCESSING = "Processing your bank connection...",
+  CONNECTING = "Establishing secure connection with your bank...",
+  SUCCESS = "Connection successful! Redirecting...",
+  FAILED = "Connection failed. Redirecting back..."
+}
+
 const BankCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [status, setStatus] = useState("Processing your bank connection...");
+  const [status, setStatus] = useState<ConnectionStatus>(ConnectionStatus.PROCESSING);
   
   useEffect(() => {
     const handleCallback = async () => {
@@ -37,7 +44,7 @@ const BankCallback = () => {
           throw new Error("No authorization code was received from your bank");
         }
         
-        setStatus("Establishing secure connection with your bank...");
+        setStatus(ConnectionStatus.CONNECTING);
         
         // Get the origin for callback URL consistency
         const origin = window.location.origin;
@@ -64,7 +71,7 @@ const BankCallback = () => {
         
         console.log("Token exchange successful:", response.data ? "Data received" : "No data");
         
-        setStatus("Connection successful! Redirecting...");
+        setStatus(ConnectionStatus.SUCCESS);
         
         toast({
           title: "Success",
@@ -75,7 +82,7 @@ const BankCallback = () => {
         setTimeout(() => navigate("/app/profile"), 1500);
       } catch (error: any) {
         console.error("Error in bank connection callback:", error);
-        setStatus("Connection failed. Redirecting back...");
+        setStatus(ConnectionStatus.FAILED);
         
         toast({
           title: "Connection Failed",

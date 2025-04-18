@@ -1,0 +1,103 @@
+
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+export interface BankConnection {
+  id: string;
+  account_name: string;
+  account_type: string;
+  provider: string;
+  account_id: string;
+  currency: string;
+  created_at: string;
+  user_id: string;
+}
+
+export function useBankConnections() {
+  const { toast } = useToast();
+  const [bankConnections, setBankConnections] = useState<BankConnection[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [authUrl, setAuthUrl] = useState("");
+
+  useEffect(() => {
+    fetchBankConnections();
+  }, []);
+
+  const fetchBankConnections = async () => {
+    setIsLoading(true);
+    try {
+      console.log("useBankConnections: Fetching bank connections");
+      const { data, error } = await supabase
+        .from('bank_connections')
+        .select('*');
+
+      if (error) throw error;
+      
+      console.log("useBankConnections: Bank connections fetched", { count: data?.length || 0 });
+      setBankConnections(data || []);
+    } catch (error) {
+      console.error("Error fetching bank connections:", error);
+      toast({
+        title: "Error",
+        description: "Could not fetch bank connections",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generateAuthLink = async (): Promise<string | null> => {
+    try {
+      setIsConnecting(true);
+      
+      // Get the current origin for proper redirect
+      const origin = window.location.origin;
+      const callbackUrl = `${origin}/app/bank-callback`;
+      
+      console.log("useBankConnections: Initiating bank connection with callback URL:", callbackUrl);
+      
+      const response = await supabase.functions.invoke('truelayer', {
+        body: { 
+          action: 'generateAuthLink',
+          redirectUri: callbackUrl 
+        }
+      });
+
+      if (response.error) {
+        console.error("Error generating auth link:", response.error);
+        throw response.error;
+      }
+      
+      if (!response.data?.authUrl) {
+        throw new Error("No authorization URL received from server");
+      }
+      
+      console.log("useBankConnections: Received auth URL from TrueLayer:", response.data.authUrl);
+      
+      setAuthUrl(response.data.authUrl);
+      return response.data.authUrl;
+    } catch (error: any) {
+      console.error("Error generating auth link:", error);
+      toast({
+        title: "Error",
+        description: "Could not initiate bank connection: " + (error.message || "Unknown error"),
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  return {
+    bankConnections,
+    isLoading,
+    isConnecting,
+    authUrl,
+    fetchBankConnections,
+    generateAuthLink
+  };
+}
