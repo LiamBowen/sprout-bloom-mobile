@@ -26,6 +26,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isRedirectDialogOpen, setIsRedirectDialogOpen] = useState(false);
   const [authUrl, setAuthUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchBankConnections();
@@ -47,6 +48,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       if (error) throw error;
       setBankConnections(data || []);
     } catch (error) {
+      console.error("Error fetching bank connections:", error);
       toast({
         title: "Error",
         description: "Could not fetch bank connections",
@@ -58,11 +60,19 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const handleConnectBank = async () => {
     try {
       setIsConnecting(true);
+      setIsLoading(true);
+      
       const response = await supabase.functions.invoke('truelayer', {
         body: { action: 'generateAuthLink' }
       });
 
       if (response.error) throw response.error;
+      
+      if (!response.data?.authUrl) {
+        throw new Error("No authorization URL received from server");
+      }
+      
+      console.log("Received auth URL:", response.data.authUrl);
       
       // Store the auth URL and show confirmation dialog
       setAuthUrl(response.data.authUrl);
@@ -71,21 +81,26 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       console.error("Error generating auth link:", error);
       toast({
         title: "Error",
-        description: "Could not initiate bank connection",
+        description: "Could not initiate bank connection: " + (error.message || "Unknown error"),
         variant: "destructive"
       });
     } finally {
       setIsConnecting(false);
+      setIsLoading(false);
     }
   };
 
   const handleConfirmRedirect = () => {
+    // Close the dialog first
+    setIsRedirectDialogOpen(false);
+    
     // Log before redirect
     console.log("Redirecting to TrueLayer:", authUrl);
     
     // Redirect to TrueLayer auth page
     if (authUrl) {
-      window.location.href = authUrl;
+      // Open in a new tab to avoid navigation issues
+      window.open(authUrl, '_blank');
     } else {
       toast({
         title: "Error",
@@ -121,7 +136,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       console.error("Error exchanging token:", error);
       toast({
         title: "Error",
-        description: "Could not complete bank connection",
+        description: "Could not complete bank connection: " + (error.message || "Unknown error"),
         variant: "destructive"
       });
     } finally {
@@ -152,9 +167,9 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
                 size="sm" 
                 className="h-7 text-xs"
                 onClick={handleConnectBank}
-                disabled={isConnecting}
+                disabled={isConnecting || isLoading}
               >
-                {isConnecting ? "Connecting..." : "Connect Bank"}
+                {isConnecting || isLoading ? "Connecting..." : "Connect Bank"}
               </Button>
             </div>
           ) : (
@@ -196,7 +211,11 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
             <Button variant="outline" onClick={() => setIsRedirectDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleConfirmRedirect} className="flex items-center gap-2">
+            <Button 
+              onClick={handleConfirmRedirect} 
+              className="flex items-center gap-2"
+              disabled={!authUrl}
+            >
               Continue to TrueLayer <ExternalLink size={16} />
             </Button>
           </div>
