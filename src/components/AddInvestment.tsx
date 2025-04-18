@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -25,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LivePrice } from './LivePrice';
 
 // Define form validation schema
 const investmentFormSchema = z.object({
@@ -106,7 +106,10 @@ const AddInvestment = ({
                           <FormControl>
                             <RadioGroupItem value={asset} />
                           </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">{asset}</FormLabel>
+                          <div className="flex justify-between w-full items-center">
+                            <FormLabel className="font-normal cursor-pointer">{asset}</FormLabel>
+                            <LivePrice symbol={asset} className="text-sm text-gray-600" />
+                          </div>
                         </FormItem>
                       ))}
                     </RadioGroup>
