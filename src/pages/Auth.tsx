@@ -49,9 +49,9 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-white to-sprout-green/20">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <Logo size="lg" />
-          <h2 className="mt-6 text-2xl font-bold">
+        <div className="text-center flex flex-col items-center">
+          <Logo size="lg" className="mb-4" />
+          <h2 className="text-2xl font-bold">
             {isSignUp ? "Create your account" : "Welcome back"}
           </h2>
           <p className="mt-2 text-gray-600">
