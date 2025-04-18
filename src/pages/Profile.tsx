@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { SecuritySettings } from "@/components/profile/SecuritySettings";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -390,14 +391,7 @@ const Profile = () => {
             <ChevronRight size={18} className={`transition-transform ${openSettings.security ? 'rotate-90' : ''}`} />
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-2 pb-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Change Password</span>
-              <Button variant="outline" size="sm" className="h-7 text-xs">Change</Button>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Two-Factor Authentication</span>
-              <span className="text-xs text-gray-500">Coming Soon</span>
-            </div>
+            <SecuritySettings />
           </CollapsibleContent>
         </Collapsible>
         
