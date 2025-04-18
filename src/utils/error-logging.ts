@@ -10,7 +10,7 @@ export async function logError(
       'log_error',
       {
         error_message: error.message,
-        error_stack: error.stack,
+        error_stack: error.stack || '',
         context: context
       }
     );
