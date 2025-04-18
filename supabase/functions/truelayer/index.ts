@@ -42,8 +42,8 @@ async function generateAuthLink(req: Request) {
   const clientId = Deno.env.get('TRUELAYER_CLIENT_ID');
   const redirectUri = `${req.headers.get('origin')}/app/profile`;
 
-  // Using the correct TrueLayer authorization URL
-  const authUrl = new URL(`${TRUELAYER_AUTH_URL}/connect/token`);
+  // Correct TrueLayer authorization endpoint
+  const authUrl = new URL(`${TRUELAYER_AUTH_URL}/authorize`);
   authUrl.searchParams.append('client_id', clientId!);
   authUrl.searchParams.append('response_type', 'code');
   authUrl.searchParams.append('scope', 'info accounts balance cards transactions');
