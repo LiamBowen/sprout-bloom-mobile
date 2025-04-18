@@ -13,7 +13,6 @@ import {
   DialogTitle,
   DialogDescription
 } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -97,17 +96,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     // Log before redirect
     console.log("Redirecting to TrueLayer:", authUrl);
     
-    // Redirect to TrueLayer auth page
-    if (authUrl) {
-      // Open in a new tab to avoid navigation issues
-      window.open(authUrl, '_blank');
-    } else {
-      toast({
-        title: "Error",
-        description: "Invalid authorization URL",
-        variant: "destructive"
-      });
-    }
+    // Fix: Use window.location.href instead of window.open to ensure proper navigation
+    window.location.href = authUrl;
   };
 
   const handleTrueLayerCallback = async (code: string) => {
