@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -60,7 +59,7 @@ const Index = () => {
           </div>
           
           <Button 
-            onClick={() => navigate("/onboarding")}
+            onClick={() => navigate("/auth")}
             className="w-full btn-action btn-primary"
           >
             Get Started <ArrowRight size={18} />
