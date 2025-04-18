@@ -6,13 +6,20 @@ export async function logError(
   context: Record<string, any> = {}
 ) {
   try {
-    const { data, error: logError } = await supabase.rpc(
+    // Explicitly type the RPC parameters to match the Supabase function
+    type LogErrorParams = {
+      p_error_message: string;
+      p_error_stack: string;
+      p_context: Record<string, any>;
+    };
+
+    const { data, error: logError } = await supabase.rpc<any>(
       'log_error',
       {
-        error_message: error.message,
-        error_stack: error.stack || '',
-        context: context
-      }
+        p_error_message: error.message,
+        p_error_stack: error.stack || '',
+        p_context: context
+      } as LogErrorParams
     );
     
     if (logError) throw logError;

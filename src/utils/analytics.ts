@@ -6,12 +6,18 @@ export async function logAnalyticsEvent(
   eventData: Record<string, any> = {}
 ) {
   try {
-    const { data, error } = await supabase.rpc(
+    // Explicitly type the RPC parameters to match the Supabase function
+    type LogAnalyticsParams = {
+      p_event_type: string;
+      p_event_data: Record<string, any>;
+    };
+
+    const { data, error } = await supabase.rpc<any>(
       'log_analytics_event',
       {
-        event_type: eventType,
-        event_data: eventData
-      }
+        p_event_type: eventType,
+        p_event_data: eventData
+      } as LogAnalyticsParams
     );
     
     if (error) throw error;
