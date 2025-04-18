@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { Users, MessageSquare } from "lucide-react";
+import { Users, MessageSquare, PalmTree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
 import { GroupFund } from "./types";
 
 interface GroupFundsListProps {
@@ -8,7 +8,23 @@ interface GroupFundsListProps {
   onSelectFund: (fundId: string) => void;
 }
 
+const iconMap = {
+  PalmTree,
+  Home,
+  Car,
+  Laptop,
+  Plane,
+  GraduationCap,
+  Gift,
+  Tent,
+};
+
 const GroupFundsList = ({ groupFunds, onSelectFund }: GroupFundsListProps) => {
+  const getIconComponent = (iconName: string) => {
+    const Icon = iconMap[iconName as keyof typeof iconMap] || PalmTree;
+    return <Icon size={20} className="mr-2" />;
+  };
+
   return (
     <>
       {groupFunds.map((fund) => (
@@ -20,7 +36,7 @@ const GroupFundsList = ({ groupFunds, onSelectFund }: GroupFundsListProps) => {
           <div className="flex justify-between items-start">
             <div>
               <div className="flex items-center">
-                <span className="text-xl mr-2">{fund.emoji}</span>
+                {getIconComponent(fund.emoji)}
                 <h3 className="font-bold">{fund.name}</h3>
               </div>
               <div className="flex items-center text-sm text-gray-600 mt-1">

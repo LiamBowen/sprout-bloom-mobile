@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
@@ -9,6 +8,9 @@ import {
   ChevronsUp,
   TrendingUp,
   User,
+  PartyPopper,
+  Hand,
+  Wallet,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Confetti from "@/components/Confetti";
@@ -36,15 +38,13 @@ const Home = () => {
     <div className="space-y-6">
       <Confetti />
       
-      {/* Welcome Section */}
       <div className="animate-fade-in">
         <h1 className="text-2xl font-bold">
-          Hi, {user.name}! 👋
+          Hi, {user.name} <Hand className="inline w-5 h-5" />
         </h1>
         <p className="text-gray-600">Welcome back to your money garden</p>
       </div>
       
-      {/* Summary Card */}
       <Card className="p-6 bg-gradient-to-br from-sprout-green/30 to-sprout-green/10 animate-slide-up">
         <h2 className="font-semibold text-sm text-gray-600 mb-1">Your total balance</h2>
         <div className="text-2xl font-bold mb-3">£{totalValue.toFixed(2)}</div>
@@ -68,9 +68,8 @@ const Home = () => {
         </div>
       </Card>
       
-      {/* What Friends Are Investing In Section */}
       <div className="space-y-4 animate-slide-up" style={{ animationDelay: "0.15s" }}>
-        <h2 className="text-xl font-semibold">What your friends are investing in 💸</h2>
+        <h2 className="text-xl font-semibold">What your friends are investing in <Wallet className="inline w-5 h-5" /></h2>
         
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex justify-between items-center">
@@ -100,12 +99,11 @@ const Home = () => {
         </div>
       </div>
       
-      {/* Referral Banner */}
       <div className="relative animate-slide-up" style={{ animationDelay: "0.2s" }}>
         {showReferralSuccess && (
           <div className="absolute inset-0 bg-sprout-green rounded-lg flex items-center justify-center animate-fade-in">
             <div className="text-center p-4">
-              <div className="text-2xl mb-2">🎉</div>
+              <PartyPopper className="w-8 h-8 mx-auto mb-2" />
               <p className="font-bold">Referral link copied!</p>
               <p className="text-sm">Share it with friends to earn rewards</p>
             </div>
@@ -134,7 +132,6 @@ const Home = () => {
         </Card>
       </div>
       
-      {/* Quick Actions */}
       <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.25s" }}>
         <h3 className="font-semibold">Quick Links</h3>
         

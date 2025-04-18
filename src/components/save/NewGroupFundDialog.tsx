@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Plus, PalmTree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
 
 interface NewGroupFundDialogProps {
   onCreateGroupFund: (name: string, emoji: string, target: string) => void;
@@ -12,16 +12,25 @@ interface NewGroupFundDialogProps {
 const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupEmoji, setNewGroupEmoji] = useState("🏝️");
+  const [newGroupEmoji, setNewGroupEmoji] = useState("PalmTree");
   const [newGroupTarget, setNewGroupTarget] = useState("");
   
-  const availableEmojis = ["🏝️", "🏠", "🚗", "💻", "✈️", "🎓", "🎁", "🎪"];
+  const availableIcons = [
+    { name: "PalmTree", icon: PalmTree },
+    { name: "Home", icon: Home },
+    { name: "Car", icon: Car },
+    { name: "Laptop", icon: Laptop },
+    { name: "Plane", icon: Plane },
+    { name: "GraduationCap", icon: GraduationCap },
+    { name: "Gift", icon: Gift },
+    { name: "Tent", icon: Tent },
+  ];
 
   const handleCreateNewGroup = () => {
     if (newGroupName && newGroupTarget) {
       onCreateGroupFund(newGroupName, newGroupEmoji, newGroupTarget);
       setNewGroupName("");
-      setNewGroupEmoji("🏝️");
+      setNewGroupEmoji("PalmTree");
       setNewGroupTarget("");
       setIsOpen(false);
     }
@@ -49,19 +58,19 @@ const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-medium">Choose an Emoji</label>
+            <label className="text-sm font-medium">Choose an Icon</label>
             <div className="flex flex-wrap gap-2">
-              {availableEmojis.map((emoji) => (
+              {availableIcons.map(({ name, icon: Icon }) => (
                 <button
-                  key={emoji}
-                  onClick={() => setNewGroupEmoji(emoji)}
-                  className={`w-10 h-10 text-xl flex items-center justify-center rounded ${
-                    newGroupEmoji === emoji
+                  key={name}
+                  onClick={() => setNewGroupEmoji(name)}
+                  className={`w-10 h-10 flex items-center justify-center rounded ${
+                    newGroupEmoji === name
                       ? "bg-sprout-lavender/20 border border-sprout-lavender"
                       : "bg-gray-100"
                   }`}
                 >
-                  {emoji}
+                  <Icon size={20} />
                 </button>
               ))}
             </div>
