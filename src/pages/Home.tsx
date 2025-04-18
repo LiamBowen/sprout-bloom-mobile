@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
@@ -8,7 +9,6 @@ import {
   ChevronsUp,
   TrendingUp,
   User,
-  PartyPopper,
   Hand,
   Wallet,
 } from "lucide-react";
@@ -18,21 +18,14 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const Home = () => {
-  const { user, portfolios, savingPots, triggerConfetti } = useApp();
+  const { user, portfolios, savingPots } = useApp();
   const navigate = useNavigate();
-  const [showReferralSuccess, setShowReferralSuccess] = useState(false);
   
   if (!user) return null;
   
   const totalPortfolioValue = portfolios.reduce((acc, portfolio) => acc + portfolio.value, 0);
   const totalSavingsValue = savingPots.reduce((acc, pot) => acc + pot.amount, 0);
   const totalValue = totalPortfolioValue + totalSavingsValue;
-  
-  const handleReferralClick = () => {
-    setShowReferralSuccess(true);
-    triggerConfetti();
-    setTimeout(() => setShowReferralSuccess(false), 3000);
-  };
   
   return (
     <div className="space-y-6">
@@ -99,39 +92,6 @@ const Home = () => {
         </div>
       </div>
       
-      <div className="relative animate-slide-up" style={{ animationDelay: "0.2s" }}>
-        {showReferralSuccess && (
-          <div className="absolute inset-0 bg-sprout-green rounded-lg flex items-center justify-center animate-fade-in">
-            <div className="text-center p-4">
-              <PartyPopper className="w-8 h-8 mx-auto mb-2" />
-              <p className="font-bold">Referral link copied!</p>
-              <p className="text-sm">Share it with friends to earn rewards</p>
-            </div>
-          </div>
-        )}
-        
-        <Card className="p-4 border-dashed border-2 border-sprout-pink bg-sprout-pink/5">
-          <div className="flex items-start">
-            <div className="bg-sprout-pink/20 rounded-full p-2 mr-3">
-              <User size={20} className="text-sprout-pink" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold mb-0.5">Refer a friend</h3>
-              <p className="text-sm text-gray-600 mb-2">
-                You both earn £5 when they join!
-              </p>
-              <Button 
-                onClick={handleReferralClick} 
-                variant="outline" 
-                className="w-full text-sm py-1 h-auto"
-              >
-                Share Referral Code
-              </Button>
-            </div>
-          </div>
-        </Card>
-      </div>
-      
       <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.25s" }}>
         <h3 className="font-semibold">Quick Links</h3>
         
@@ -141,7 +101,7 @@ const Home = () => {
               <MessageSquare size={18} className="text-sprout-lavender" />
             </div>
             <div>
-              <h4 className="font-medium">Start a group fund 💬</h4>
+              <h4 className="font-medium">Start a group fund</h4>
               <p className="text-sm text-gray-600">Save together with friends</p>
             </div>
           </div>
@@ -153,7 +113,7 @@ const Home = () => {
               <Sprout size={18} className="text-sprout-green" />
             </div>
             <div>
-              <h4 className="font-medium">Explore new portfolios 🌱</h4>
+              <h4 className="font-medium">Explore new portfolios</h4>
               <p className="text-sm text-gray-600">Find investments that match your values</p>
             </div>
           </div>
@@ -165,7 +125,7 @@ const Home = () => {
               <Bot size={18} className="text-sprout-blue" />
             </div>
             <div>
-              <h4 className="font-medium">Ask the Coach anything 🤖</h4>
+              <h4 className="font-medium">Ask the Coach anything</h4>
               <p className="text-sm text-gray-600">Get friendly financial advice</p>
             </div>
           </div>
@@ -176,3 +136,4 @@ const Home = () => {
 };
 
 export default Home;
+
