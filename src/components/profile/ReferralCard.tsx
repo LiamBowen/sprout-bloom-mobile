@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
@@ -29,7 +28,7 @@ export const ReferralCard = () => {
           <div className="w-8 h-8 bg-sprout-pink/20 rounded-full flex items-center justify-center mr-2">
             <Gift size={18} className="text-sprout-pink" />
           </div>
-          <h3 className="font-bold">Referral Program</h3>
+          <h3 className="font-bold">Refer a Friend!</h3>
         </div>
         <Button
           variant="ghost"
