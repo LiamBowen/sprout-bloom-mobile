@@ -54,7 +54,7 @@ export const RoundUps = ({
           </div>
         </div>
         
-        <div className="flex space-x-3 mt-4">
+        <div className="flex flex-col space-y-3 mt-4">
           <Button className="w-full btn-action btn-primary">
             Invest Round-ups <ArrowRight size={18} />
           </Button>
