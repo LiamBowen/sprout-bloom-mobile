@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import SavingPotDetails from "./savingPot/SavingPotDetails";
+import { AddMoneyDialog } from "./savingPot/AddMoneyDialog";
 
 interface SavingPotProps {
   pot: {
@@ -17,6 +18,7 @@ interface SavingPotProps {
 
 const SavingPot = ({ pot }: SavingPotProps) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isAddMoneyOpen, setIsAddMoneyOpen] = useState(false);
 
   return (
     <Card className="p-4">
@@ -49,7 +51,10 @@ const SavingPot = ({ pot }: SavingPotProps) => {
           View Details
         </Button>
         
-        <Button className="flex-1 btn-action btn-primary">
+        <Button 
+          className="flex-1 btn-action btn-primary"
+          onClick={() => setIsAddMoneyOpen(true)}
+        >
           <PlusCircle size={16} className="mr-1" /> Add Money
         </Button>
       </div>
@@ -58,6 +63,12 @@ const SavingPot = ({ pot }: SavingPotProps) => {
         isOpen={isDetailsOpen} 
         onOpenChange={setIsDetailsOpen} 
         pot={pot} 
+      />
+      
+      <AddMoneyDialog
+        isOpen={isAddMoneyOpen}
+        onOpenChange={setIsAddMoneyOpen}
+        potName={pot.name}
       />
     </Card>
   );
