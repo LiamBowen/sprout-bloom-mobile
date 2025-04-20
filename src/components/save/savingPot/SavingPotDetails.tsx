@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import ProviderDetails from "./ProviderDetails";
 import DepositHistory from "./DepositHistory";
 import GrowthProjection from "./GrowthProjection";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SavingPotDetailsProps {
   isOpen: boolean;
@@ -18,14 +19,16 @@ interface SavingPotDetailsProps {
 }
 
 const SavingPotDetails = ({ isOpen, onOpenChange, pot }: SavingPotDetailsProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className={isMobile ? "w-[95%] p-4 rounded-lg max-w-md mx-auto" : "max-w-md"}>
         <DialogHeader>
-          <DialogTitle>{pot.name}</DialogTitle>
+          <DialogTitle className="text-center md:text-left">{pot.name}</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 overflow-y-auto max-h-[70vh]">
           {/* Provider and APY section */}
           <ProviderDetails 
             potId={pot.id} 
@@ -46,7 +49,12 @@ const SavingPotDetails = ({ isOpen, onOpenChange, pot }: SavingPotDetailsProps) 
         </div>
         
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>Close</Button>
+          <Button
+            onClick={() => onOpenChange(false)}
+            className={isMobile ? "w-full" : ""}
+          >
+            Close
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { useBankConnections } from "@/hooks/use-bank-connections";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AddMoneyDialogProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ export const AddMoneyDialog = ({ isOpen, onOpenChange, potName }: AddMoneyDialog
   const [amount, setAmount] = useState("");
   const { bankConnections } = useBankConnections();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleAddMoney = () => {
     if (!selectedAccount || !amount) {
@@ -52,16 +54,16 @@ export const AddMoneyDialog = ({ isOpen, onOpenChange, potName }: AddMoneyDialog
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className={isMobile ? "w-[95%] p-4 rounded-lg max-w-md mx-auto" : "max-w-md"}>
         <DialogHeader>
-          <DialogTitle>Add Money to {potName}</DialogTitle>
+          <DialogTitle className="text-center md:text-left">Add Money to {potName}</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">From Account</label>
             <Select value={selectedAccount} onValueChange={setSelectedAccount}>
-              <SelectTrigger>
+              <SelectTrigger className="h-12 md:h-10">
                 <SelectValue placeholder="Select a bank account" />
               </SelectTrigger>
               <SelectContent>
@@ -82,7 +84,7 @@ export const AddMoneyDialog = ({ isOpen, onOpenChange, potName }: AddMoneyDialog
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="pl-7"
+                className="pl-7 h-12 md:h-10 text-base"
                 placeholder="0.00"
                 min="0"
                 step="0.01"
@@ -91,11 +93,18 @@ export const AddMoneyDialog = ({ isOpen, onOpenChange, potName }: AddMoneyDialog
           </div>
         </div>
         
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className={isMobile ? "flex-col space-y-2" : ""}>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+            className={isMobile ? "w-full" : ""}
+          >
             Cancel
           </Button>
-          <Button onClick={handleAddMoney}>
+          <Button 
+            onClick={handleAddMoney}
+            className={isMobile ? "w-full" : ""}
+          >
             Add Money
           </Button>
         </DialogFooter>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import SavingPotDetails from "./savingPot/SavingPotDetails";
 import { AddMoneyDialog } from "./savingPot/AddMoneyDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SavingPotProps {
   pot: {
@@ -19,11 +20,12 @@ interface SavingPotProps {
 const SavingPot = ({ pot }: SavingPotProps) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAddMoneyOpen, setIsAddMoneyOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <Card className="p-4">
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-bold">{pot.name}</h3>
+        <h3 className="font-bold text-base md:text-lg">{pot.name}</h3>
         <div className="inline-block bg-sprout-blue/10 px-2 py-0.5 rounded text-xs font-medium text-sprout-blue">
           {pot.apy}% APY
         </div>
@@ -31,7 +33,7 @@ const SavingPot = ({ pot }: SavingPotProps) => {
       
       <div className="flex justify-between mb-1 text-sm">
         <span>Progress</span>
-        <span>
+        <span className="whitespace-nowrap">
           £{pot.amount.toFixed(2)} / £{pot.target.toFixed(2)}
         </span>
       </div>
@@ -43,16 +45,16 @@ const SavingPot = ({ pot }: SavingPotProps) => {
         ></div>
       </div>
       
-      <div className="flex space-x-2">
+      <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'space-x-2'}`}>
         <Button 
-          className="flex-1 btn-action btn-outline" 
+          className={`${isMobile ? 'w-full' : 'flex-1'} btn-action btn-outline py-2 h-auto`} 
           onClick={() => setIsDetailsOpen(true)}
         >
           View Details
         </Button>
         
         <Button 
-          className="flex-1 btn-action btn-primary"
+          className={`${isMobile ? 'w-full' : 'flex-1'} btn-action btn-primary py-2 h-auto`}
           onClick={() => setIsAddMoneyOpen(true)}
         >
           <PlusCircle size={16} className="mr-1" /> Add Money
