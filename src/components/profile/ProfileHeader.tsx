@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -72,7 +71,6 @@ export const ProfileHeader = () => {
           />
         </label>
       </div>
-      <h1 className="text-2xl font-bold">Profile 👤</h1>
       <p className="text-gray-600">Manage your account</p>
     </div>
   );
