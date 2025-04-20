@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -55,9 +54,14 @@ export const RoundUps = ({
           </div>
         </div>
         
-        <Button className="w-full btn-action btn-primary">
-          Invest Round-ups <ArrowRight size={18} />
-        </Button>
+        <div className="flex space-x-3 mt-4">
+          <Button className="w-full btn-action btn-primary">
+            Invest Round-ups <ArrowRight size={18} />
+          </Button>
+          <Button variant="outline" className="w-full">
+            Withdraw Round-ups
+          </Button>
+        </div>
       </Card>
 
       <h3 className="font-semibold mt-4">Recent Transactions</h3>
@@ -81,4 +85,3 @@ export const RoundUps = ({
     </div>
   );
 };
-
