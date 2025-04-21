@@ -3,13 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
 import {
-  MessageSquare,
   Sprout,
   Bot,
   ChevronsUp,
   TrendingUp,
   User,
-  Hand,
   Wallet,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +21,9 @@ const Home = () => {
   
   if (!user) return null;
   
+  // Extract first name, handling different name formats
+  const firstName = user.name.split(' ')[0];
+  
   const totalPortfolioValue = portfolios.reduce((acc, portfolio) => acc + portfolio.value, 0);
   const totalSavingsValue = savingPots.reduce((acc, pot) => acc + pot.amount, 0);
   const totalValue = totalPortfolioValue + totalSavingsValue;
@@ -33,7 +34,7 @@ const Home = () => {
       
       <div className="animate-fade-in">
         <h1 className="text-2xl font-bold">
-          Hi, {user.name} <Hand className="inline w-5 h-5" />
+          Hi, {firstName}
         </h1>
         <p className="text-gray-600">Welcome back to your money garden</p>
       </div>
@@ -136,4 +137,3 @@ const Home = () => {
 };
 
 export default Home;
-
