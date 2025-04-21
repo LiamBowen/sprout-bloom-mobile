@@ -11,6 +11,8 @@ interface User {
   rewardsEarned: number;
   avatar_url?: string;
   mobile_number?: string;
+  portfolioThemes: string[];
+  riskLevel: string;
 }
 
 interface AuthContextType {
