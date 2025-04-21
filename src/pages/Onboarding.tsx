@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useToast } from "@/hooks/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -21,10 +23,12 @@ const Onboarding = () => {
   const [financialGoal, setFinancialGoal] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [dateError, setDateError] = useState("");
+  const [portfolioThemes, setPortfolioThemes] = useState<string[]>([]);
+  const [riskLevel, setRiskLevel] = useState("Medium");
   
-  const totalSteps = 4;
+  const totalSteps = 5;
   
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 1 && !name) {
       toast({
         title: "Name required",
@@ -35,7 +39,6 @@ const Onboarding = () => {
     }
     
     if (step === 2) {
-      // Validate date
       if (!day || !month || !year) {
         setDateError("Please enter a complete date of birth");
         return;
@@ -54,7 +57,6 @@ const Onboarding = () => {
     }
     
     if (step === totalSteps) {
-      // Complete onboarding
       if (!user) {
         toast({
           title: "Error",
@@ -65,13 +67,32 @@ const Onboarding = () => {
         return;
       }
       
-      // Update user with onboarding information
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          display_name: name,
+          portfolio_themes: portfolioThemes,
+          risk_level: riskLevel
+        })
+        .eq('id', user.id);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to save preferences. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const updatedUser = {
         ...user,
         name,
         dateOfBirth: `${day}/${month}/${year}`,
         referralCode: referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`,
-        financialGoal: financialGoal || "Not specified"
+        financialGoal: financialGoal || "Not specified",
+        portfolioThemes,
+        riskLevel
       };
       
       setUser(updatedUser);
@@ -222,6 +243,95 @@ const Onboarding = () => {
         );
         
       case 4:
+        return (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold mb-6">Investment Preferences 📈</h2>
+            <p className="mb-6 text-gray-600">What kind of investments interest you?</p>
+            
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="tech" 
+                  checked={portfolioThemes.includes('Tech')}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setPortfolioThemes([...portfolioThemes, 'Tech']);
+                    } else {
+                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Tech'));
+                    }
+                  }}
+                />
+                <label htmlFor="tech" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Tech Companies
+                </label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="sustainable" 
+                  checked={portfolioThemes.includes('Sustainable')}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setPortfolioThemes([...portfolioThemes, 'Sustainable']);
+                    } else {
+                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Sustainable'));
+                    }
+                  }}
+                />
+                <label htmlFor="sustainable" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Sustainable & Green Energy
+                </label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="crypto" 
+                  checked={portfolioThemes.includes('Crypto')}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setPortfolioThemes([...portfolioThemes, 'Crypto']);
+                    } else {
+                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Crypto'));
+                    }
+                  }}
+                />
+                <label htmlFor="crypto" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Cryptocurrency
+                </label>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-medium mb-2">Your Risk Appetite</h3>
+              <RadioGroup 
+                value={riskLevel} 
+                onValueChange={setRiskLevel}
+                className="flex flex-col space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Low" id="low-risk" />
+                  <label htmlFor="low-risk" className="text-sm">
+                    Low - Safe and steady
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Medium" id="medium-risk" />
+                  <label htmlFor="medium-risk" className="text-sm">
+                    Medium - Balanced approach
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="High" id="high-risk" />
+                  <label htmlFor="high-risk" className="text-sm">
+                    High - Maximum growth potential
+                  </label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        );
+        
+      case 5:
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-bold mb-6">

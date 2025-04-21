@@ -53,6 +53,8 @@ export type Database = {
           facial_recognition_enabled: boolean | null
           id: string
           mobile_number: string | null
+          portfolio_themes: string[] | null
+          risk_level: string | null
           updated_at: string
         }
         Insert: {
@@ -62,6 +64,8 @@ export type Database = {
           facial_recognition_enabled?: boolean | null
           id: string
           mobile_number?: string | null
+          portfolio_themes?: string[] | null
+          risk_level?: string | null
           updated_at?: string
         }
         Update: {
@@ -71,6 +75,8 @@ export type Database = {
           facial_recognition_enabled?: boolean | null
           id?: string
           mobile_number?: string | null
+          portfolio_themes?: string[] | null
+          risk_level?: string | null
           updated_at?: string
         }
         Relationships: []
