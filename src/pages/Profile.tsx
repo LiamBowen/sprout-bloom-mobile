@@ -5,7 +5,6 @@ import { UserInfoCard } from "@/components/profile/UserInfoCard";
 import { FriendsCard } from "@/components/profile/FriendsCard";
 import { ReferralCard } from "@/components/profile/ReferralCard";
 import { SettingsCard } from "@/components/profile/SettingsCard";
-import { GroupFundsCard } from "@/components/profile/GroupFundsCard";
 import { LearnCard } from "@/components/profile/LearnCard";
 
 const Profile = () => {
@@ -20,7 +19,6 @@ const Profile = () => {
       <FriendsCard />
       <ReferralCard />
       <SettingsCard />
-      <GroupFundsCard />
       <LearnCard />
     </div>
   );
