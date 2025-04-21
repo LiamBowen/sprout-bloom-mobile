@@ -41,7 +41,9 @@ const Auth = () => {
             dateOfBirth: "",
             referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
             friendsReferred: 0,
-            rewardsEarned: 0
+            rewardsEarned: 0,
+            portfolioThemes: [], // Add empty array for portfolioThemes
+            riskLevel: "Medium" // Default risk level
           });
           
           toast({
@@ -68,7 +70,7 @@ const Auth = () => {
             .eq('id', data.user.id)
             .single();
             
-          // Set user in auth context - fix: generate referralCode instead of accessing it from profile
+          // Set user in auth context with the newly required properties
           setUser({
             id: data.user.id,
             name: profileData?.display_name || email.split('@')[0],
@@ -79,7 +81,9 @@ const Auth = () => {
             friendsReferred: 0,
             rewardsEarned: 0,
             avatar_url: profileData?.avatar_url,
-            mobile_number: profileData?.mobile_number
+            mobile_number: profileData?.mobile_number,
+            portfolioThemes: profileData?.portfolio_themes || [], // Get themes from profile or use empty array
+            riskLevel: profileData?.risk_level || "Medium" // Get risk level from profile or use default
           });
           
           toast({
