@@ -133,45 +133,45 @@ const Invest = () => {
               }`}
               onClick={() => handlePortfolioSelect(portfolio)}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
-                    <span>{portfolio.emoji}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold">{portfolio.name}</h3>
-                    <div className="flex items-center">
-                      <p className="text-sm text-gray-600 mr-2">£{portfolio.value.toFixed(2)}</p>
-                      
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge 
-                              variant={
-                                portfolio.color === "bg-sprout-green" ? "green" :
-                                portfolio.color === "bg-sprout-blue" ? "blue" :
-                                portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
-                              }
-                              className="cursor-pointer"
-                            >
-                              <div className="flex items-center">
-                                {getPortfolioTypeInfo(portfolio.id).icon}
-                                {getPortfolioTypeInfo(portfolio.id).type}
-                              </div>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs font-medium">
-                              {getPortfolioTypeInfo(portfolio.id).risk}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
+                      <span>{portfolio.emoji}</span>
                     </div>
+                    <h3 className="font-bold">{portfolio.name}</h3>
+                  </div>
+                  <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
                   </div>
                 </div>
-                <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
+                
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">£{portfolio.value.toFixed(2)}</p>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge 
+                          variant={
+                            portfolio.color === "bg-sprout-green" ? "green" :
+                            portfolio.color === "bg-sprout-blue" ? "blue" :
+                            portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                          }
+                          className="cursor-pointer"
+                        >
+                          <div className="flex items-center">
+                            {getPortfolioTypeInfo(portfolio.id).icon}
+                            {getPortfolioTypeInfo(portfolio.id).type}
+                          </div>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs font-medium">
+                          {getPortfolioTypeInfo(portfolio.id).risk}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
               
