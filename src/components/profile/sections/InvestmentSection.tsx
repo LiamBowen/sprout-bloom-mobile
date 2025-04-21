@@ -1,8 +1,8 @@
 
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronRight, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ChevronRight, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useApp } from "@/contexts/AppContext";
@@ -48,10 +48,10 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
         title: "Success",
         description: "Investment preferences updated successfully"
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to update preferences",
+        description: error.message,
         variant: "destructive"
       });
     } finally {
@@ -72,72 +72,44 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
         </div>
         <ChevronRight size={18} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </CollapsibleTrigger>
-      <CollapsibleContent className="pt-2 pb-4 space-y-4">
+      <CollapsibleContent className="pt-2 pb-4">
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <h4 className="font-medium mb-2">Portfolio Themes</h4>
+              <h4 className="text-sm text-gray-600">Portfolio Themes</h4>
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="tech-edit" 
-                    checked={portfolioThemes.includes('Tech')}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setPortfolioThemes([...portfolioThemes, 'Tech']);
-                      } else {
-                        setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Tech'));
-                      }
-                    }}
-                  />
-                  <label htmlFor="tech-edit">Tech Companies</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="sustainable-edit" 
-                    checked={portfolioThemes.includes('Sustainable')}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setPortfolioThemes([...portfolioThemes, 'Sustainable']);
-                      } else {
-                        setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Sustainable'));
-                      }
-                    }}
-                  />
-                  <label htmlFor="sustainable-edit">Sustainable & Green Energy</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="crypto-edit" 
-                    checked={portfolioThemes.includes('Crypto')}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setPortfolioThemes([...portfolioThemes, 'Crypto']);
-                      } else {
-                        setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Crypto'));
-                      }
-                    }}
-                  />
-                  <label htmlFor="crypto-edit">Cryptocurrency</label>
-                </div>
+                {["Tech", "Sustainable", "Crypto"].map((theme) => (
+                  <div key={theme} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`theme-${theme}`}
+                      checked={portfolioThemes.includes(theme)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setPortfolioThemes([...portfolioThemes, theme]);
+                        } else {
+                          setPortfolioThemes(portfolioThemes.filter(t => t !== theme));
+                        }
+                      }}
+                    />
+                    <label htmlFor={`theme-${theme}`} className="text-sm">{theme}</label>
+                  </div>
+                ))}
               </div>
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-medium mb-2">Risk Level</h4>
+              <h4 className="text-sm text-gray-600">Risk Level</h4>
               <RadioGroup value={riskLevel} onValueChange={setRiskLevel} className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Low" id="low-risk-edit" />
-                  <label htmlFor="low-risk-edit">Low - Safe and steady</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Medium" id="medium-risk-edit" />
-                  <label htmlFor="medium-risk-edit">Medium - Balanced approach</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="High" id="high-risk-edit" />
-                  <label htmlFor="high-risk-edit">High - Maximum growth potential</label>
-                </div>
+                {[
+                  { value: "Low", label: "Low - Safe and steady" },
+                  { value: "Medium", label: "Medium - Balanced approach" },
+                  { value: "High", label: "High - Maximum growth potential" }
+                ].map(({ value, label }) => (
+                  <div key={value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={value} id={`risk-${value}`} />
+                    <label htmlFor={`risk-${value}`} className="text-sm">{label}</label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
 
@@ -159,20 +131,22 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="space-y-1">
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Portfolio Themes</span>
-              <p className="font-medium">
-                {portfolioThemes.length > 0 
-                  ? portfolioThemes.join(", ") 
-                  : "No themes selected"}
-              </p>
+              <span className="text-sm font-medium">
+                {portfolioThemes.length > 0 ? portfolioThemes.join(", ") : "None selected"}
+              </span>
             </div>
-            <div className="space-y-1">
+            <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Risk Level</span>
-              <p className="font-medium">{riskLevel}</p>
+              <span className="text-sm font-medium">{riskLevel}</span>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setIsEditing(true)}
+            >
               Edit Preferences
             </Button>
           </div>
