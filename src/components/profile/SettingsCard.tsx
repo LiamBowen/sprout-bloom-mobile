@@ -5,7 +5,7 @@ import { SettingsSections } from "./SettingsSections";
 
 export const SettingsCard = () => {
   return (
-    <Card className="p-4 sm:p-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+    <Card className="p-4 sm:p-6 animate-slide-up overflow-hidden" style={{ animationDelay: "0.2s" }}>
       <div className="flex items-center mb-4 sm:mb-6">
         <div className="w-8 h-8 bg-sprout-blue/20 rounded-full flex items-center justify-center mr-2">
           <Settings size={18} className="text-sprout-blue" />
