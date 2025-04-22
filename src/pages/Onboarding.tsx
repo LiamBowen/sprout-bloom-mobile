@@ -9,6 +9,25 @@ import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const INVESTMENT_THEMES = [
+  { id: "Tech", label: "Technology & Innovation" },
+  { id: "Sustainable", label: "Sustainable & Green Energy" },
+  { id: "Crypto", label: "Cryptocurrency" },
+  { id: "HealthTech", label: "Healthcare & Biotech" },
+  { id: "AI", label: "Artificial Intelligence" },
+  { id: "RealEstate", label: "Real Estate" },
+  { id: "Fintech", label: "Financial Technology" },
+  { id: "CleanEnergy", label: "Clean Energy" },
+  { id: "EVs", label: "Electric Vehicles" },
+  { id: "ConsumerTech", label: "Consumer Technology" },
+  { id: "CloudComputing", label: "Cloud Computing" },
+  { id: "Robotics", label: "Robotics & Automation" },
+  { id: "Gaming", label: "Gaming & eSports" },
+  { id: "Space", label: "Space Technology" },
+  { id: "Agriculture", label: "AgTech & FoodTech" },
+];
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -249,56 +268,28 @@ const Onboarding = () => {
             <p className="mb-6 text-gray-600">What kind of investments interest you?</p>
             
             <div className="space-y-4 mb-6">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="tech" 
-                  checked={portfolioThemes.includes('Tech')}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setPortfolioThemes([...portfolioThemes, 'Tech']);
-                    } else {
-                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Tech'));
-                    }
-                  }}
-                />
-                <label htmlFor="tech" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Tech Companies
-                </label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="sustainable" 
-                  checked={portfolioThemes.includes('Sustainable')}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setPortfolioThemes([...portfolioThemes, 'Sustainable']);
-                    } else {
-                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Sustainable'));
-                    }
-                  }}
-                />
-                <label htmlFor="sustainable" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Sustainable & Green Energy
-                </label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="crypto" 
-                  checked={portfolioThemes.includes('Crypto')}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setPortfolioThemes([...portfolioThemes, 'Crypto']);
-                    } else {
-                      setPortfolioThemes(portfolioThemes.filter(theme => theme !== 'Crypto'));
-                    }
-                  }}
-                />
-                <label htmlFor="crypto" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Cryptocurrency
-                </label>
-              </div>
+              <ScrollArea className="h-[280px] rounded-md border p-4">
+                <div className="space-y-4">
+                  {INVESTMENT_THEMES.map(({ id, label }) => (
+                    <div key={id} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={id} 
+                        checked={portfolioThemes.includes(id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setPortfolioThemes([...portfolioThemes, id]);
+                          } else {
+                            setPortfolioThemes(portfolioThemes.filter(theme => theme !== id));
+                          }
+                        }}
+                      />
+                      <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
             </div>
 
             <div className="space-y-4">
@@ -308,24 +299,18 @@ const Onboarding = () => {
                 onValueChange={setRiskLevel}
                 className="flex flex-col space-y-2"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Low" id="low-risk" />
-                  <label htmlFor="low-risk" className="text-sm">
-                    Low - Safe and steady
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Medium" id="medium-risk" />
-                  <label htmlFor="medium-risk" className="text-sm">
-                    Medium - Balanced approach
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="High" id="high-risk" />
-                  <label htmlFor="high-risk" className="text-sm">
-                    High - Maximum growth potential
-                  </label>
-                </div>
+                {[
+                  { value: "Low", label: "Low - Safe and steady" },
+                  { value: "Medium", label: "Medium - Balanced approach" },
+                  { value: "High", label: "High - Maximum growth potential" }
+                ].map(({ value, label }) => (
+                  <div key={value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={value} id={`risk-${value}`} />
+                    <label htmlFor={`risk-${value}`} className="text-sm">
+                      {label}
+                    </label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
           </div>
