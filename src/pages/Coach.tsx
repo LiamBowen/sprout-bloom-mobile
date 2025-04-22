@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
-import { Send, Bot } from "lucide-react";
+import { Send, Bot, User } from "lucide-react";
 
 // Example questions for the coach
 const sampleQuestions = [
@@ -37,7 +37,10 @@ const Coach = () => {
     setMessage("");
     setIsTyping(true);
     
-    // Coach will reply automatically via the context useEffect
+    // The typing animation will be hidden when the coach responds
+    // in the useApp hook's addCoachMessage function
+    
+    // We'll still use this timeout to ensure the animation shows for at least 1.5 seconds
     setTimeout(() => {
       setIsTyping(false);
     }, 1500);
@@ -80,6 +83,11 @@ const Coach = () => {
               >
                 <p>{msg.text}</p>
               </div>
+              {msg.sender === "user" && (
+                <div className="w-8 h-8 rounded-full bg-sprout-lavender/20 flex items-center justify-center ml-2 flex-shrink-0">
+                  <User size={18} />
+                </div>
+              )}
             </div>
           ))}
           
