@@ -32,8 +32,8 @@ const Home = () => {
     <div className="space-y-6">
       <Confetti />
       
-      <div className="animate-fade-in text-center">
-        <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
+      <div className="animate-fade-in">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
           Hi, {firstName} <span className="wave">👋</span>
         </h1>
         <p className="text-gray-600">Welcome back to your money garden</p>

@@ -13,7 +13,7 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
     <Collapsible 
       open={isOpen} 
       onOpenChange={onOpenChange}
-      className="mb-0" // Keep mb-0 to remove extra bottom margin
+      className="mb-4"
     >
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
         <div className="flex items-center">
@@ -22,7 +22,7 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
         </div>
         <ChevronRight size={18} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </CollapsibleTrigger>
-      <CollapsibleContent className="pt-2 pb-0 space-y-3"> {/* Keeping pb-0 */}
+      <CollapsibleContent className="pt-2 pb-4 space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Terms & Conditions</span>
           <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
@@ -31,7 +31,7 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
           <span className="text-sm text-gray-600">Privacy Policy</span>
           <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
         </div>
-        <div className="flex justify-between items-center mb-0"> {/* Added mb-0 to last item */}
+        <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Close Account</span>
           <Button variant="outline" size="sm" className="h-7 text-xs text-destructive border-destructive hover:bg-destructive/10">Close</Button>
         </div>
