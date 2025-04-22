@@ -27,7 +27,7 @@ export const SettingsSections = () => {
 
   return (
     <ScrollArea className="h-[calc(100vh-16rem)] pr-4">
-      <div className="space-y-4">
+      <div className="space-y-4 pb-0"> {/* Added pb-0 to remove bottom padding */}
         <PersonalInfoSection 
           isOpen={openSettings.personal}
           onOpenChange={() => toggleSettingsSection('personal')}
