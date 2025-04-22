@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowLeft, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,6 @@ const FindFriends = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Example data - in a real app, this would be filtered based on the search query
   const suggestedFriends = [
     { id: 1, name: "Emma Johnson", portfolioType: "Tech Growth", mutualFriends: 3 },
     { id: 2, name: "Liam Smith", portfolioType: "Green Energy", mutualFriends: 1 },
@@ -28,12 +26,10 @@ const FindFriends = () => {
   
   const handleSearch = (e) => {
     e.preventDefault();
-    // In a real app, this would trigger a search API call
     console.log("Searching for:", searchQuery);
   };
   
   const handleAddFriend = (friendId) => {
-    // In a real app, this would call an API to add a friend
     toast({
       title: "Friend request sent!",
       description: "They'll receive a notification to accept your request.",
@@ -42,7 +38,6 @@ const FindFriends = () => {
   
   const handleInvite = (e) => {
     e.preventDefault();
-    // In a real app, this would send an invitation
     toast({
       title: "Invitation sent!",
       description: "We've sent an invitation to join Sprout.",
@@ -58,7 +53,7 @@ const FindFriends = () => {
         <h1 className="text-2xl font-bold">Find Friends</h1>
       </div>
       
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <form onSubmit={handleSearch} className="flex gap-2 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -72,23 +67,25 @@ const FindFriends = () => {
           <Button type="submit">Search</Button>
         </form>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h2 className="font-semibold text-lg">Suggested Friends</h2>
           
           {suggestedFriends.map((friend) => (
-            <div key={friend.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
-              <div className="flex items-center">
-                <Avatar className="h-10 w-10 mr-3">
+            <div key={friend.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                   <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <div>
-                  <p className="font-medium">{friend.name}</p>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="lavender" className="text-xs">
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base truncate">{friend.name}</p>
+                  <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                    <Badge variant="lavender" className="text-[10px] sm:text-xs">
                       {friend.portfolioType}
                     </Badge>
                     {friend.mutualFriends > 0 && (
-                      <span className="text-xs text-gray-500">{friend.mutualFriends} mutual friend{friend.mutualFriends > 1 ? 's' : ''}</span>
+                      <span className="text-[10px] sm:text-xs text-gray-500">
+                        {friend.mutualFriends} mutual{friend.mutualFriends > 1 ? 's' : ''}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -97,17 +94,17 @@ const FindFriends = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleAddFriend(friend.id)}
-                className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
+                className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10 ml-2"
               >
-                <UserPlus size={16} className="mr-1" /> 
-                Follow
+                <UserPlus size={16} className="sm:mr-1" />
+                <span className="hidden sm:inline">Follow</span>
               </Button>
             </div>
           ))}
         </div>
       </Card>
       
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <h2 className="font-semibold text-lg mb-4">Invite Friends via Email</h2>
         <form onSubmit={handleInvite} className="space-y-4">
           <Input 

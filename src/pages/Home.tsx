@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
@@ -34,8 +33,8 @@ const Home = () => {
       <Confetti />
       
       <div className="animate-fade-in">
-        <h1 className="text-2xl font-bold">
-          Hi, {firstName}
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          Hi, {firstName} <span className="wave">👋</span>
         </h1>
         <p className="text-gray-600">Welcome back to your money garden</p>
       </div>
