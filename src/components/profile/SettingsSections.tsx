@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { PersonalInfoSection } from "./sections/PersonalInfoSection";
 import { BankSection } from "./sections/BankSection";
 import { InvestmentSection } from "./sections/InvestmentSection";
@@ -25,36 +26,38 @@ export const SettingsSections = () => {
   };
 
   return (
-    <>
-      <PersonalInfoSection 
-        isOpen={openSettings.personal}
-        onOpenChange={() => toggleSettingsSection('personal')}
-      />
-      
-      <BankSection 
-        isOpen={openSettings.bank}
-        onOpenChange={() => toggleSettingsSection('bank')}
-      />
-      
-      <InvestmentSection 
-        isOpen={openSettings.investment}
-        onOpenChange={() => toggleSettingsSection('investment')}
-      />
-      
-      <NotificationsSection 
-        isOpen={openSettings.notifications}
-        onOpenChange={() => toggleSettingsSection('notifications')}
-      />
-      
-      <SecuritySection 
-        isOpen={openSettings.security}
-        onOpenChange={() => toggleSettingsSection('security')}
-      />
-      
-      <LegalSection 
-        isOpen={openSettings.legal}
-        onOpenChange={() => toggleSettingsSection('legal')}
-      />
-    </>
+    <ScrollArea className="h-[calc(100vh-16rem)] pr-4">
+      <div className="space-y-4">
+        <PersonalInfoSection 
+          isOpen={openSettings.personal}
+          onOpenChange={() => toggleSettingsSection('personal')}
+        />
+        
+        <BankSection 
+          isOpen={openSettings.bank}
+          onOpenChange={() => toggleSettingsSection('bank')}
+        />
+        
+        <InvestmentSection 
+          isOpen={openSettings.investment}
+          onOpenChange={() => toggleSettingsSection('investment')}
+        />
+        
+        <NotificationsSection 
+          isOpen={openSettings.notifications}
+          onOpenChange={() => toggleSettingsSection('notifications')}
+        />
+        
+        <SecuritySection 
+          isOpen={openSettings.security}
+          onOpenChange={() => toggleSettingsSection('security')}
+        />
+        
+        <LegalSection 
+          isOpen={openSettings.legal}
+          onOpenChange={() => toggleSettingsSection('legal')}
+        />
+      </div>
+    </ScrollArea>
   );
 };

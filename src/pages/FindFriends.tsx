@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Search, UserPlus } from "lucide-react";
+import { ArrowLeft, Search, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -72,18 +72,19 @@ const FindFriends = () => {
           
           {suggestedFriends.map((friend) => (
             <div key={friend.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+              <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
                   <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
                   <p className="font-medium text-sm sm:text-base truncate">{friend.name}</p>
-                  <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-                    <Badge variant="lavender" className="text-[10px] sm:text-xs">
+                  <div className="flex flex-col space-y-1">
+                    <Badge variant="lavender" className="text-[10px] sm:text-xs w-fit">
                       {friend.portfolioType}
                     </Badge>
                     {friend.mutualFriends > 0 && (
-                      <span className="text-[10px] sm:text-xs text-gray-500">
+                      <span className="text-[10px] sm:text-xs text-gray-500 flex items-center gap-1">
+                        <Users size={12} className="text-gray-400" />
                         {friend.mutualFriends} mutual{friend.mutualFriends > 1 ? 's' : ''}
                       </span>
                     )}
@@ -94,7 +95,7 @@ const FindFriends = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleAddFriend(friend.id)}
-                className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10 ml-2"
+                className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10 ml-2 flex-shrink-0"
               >
                 <UserPlus size={16} className="sm:mr-1" />
                 <span className="hidden sm:inline">Follow</span>
