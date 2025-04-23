@@ -9,9 +9,10 @@ interface GroupFundsProps {
   groupFunds: GroupFund[];
   onCreateGroupFund: (name: string, emoji: string, target: string) => void;
   onSendMessage: (fundId: string, message: string) => void;
+  onDeleteFund: (fundId: string) => void;
 }
 
-const GroupFunds = ({ groupFunds, onCreateGroupFund, onSendMessage }: GroupFundsProps) => {
+const GroupFunds = ({ groupFunds, onCreateGroupFund, onSendMessage, onDeleteFund }: GroupFundsProps) => {
   const [selectedFund, setSelectedFund] = useState<string | null>(null);
   
   const fund = selectedFund ? groupFunds.find(f => f.id === selectedFund) : null;
@@ -23,6 +24,10 @@ const GroupFunds = ({ groupFunds, onCreateGroupFund, onSendMessage }: GroupFunds
           fund={fund} 
           onBack={() => setSelectedFund(null)} 
           onSendMessage={onSendMessage}
+          onDeleteFund={(fundId) => {
+            onDeleteFund(fundId);
+            setSelectedFund(null);
+          }}
         />
       ) : (
         <>

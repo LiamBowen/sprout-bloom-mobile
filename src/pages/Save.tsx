@@ -12,8 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "react-router-dom";
 
 const Save = () => {
-  const { savingPots, addSavingPot } = useApp();
-  const { groupFunds, addGroupFund, updateGroupFund } = useSavings();
+  const { savingPots, addSavingPot, removeSavingPot } = useApp();
+  const { groupFunds, addGroupFund, updateGroupFund, removeGroupFund } = useSavings();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(() => {
     // Check if we're coming from another page with a specific tab request
@@ -43,6 +43,23 @@ const Save = () => {
         provider: provider,
       });
       setShowNewPotForm(false);
+      
+      toast({
+        title: "Savings Pot Created",
+        description: `${name} has been created successfully!`,
+      });
+    }
+  };
+  
+  const handleDeletePot = (potId: string) => {
+    const pot = savingPots.find(p => p.id === potId);
+    if (pot) {
+      removeSavingPot(potId);
+      
+      toast({
+        title: "Savings Pot Closed",
+        description: `${pot.name} has been closed successfully.`,
+      });
     }
   };
   
@@ -94,6 +111,18 @@ const Save = () => {
       updateGroupFund(fundId, updatedFund);
     }
   };
+  
+  const handleDeleteGroupFund = (fundId: string) => {
+    const fund = groupFunds.find(f => f.id === fundId);
+    if (fund) {
+      removeGroupFund(fundId);
+      
+      toast({
+        title: "Group Fund Closed",
+        description: `${fund.name} has been closed successfully.`,
+      });
+    }
+  };
 
   return (
     <div className="space-y-4 md:space-y-6 pb-4">
@@ -114,7 +143,8 @@ const Save = () => {
           ) : (
             <HighYieldPots 
               savingPots={savingPots} 
-              onAddSavingPot={handleCreateNewPot} 
+              onAddSavingPot={handleCreateNewPot}
+              onDeletePot={handleDeletePot}
             />
           )}
         </TabsContent>
@@ -124,6 +154,7 @@ const Save = () => {
             groupFunds={groupFunds}
             onCreateGroupFund={handleCreateGroupFund}
             onSendMessage={handleSendMessage}
+            onDeleteFund={handleDeleteGroupFund}
           />
         </TabsContent>
       </Tabs>

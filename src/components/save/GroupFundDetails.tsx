@@ -3,19 +3,23 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Share2, PlusCircle, User, Send } from "lucide-react";
+import { Share2, PlusCircle, User, Send, Trash } from "lucide-react";
 import { GroupFund } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { useSavings } from "@/contexts/SavingsContext";
 
 interface GroupFundDetailsProps {
   fund: GroupFund;
   onBack: () => void;
   onSendMessage: (fundId: string, message: string) => void;
+  onDeleteFund?: (fundId: string) => void;
 }
 
-const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps) => {
+const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFundDetailsProps) => {
   const [newMessage, setNewMessage] = useState("");
+  const [amount, setAmount] = useState("");
   const { toast } = useToast();
+  const { updateGroupFund } = useSavings();
 
   const handleSendMessage = () => {
     if (!newMessage) return;
@@ -32,11 +36,52 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
   };
   
   const handleAddMoney = () => {
-    // Mock adding money functionality
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      toast({
+        title: "Invalid amount",
+        description: "Please enter a valid amount to add.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Update fund with new amount
+    const newAmount = fund.currentAmount + Number(amount);
+    const updatedFund = {
+      ...fund,
+      currentAmount: newAmount,
+      members: fund.members.map(member => {
+        if (member.id === "user1") { // Current user is Alex
+          const newContributed = member.contributed + Number(amount);
+          const newPercentage = Math.round((newContributed / fund.target) * 100);
+          return {
+            ...member,
+            contributed: newContributed,
+            contributionPercentage: newPercentage,
+          };
+        }
+        return member;
+      })
+    };
+    
+    updateGroupFund(fund.id, updatedFund);
+    
     toast({
       title: "Money added",
-      description: "Your contribution has been added to the fund.",
+      description: `£${Number(amount).toFixed(2)} has been added to the fund.`,
     });
+    
+    setAmount("");
+  };
+  
+  const handleDeleteFund = () => {
+    if (onDeleteFund) {
+      onDeleteFund(fund.id);
+      toast({
+        title: "Fund closed",
+        description: "The group fund has been successfully closed.",
+      });
+    }
   };
 
   return (
@@ -88,7 +133,7 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
           <Button className="flex-1 btn-action btn-outline" onClick={handleInvite}>
             <Share2 size={16} className="mr-1" /> Invite
           </Button>
-          <Button className="flex-1 btn-action btn-tertiary" onClick={handleAddMoney}>
+          <Button className="flex-1 btn-action btn-tertiary" onClick={() => document.getElementById('add-money-section')?.scrollIntoView({behavior: 'smooth'})}>
             <PlusCircle size={16} className="mr-1" /> Add Money
           </Button>
         </div>
@@ -112,6 +157,30 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
             </div>
           </div>
         ))}
+      </Card>
+      
+      <h3 id="add-money-section" className="font-semibold mt-6 mb-3">Add Money</h3>
+      <Card className="p-4 mb-6">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="amount" className="block text-sm font-medium mb-1">Amount (£)</label>
+            <div className="flex space-x-2">
+              <Input 
+                id="amount" 
+                type="number" 
+                placeholder="0.00" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)}
+                min="0"
+                step="0.01"
+                className="flex-1"
+              />
+              <Button onClick={handleAddMoney} disabled={!amount || isNaN(Number(amount)) || Number(amount) <= 0}>
+                Add
+              </Button>
+            </div>
+          </div>
+        </div>
       </Card>
       
       <h3 className="font-semibold mt-6 mb-3">Group Chat</h3>
@@ -168,6 +237,16 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
           </Button>
         </div>
       </Card>
+      
+      <div className="mt-6">
+        <Button 
+          variant="destructive" 
+          className="w-full"
+          onClick={handleDeleteFund}
+        >
+          <Trash size={16} className="mr-1" /> Close Fund
+        </Button>
+      </div>
     </>
   );
 };
@@ -192,4 +271,3 @@ const renderEmoji = (emoji: string) => {
 };
 
 export default GroupFundDetails;
-

@@ -8,9 +8,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface HighYieldPotsProps {
   savingPots: SavingPotType[];
   onAddSavingPot: (name: string, target: string, provider: string, apy: number) => void;
+  onDeletePot?: (potId: string) => void;
 }
 
-const HighYieldPots = ({ savingPots, onAddSavingPot }: HighYieldPotsProps) => {
+const HighYieldPots = ({ savingPots, onAddSavingPot, onDeletePot }: HighYieldPotsProps) => {
   const isMobile = useIsMobile();
   
   return (
@@ -29,7 +30,7 @@ const HighYieldPots = ({ savingPots, onAddSavingPot }: HighYieldPotsProps) => {
       </Card>
       
       {savingPots.map((pot) => (
-        <SavingPot key={pot.id} pot={pot} />
+        <SavingPot key={pot.id} pot={pot} onDeletePot={onDeletePot} />
       ))}
       
       <NewSavingPotDialog onCreatePot={onAddSavingPot} />

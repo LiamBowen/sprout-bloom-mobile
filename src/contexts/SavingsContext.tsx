@@ -9,6 +9,7 @@ interface SavingsContextType {
   groupFunds: GroupFund[];
   addGroupFund: (fund: GroupFund) => void;
   updateGroupFund: (id: string, updates: Partial<GroupFund>) => void;
+  removeGroupFund: (id: string) => void;
 }
 
 const mockSavingPots: SavingPot[] = [
@@ -103,6 +104,10 @@ export const SavingsProvider = ({ children }: { children: ReactNode }) => {
       )
     );
   };
+  
+  const removeGroupFund = (id: string) => {
+    setGroupFunds((prev) => prev.filter((fund) => fund.id !== id));
+  };
 
   return (
     <SavingsContext.Provider
@@ -113,6 +118,7 @@ export const SavingsProvider = ({ children }: { children: ReactNode }) => {
         groupFunds,
         addGroupFund,
         updateGroupFund,
+        removeGroupFund,
       }}
     >
       {children}

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Trash } from "lucide-react";
 import SavingPotDetails from "./savingPot/SavingPotDetails";
 import { AddMoneyDialog } from "./savingPot/AddMoneyDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -15,12 +15,19 @@ interface SavingPotProps {
     target: number;
     apy: number;
   };
+  onDeletePot?: (potId: string) => void;
 }
 
-const SavingPot = ({ pot }: SavingPotProps) => {
+const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAddMoneyOpen, setIsAddMoneyOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  const handleDeletePot = () => {
+    if (onDeletePot) {
+      onDeletePot(pot.id);
+    }
+  };
 
   return (
     <Card className="p-4">
@@ -58,6 +65,16 @@ const SavingPot = ({ pot }: SavingPotProps) => {
           onClick={() => setIsAddMoneyOpen(true)}
         >
           <PlusCircle size={16} className="mr-1" /> Add Money
+        </Button>
+      </div>
+      
+      <div className="mt-3">
+        <Button 
+          variant="destructive" 
+          className="w-full py-2 h-auto"
+          onClick={handleDeletePot}
+        >
+          <Trash size={16} className="mr-1" /> Close Pot
         </Button>
       </div>
       
