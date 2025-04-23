@@ -1,5 +1,6 @@
 
 import { ReactNode } from "react";
+import { AppProvider as MainAppProvider } from "./AppContext";
 import { AuthProvider } from "./AuthContext";
 import { PortfolioProvider } from "./PortfolioContext";
 import { SavingsProvider } from "./SavingsContext";
@@ -7,11 +8,13 @@ import { SavingsProvider } from "./SavingsContext";
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthProvider>
-      <PortfolioProvider>
-        <SavingsProvider>
-          {children}
-        </SavingsProvider>
-      </PortfolioProvider>
+      <MainAppProvider>
+        <PortfolioProvider>
+          <SavingsProvider>
+            {children}
+          </SavingsProvider>
+        </PortfolioProvider>
+      </MainAppProvider>
     </AuthProvider>
   );
 };
