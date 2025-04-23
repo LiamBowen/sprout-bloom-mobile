@@ -1,19 +1,35 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Palmtree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface NewGroupFundDialogProps {
   onCreateGroupFund: (name: string, emoji: string, target: string) => void;
 }
 
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  emoji: z.string().min(1, "Icon is required"),
+  target: z.string().min(1, "Target amount is required")
+});
+
 const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupEmoji, setNewGroupEmoji] = useState("Palmtree");
-  const [newGroupTarget, setNewGroupTarget] = useState("");
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      emoji: "Palmtree",
+      target: "",
+    }
+  });
   
   const availableIcons = [
     { name: "Palmtree", icon: Palmtree },
@@ -26,14 +42,10 @@ const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
     { name: "Tent", icon: Tent },
   ];
 
-  const handleCreateNewGroup = () => {
-    if (newGroupName && newGroupTarget) {
-      onCreateGroupFund(newGroupName, newGroupEmoji, newGroupTarget);
-      setNewGroupName("");
-      setNewGroupEmoji("Palmtree");
-      setNewGroupTarget("");
-      setIsOpen(false);
-    }
+  const handleCreateNewGroup = (values: z.infer<typeof formSchema>) => {
+    onCreateGroupFund(values.name, values.emoji, values.target);
+    form.reset();
+    setIsOpen(false);
   };
 
   return (
@@ -46,54 +58,75 @@ const NewGroupFundDialog = ({ onCreateGroupFund }: NewGroupFundDialogProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Group Fund</DialogTitle>
+          <DialogDescription>Create a fund to save together with friends</DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Fund Name</label>
-            <Input
-              placeholder="e.g., Summer Trip 2025"
-              value={newGroupName}
-              onChange={(e) => setNewGroupName(e.target.value)}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleCreateNewGroup)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fund Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Summer Trip 2025" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Choose an Icon</label>
-            <div className="flex flex-wrap gap-2">
-              {availableIcons.map(({ name, icon: Icon }) => (
-                <button
-                  key={name}
-                  onClick={() => setNewGroupEmoji(name)}
-                  className={`w-10 h-10 flex items-center justify-center rounded ${
-                    newGroupEmoji === name
-                      ? "bg-sprout-lavender/20 border border-sprout-lavender"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  <Icon size={20} />
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Target Amount (£)</label>
-            <Input
-              type="number"
-              placeholder="1000"
-              value={newGroupTarget}
-              onChange={(e) => setNewGroupTarget(e.target.value)}
+            
+            <FormField
+              control={form.control}
+              name="emoji"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose an Icon</FormLabel>
+                  <div className="flex flex-wrap gap-2">
+                    {availableIcons.map(({ name, icon: Icon }) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => form.setValue("emoji", name)}
+                        className={`w-10 h-10 flex items-center justify-center rounded ${
+                          field.value === name
+                            ? "bg-sprout-lavender/20 border border-sprout-lavender"
+                            : "bg-gray-100"
+                        }`}
+                      >
+                        <Icon size={20} />
+                      </button>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleCreateNewGroup}>
-            Create Fund
-          </Button>
-        </DialogFooter>
+            
+            <FormField
+              control={form.control}
+              name="target"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Target Amount (£)</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="1000" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <DialogFooter className="pt-4">
+              <Button variant="outline" type="button" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                Create Fund
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

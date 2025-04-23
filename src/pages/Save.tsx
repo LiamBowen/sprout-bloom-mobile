@@ -5,14 +5,18 @@ import { useApp } from "@/contexts/AppContext";
 import HighYieldPots from "@/components/save/HighYieldPots";
 import GroupFunds from "@/components/save/GroupFunds";
 import NewSavingPotForm from "@/components/save/NewSavingPotForm";
-import { SavingPot, GroupFund } from "@/components/save/types"; 
+import { SavingPot, GroupFund, GroupMember, Message } from "@/components/save/types"; 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSavings } from "@/contexts/SavingsContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Save = () => {
-  const { savingPots, addSavingPot, groupFunds } = useApp();
+  const { savingPots, addSavingPot } = useApp();
+  const { groupFunds, addGroupFund, updateGroupFund } = useSavings();
   const [activeTab, setActiveTab] = useState("pots");
   const [showNewPotForm, setShowNewPotForm] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   
   const handleCreateNewPot = (name: string, target: string, provider: string, apy: number) => {
     if (name && target) {
@@ -29,8 +33,31 @@ const Save = () => {
   };
   
   const handleCreateGroupFund = (name: string, emoji: string, target: string) => {
-    // This would typically call a function in the AppContext
-    console.log("Creating group fund:", { name, emoji, target });
+    if (!name || !emoji || !target) return;
+    
+    const newFund: GroupFund = {
+      id: `fund_${Date.now()}`,
+      name,
+      emoji,
+      currentAmount: 0,
+      target: parseFloat(target),
+      members: [
+        {
+          id: "user1",
+          name: "Alex",
+          contributed: 0,
+          contributionPercentage: 0,
+        }
+      ],
+      messages: [],
+    };
+    
+    addGroupFund(newFund);
+    
+    toast({
+      title: "Group Fund Created",
+      description: `${name} has been created successfully!`,
+    });
   };
   
   const handleSendMessage = (fundId: string, message: string) => {
@@ -38,12 +65,19 @@ const Save = () => {
     
     const fund = groupFunds.find(f => f.id === fundId);
     if (fund) {
-      fund.messages.push({
+      const newMessage: Message = {
         id: `msg_${Date.now()}`,
         sender: "Alex",
         text: message,
         timestamp: new Date(),
-      });
+      };
+      
+      const updatedFund = {
+        ...fund,
+        messages: [...fund.messages, newMessage]
+      };
+      
+      updateGroupFund(fundId, updatedFund);
     }
   };
 

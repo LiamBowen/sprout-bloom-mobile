@@ -2,8 +2,17 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useSavings } from "@/contexts/SavingsContext";
 
 export const GroupFundsCard = () => {
+  const { groupFunds } = useSavings();
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate("/app/save", { state: { activeTab: "groups" } });
+  };
+  
   return (
     <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.4s" }}>
       <div className="flex items-center justify-between mb-4">
@@ -16,14 +25,16 @@ export const GroupFundsCard = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {}}
+          onClick={handleClick}
         >
           <ChevronRight size={18} />
         </Button>
       </div>
       
       <p className="text-sm text-gray-600">
-        You're part of 1 group fund. Track progress and chat with members.
+        {groupFunds.length === 0
+          ? "You're not part of any group funds yet. Create one to get started!"
+          : `You're part of ${groupFunds.length} group fund${groupFunds.length > 1 ? 's' : ''}. Track progress and chat with members.`}
       </p>
     </Card>
   );
