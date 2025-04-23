@@ -1,7 +1,7 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { SavingPot } from "@/components/save/types";
-import { GroupFund } from "@/components/save/types";
+import { GroupFund, GroupMember, Message } from "@/components/save/types";
 
 // Define the User type
 interface User {
@@ -95,24 +95,33 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       id: "house-deposit",
       name: "House Deposit",
       emoji: "🏠",
+      currentAmount: 1200,
       target: 5000,
-      amount: 1200,
-      members: ["You", "Alex", "Sarah"],
+      members: [
+        { id: "user1", name: "You", contributed: 500, contributionPercentage: 41.67 },
+        { id: "user2", name: "Alex", contributed: 400, contributionPercentage: 33.33 },
+        { id: "user3", name: "Sarah", contributed: 300, contributionPercentage: 25 }
+      ],
       messages: [
-        { sender: "Alex", message: "Just added £50!", timestamp: new Date().toISOString() },
-        { sender: "You", message: "Great! Almost halfway there.", timestamp: new Date().toISOString() }
+        { id: "msg1", sender: "Alex", text: "Just added £50!", timestamp: new Date() },
+        { id: "msg2", sender: "You", text: "Great! Almost halfway there.", timestamp: new Date() }
       ]
     },
     {
       id: "holiday-2025",
       name: "Holiday 2025",
       emoji: "✈️",
+      currentAmount: 650,
       target: 2000,
-      amount: 650,
-      members: ["You", "Jamie", "Chris", "Pat"],
+      members: [
+        { id: "user1", name: "You", contributed: 200, contributionPercentage: 30.77 },
+        { id: "user2", name: "Jamie", contributed: 150, contributionPercentage: 23.08 },
+        { id: "user3", name: "Chris", contributed: 150, contributionPercentage: 23.08 },
+        { id: "user4", name: "Pat", contributed: 150, contributionPercentage: 23.08 }
+      ],
       messages: [
-        { sender: "Jamie", message: "Where should we go?", timestamp: new Date().toISOString() },
-        { sender: "Chris", message: "I vote for Greece!", timestamp: new Date().toISOString() }
+        { id: "msg1", sender: "Jamie", text: "Where should we go?", timestamp: new Date() },
+        { id: "msg2", sender: "Chris", text: "I vote for Greece!", timestamp: new Date() }
       ]
     }
   ]);
