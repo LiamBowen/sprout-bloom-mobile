@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { Users, MessageSquare, Palmtree, Home, Car, Laptop, Plane, GraduationCap, Gift, Tent } from "lucide-react";
+import { Users, MessageSquare } from "lucide-react";
 import { GroupFund } from "./types";
 
 interface GroupFundsListProps {
@@ -8,21 +8,24 @@ interface GroupFundsListProps {
   onSelectFund: (fundId: string) => void;
 }
 
-const iconMap = {
-  Palmtree,
-  Home,
-  Car,
-  Laptop,
-  Plane,
-  GraduationCap,
-  Gift,
-  Tent,
-};
-
 const GroupFundsList = ({ groupFunds, onSelectFund }: GroupFundsListProps) => {
-  const getIconComponent = (iconName: string) => {
-    const Icon = iconMap[iconName as keyof typeof iconMap] || Palmtree;
-    return <Icon size={20} className="mr-2" />;
+  // Helper function to render emoji based on icon name
+  const renderEmoji = (emoji: string) => {
+    if (emoji.startsWith('🏝️')) return '🏝️';
+    
+    // For icon names from Lucide icons, use an appropriate emoji equivalent
+    const emojiMap: Record<string, string> = {
+      'Palmtree': '🌴',
+      'Home': '🏠',
+      'Car': '🚗',
+      'Laptop': '💻',
+      'Plane': '✈️',
+      'GraduationCap': '🎓',
+      'Gift': '🎁',
+      'Tent': '⛺',
+    };
+    
+    return emojiMap[emoji] || '🏦'; // Default emoji if not found
   };
 
   return (
@@ -36,7 +39,7 @@ const GroupFundsList = ({ groupFunds, onSelectFund }: GroupFundsListProps) => {
           <div className="flex justify-between items-start">
             <div>
               <div className="flex items-center">
-                {getIconComponent(fund.emoji)}
+                <span className="mr-2 text-xl">{renderEmoji(fund.emoji)}</span>
                 <h3 className="font-bold">{fund.name}</h3>
               </div>
               <div className="flex items-center text-sm text-gray-600 mt-1">

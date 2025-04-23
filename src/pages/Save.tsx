@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from "@/contexts/AppContext";
 import HighYieldPots from "@/components/save/HighYieldPots";
@@ -9,14 +9,28 @@ import { SavingPot, GroupFund, GroupMember, Message } from "@/components/save/ty
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSavings } from "@/contexts/SavingsContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "react-router-dom";
 
 const Save = () => {
   const { savingPots, addSavingPot } = useApp();
   const { groupFunds, addGroupFund, updateGroupFund } = useSavings();
-  const [activeTab, setActiveTab] = useState("pots");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(() => {
+    // Check if we're coming from another page with a specific tab request
+    return location.state?.activeTab || "pots";
+  });
   const [showNewPotForm, setShowNewPotForm] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  
+  // Reset state when navigation occurs
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      // Clear the state to prevent it from persisting on refresh
+      window.history.replaceState({}, "");
+    }
+  }, [location]);
   
   const handleCreateNewPot = (name: string, target: string, provider: string, apy: number) => {
     if (name && target) {

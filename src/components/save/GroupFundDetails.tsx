@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Share2, PlusCircle, User, Send } from "lucide-react";
 import { GroupFund } from "./types";
+import { useToast } from "@/hooks/use-toast";
 
 interface GroupFundDetailsProps {
   fund: GroupFund;
@@ -14,11 +15,28 @@ interface GroupFundDetailsProps {
 
 const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps) => {
   const [newMessage, setNewMessage] = useState("");
+  const { toast } = useToast();
 
   const handleSendMessage = () => {
     if (!newMessage) return;
     onSendMessage(fund.id, newMessage);
     setNewMessage("");
+  };
+  
+  const handleInvite = () => {
+    // Mock invitation functionality
+    toast({
+      title: "Invitation sent",
+      description: "Your friend will receive an invitation to join this fund.",
+    });
+  };
+  
+  const handleAddMoney = () => {
+    // Mock adding money functionality
+    toast({
+      title: "Money added",
+      description: "Your contribution has been added to the fund.",
+    });
   };
 
   return (
@@ -44,7 +62,7 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
           </svg>
         </Button>
         <h2 className="text-xl font-bold">
-          {fund.emoji}{" "}
+          {renderEmoji(fund.emoji)}{" "}
           {fund.name}
         </h2>
       </div>
@@ -67,10 +85,10 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
         </div>
         
         <div className="flex space-x-2">
-          <Button className="flex-1 btn-action btn-outline">
+          <Button className="flex-1 btn-action btn-outline" onClick={handleInvite}>
             <Share2 size={16} className="mr-1" /> Invite
           </Button>
-          <Button className="flex-1 btn-action btn-tertiary">
+          <Button className="flex-1 btn-action btn-tertiary" onClick={handleAddMoney}>
             <PlusCircle size={16} className="mr-1" /> Add Money
           </Button>
         </div>
@@ -154,4 +172,24 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage }: GroupFundDetailsProps
   );
 };
 
+// Helper function to render emoji based on icon name
+const renderEmoji = (emoji: string) => {
+  if (emoji.startsWith('🏝️')) return '🏝️';
+  
+  // For icon names from Lucide icons, use an appropriate emoji equivalent
+  const emojiMap: Record<string, string> = {
+    'Palmtree': '🌴',
+    'Home': '🏠',
+    'Car': '🚗',
+    'Laptop': '💻',
+    'Plane': '✈️',
+    'GraduationCap': '🎓',
+    'Gift': '🎁',
+    'Tent': '⛺',
+  };
+  
+  return emojiMap[emoji] || '🏦'; // Default emoji if not found
+};
+
 export default GroupFundDetails;
+
