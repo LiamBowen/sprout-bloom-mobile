@@ -78,15 +78,17 @@ const FindFriends = () => {
                 </Avatar>
                 <div className="min-w-0">
                   <p className="font-medium text-sm sm:text-base truncate">{friend.name}</p>
-                  <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-                    <Badge variant="lavender" className="text-[10px] sm:text-xs">
+                  <div className="flex flex-col items-start gap-0.5">
+                    <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
                       {friend.portfolioType}
                     </Badge>
-                    {friend.mutualFriends > 0 && (
-                      <span className="text-[10px] sm:text-xs text-gray-500">
-                        {friend.mutualFriends} mutual{friend.mutualFriends > 1 ? 's' : ''}
-                      </span>
-                    )}
+                    <span className="text-[10px] sm:text-xs text-gray-500">
+                      {friend.mutualFriends === 0
+                        ? "No mutual friends"
+                        : friend.mutualFriends === 1
+                          ? "1 mutual friend"
+                          : `${friend.mutualFriends} mutual friends`}
+                    </span>
                   </div>
                 </div>
               </div>
