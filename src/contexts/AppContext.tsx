@@ -129,10 +129,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // User state
   const [user, setUser] = useState<User | null>({
     id: "user-1",
-    name: "Alex Johnson",
-    email: "alex@example.com",
+    name: "User",  // Changed from "Alex Johnson" to a generic "User"
+    email: "user@example.com", // Updated email
     dateOfBirth: "15/06/1995",
-    referralCode: "ALEXJ2025",
+    referralCode: "USER2025",
     friendsReferred: 3,
     rewardsEarned: 15,
     portfolioThemes: ["Tech", "Sustainable", "AI"],

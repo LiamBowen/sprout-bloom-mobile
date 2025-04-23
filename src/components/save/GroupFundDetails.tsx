@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Share2, PlusCircle, User, Send, Trash } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { GroupFund } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useSavings } from "@/contexts/SavingsContext";
@@ -18,6 +19,8 @@ interface GroupFundDetailsProps {
 const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFundDetailsProps) => {
   const [newMessage, setNewMessage] = useState("");
   const [amount, setAmount] = useState("");
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
   const { toast } = useToast();
   const { updateGroupFund } = useSavings();
 
@@ -28,11 +31,27 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
   };
   
   const handleInvite = () => {
+    setShowInviteDialog(true);
+  };
+  
+  const sendInvitation = () => {
+    if (!inviteEmail || !inviteEmail.includes('@')) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Mock invitation functionality
     toast({
       title: "Invitation sent",
-      description: "Your friend will receive an invitation to join this fund.",
+      description: `Your friend (${inviteEmail}) will receive an invitation to join this fund.`,
     });
+    
+    setShowInviteDialog(false);
+    setInviteEmail("");
   };
   
   const handleAddMoney = () => {
@@ -53,7 +72,7 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
       members: fund.members.map(member => {
         if (member.id === "user1") { // Current user is Alex
           const newContributed = member.contributed + Number(amount);
-          const newPercentage = Math.round((newContributed / fund.target) * 100);
+          const newPercentage = Math.round((newContributed / newAmount) * 100);
           return {
             ...member,
             contributed: newContributed,
@@ -139,6 +158,34 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
         </div>
       </Card>
       
+      {/* Invite Friend Dialog */}
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite a friend</DialogTitle>
+            <DialogDescription>
+              Send an invitation to join this group fund. They'll receive an email with instructions.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-3">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium">Email address</label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="friend@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInviteDialog(false)}>Cancel</Button>
+            <Button onClick={sendInvitation}>Send Invitation</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <h3 className="font-semibold mt-6 mb-3">Group Members</h3>
       <Card className="p-4">
         {fund.members.map((member) => (
@@ -190,27 +237,29 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
             <div
               key={msg.id}
               className={`flex ${
-                msg.sender === "Alex" ? "justify-end" : ""
+                msg.sender === "You" ? "justify-end" : ""
               }`}
             >
               <div
                 className={`rounded-2xl px-3 py-2 max-w-[80%] ${
-                  msg.sender === "Alex"
+                  msg.sender === "You"
                     ? "bg-sprout-lavender/20 text-black"
                     : "bg-gray-100"
                 }`}
               >
-                {msg.sender !== "Alex" && (
+                {msg.sender !== "You" && (
                   <div className="text-xs font-medium mb-1">
                     {msg.sender}
                   </div>
                 )}
                 <p>{msg.text}</p>
                 <div className="text-xs text-gray-500 mt-1">
-                  {msg.timestamp.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {typeof msg.timestamp === 'object' && msg.timestamp instanceof Date
+                    ? msg.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : 'Now'}
                 </div>
               </div>
             </div>
@@ -267,7 +316,7 @@ const renderEmoji = (emoji: string) => {
     'Tent': '⛺',
   };
   
-  return emojiMap[emoji] || '🏦'; // Default emoji if not found
+  return emojiMap[emoji] || emoji || '🏦'; // Return the emoji directly if not a name, or default
 };
 
 export default GroupFundDetails;

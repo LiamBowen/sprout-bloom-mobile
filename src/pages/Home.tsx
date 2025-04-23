@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sprout,
   Bot,
@@ -16,13 +17,14 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const Home = () => {
-  const { user, portfolios, savingPots } = useApp();
+  const { portfolios, savingPots } = useApp();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
   if (!user) return null;
   
   // Extract first name, handling different name formats
-  const firstName = user.name.split(' ')[0];
+  const firstName = user.name?.split(' ')[0] || "User";
   
   const totalPortfolioValue = portfolios.reduce((acc, portfolio) => acc + portfolio.value, 0);
   const totalSavingsValue = savingPots.reduce((acc, pot) => acc + pot.amount, 0);
