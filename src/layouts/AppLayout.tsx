@@ -12,31 +12,26 @@ const AppLayout = () => {
       path: "/app",
       icon: <Home size={22} />,
       label: "Home",
-      emoji: "🏡",
     },
     {
       path: "/app/invest",
       icon: <TrendingUp size={22} />,
       label: "Invest",
-      emoji: "📈",
     },
     {
       path: "/app/save",
       icon: <PiggyBank size={22} />,
       label: "Save",
-      emoji: "💰",
     },
     {
       path: "/app/coach",
       icon: <MessagesSquare size={22} />,
       label: "Coach",
-      emoji: "🤖",
     },
     {
       path: "/app/profile",
       icon: <User size={22} />,
       label: "Profile",
-      emoji: "👤",
     },
   ];
 
