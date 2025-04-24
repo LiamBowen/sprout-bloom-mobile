@@ -14,6 +14,8 @@ interface PortfolioContextType {
   portfolios: Portfolio[];
   selectedPortfolio: Portfolio | null;
   setSelectedPortfolio: (portfolio: Portfolio | null) => void;
+  showConfetti: boolean;
+  triggerConfetti: () => void;
 }
 
 const mockPortfolios: Portfolio[] = [
@@ -56,6 +58,12 @@ const PortfolioContext = createContext<PortfolioContextType | undefined>(undefin
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   const [portfolios] = useState(mockPortfolios);
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(mockPortfolios[0]);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const triggerConfetti = () => {
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 3000);
+  };
 
   return (
     <PortfolioContext.Provider
@@ -63,6 +71,8 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         portfolios,
         selectedPortfolio,
         setSelectedPortfolio,
+        showConfetti,
+        triggerConfetti,
       }}
     >
       {children}

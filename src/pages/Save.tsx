@@ -1,18 +1,17 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useApp } from "@/contexts/AppContext";
+import { useSavings } from "@/contexts/SavingsContext";
+import { usePortfolio } from "@/contexts/PortfolioContext";
 import HighYieldPots from "@/components/save/HighYieldPots";
 import GroupFunds from "@/components/save/GroupFunds";
 import NewSavingPotForm from "@/components/save/NewSavingPotForm";
 import { SavingPot, GroupFund, GroupMember, Message } from "@/components/save/types"; 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useSavings } from "@/contexts/SavingsContext";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "react-router-dom";
 
 const Save = () => {
-  const { savingPots, addSavingPot, removeSavingPot } = useApp();
+  const { savingPots, addSavingPot, updateSavingPot, removeSavingPot } = useSavings();
   const { groupFunds, addGroupFund, updateGroupFund, removeGroupFund } = useSavings();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(() => {

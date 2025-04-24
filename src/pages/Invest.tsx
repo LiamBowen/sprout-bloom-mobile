@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useApp } from "@/contexts/AppContext";
+import { usePortfolio } from "@/contexts/PortfolioContext";
 import { InvestmentCategory } from "@/components/invest/InvestmentCategory";
 import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
 import { RoundUps } from "@/components/invest/RoundUps";
@@ -54,7 +53,7 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
 };
 
 const Invest = () => {
-  const { portfolios, selectedPortfolio, setSelectedPortfolio } = useApp();
+  const { portfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolio();
   const [activeTab, setActiveTab] = useState("portfolios");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRiskLevel, setSelectedRiskLevel] = useState<string | null>(null);

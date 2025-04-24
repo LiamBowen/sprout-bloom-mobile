@@ -1,8 +1,7 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useApp } from "@/contexts/AppContext";
+import { useCoach } from "@/contexts/CoachContext";
 import { Send, Bot, User } from "lucide-react";
 
 // Example questions for the coach
@@ -15,7 +14,7 @@ const sampleQuestions = [
 ];
 
 const Coach = () => {
-  const { coachMessages, addCoachMessage } = useApp();
+  const { coachMessages, addCoachMessage } = useCoach();
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
@@ -28,7 +27,6 @@ const Coach = () => {
   const handleSendMessage = () => {
     if (!message.trim()) return;
     
-    // Add user message
     addCoachMessage({
       sender: "user",
       text: message,
@@ -37,10 +35,6 @@ const Coach = () => {
     setMessage("");
     setIsTyping(true);
     
-    // The typing animation will be hidden when the coach responds
-    // in the useApp hook's addCoachMessage function
-    
-    // We'll still use this timeout to ensure the animation shows for at least 1.5 seconds
     setTimeout(() => {
       setIsTyping(false);
     }, 1500);
