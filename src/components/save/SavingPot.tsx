@@ -1,8 +1,17 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import SavingPotDetails from "./savingPot/SavingPotDetails";
 import { AddMoneyDialog } from "./savingPot/AddMoneyDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -21,6 +30,7 @@ interface SavingPotProps {
 const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAddMoneyOpen, setIsAddMoneyOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const isMobile = useIsMobile();
 
   const handleDeletePot = () => {
@@ -72,7 +82,7 @@ const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
         <Button 
           variant="destructive" 
           className="w-full py-2 h-auto"
-          onClick={handleDeletePot}
+          onClick={() => setShowDeleteConfirm(true)}
         >
           <Trash size={16} className="mr-1" /> Close Pot
         </Button>
@@ -89,6 +99,23 @@ const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
         onOpenChange={setIsAddMoneyOpen}
         potName={pot.name}
       />
+      
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the "{pot.name}" savings pot. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePot}>
+              Delete Pot
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
