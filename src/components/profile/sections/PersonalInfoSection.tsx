@@ -5,6 +5,7 @@ import { ChevronRight, User, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,7 +18,8 @@ export const PersonalInfoSection = ({
   isOpen,
   onOpenChange
 }: PersonalInfoSectionProps) => {
-  const { user, setUser } = useApp();
+  const { setUser: setAppUser } = useApp();
+  const { user, setUser: setAuthUser } = useAuth();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
@@ -48,12 +50,15 @@ export const PersonalInfoSection = ({
 
       if (profileError) throw profileError;
 
-      setUser({
+      const updatedUser = {
         ...user,
         name,
         email,
         mobile_number: mobile
-      });
+      };
+      
+      setAuthUser(updatedUser);
+      setAppUser(updatedUser); // Also update in AppContext for compatibility
 
       setIsEditing(false);
       toast({

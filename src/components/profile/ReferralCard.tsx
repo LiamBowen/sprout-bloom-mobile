@@ -1,17 +1,25 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const ReferralCard = () => {
-  const { user, triggerConfetti } = useApp();
+  const { triggerConfetti } = useApp();
+  const { user } = useAuth();
   const [copied, setCopied] = useState(false);
+  
+  // Default values if user data is incomplete
+  const referralCode = user?.referralCode || "USER2025";
+  const friendsReferred = user?.friendsReferred || 0;
+  const rewardsEarned = user?.rewardsEarned || 0;
 
   const handleCopyReferralCode = () => {
-    if (!user) return;
+    if (!referralCode) return;
     
-    navigator.clipboard.writeText(user.referralCode);
+    navigator.clipboard.writeText(referralCode);
     setCopied(true);
     
     setTimeout(() => {
@@ -46,7 +54,7 @@ export const ReferralCard = () => {
       
       <div className="mb-4">
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <span className="font-mono font-medium">{user.referralCode}</span>
+          <span className="font-mono font-medium">{referralCode}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -60,8 +68,8 @@ export const ReferralCard = () => {
       
       <div className="flex justify-between items-center p-3 bg-sprout-green/10 rounded-lg">
         <div>
-          <p className="font-medium">{user.friendsReferred} friends referred</p>
-          <p className="text-sm text-gray-600">£{user.rewardsEarned} earned</p>
+          <p className="font-medium">{friendsReferred} friends referred</p>
+          <p className="text-sm text-gray-600">£{rewardsEarned} earned</p>
         </div>
         <Button
           className="bg-sprout-green text-black/80 hover:bg-sprout-green/90"

@@ -6,9 +6,11 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const UserInfoCard = () => {
-  const { user, setUser } = useApp();
+  const { setUser: setAppUser } = useApp();
+  const { user, setUser: setAuthUser } = useAuth();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [updatedName, setUpdatedName] = useState(user?.name || "");
   const [updatedDay, setUpdatedDay] = useState(user?.dateOfBirth?.split('/')[0] || "");
@@ -18,11 +20,14 @@ export const UserInfoCard = () => {
   const handleSaveProfile = () => {
     if (!user) return;
     
-    setUser({
+    const updatedUser = {
       ...user,
       name: updatedName,
       dateOfBirth: `${updatedDay}/${updatedMonth}/${updatedYear}`,
-    });
+    };
+    
+    setAuthUser(updatedUser);
+    setAppUser(updatedUser); // Also update in AppContext for compatibility
     
     setIsEditingProfile(false);
   };

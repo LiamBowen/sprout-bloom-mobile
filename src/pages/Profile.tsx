@@ -1,5 +1,5 @@
 
-import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { UserInfoCard } from "@/components/profile/UserInfoCard";
 import { FriendsCard } from "@/components/profile/FriendsCard";
@@ -8,7 +8,7 @@ import { SettingsCard } from "@/components/profile/SettingsCard";
 import { LearnCard } from "@/components/profile/LearnCard";
 
 const Profile = () => {
-  const { user } = useApp();
+  const { user } = useAuth();
   
   if (!user) return null;
 
@@ -25,4 +25,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
