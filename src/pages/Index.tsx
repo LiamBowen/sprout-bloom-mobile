@@ -1,13 +1,14 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Users, Bot } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { isOnboarded } = useApp();
+  const { isOnboarded } = useAuth();
   
   useEffect(() => {
     if (isOnboarded) {

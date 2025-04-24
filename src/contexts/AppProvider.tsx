@@ -4,6 +4,7 @@ import { AuthProvider } from "./AuthContext";
 import { PortfolioProvider } from "./PortfolioContext";
 import { SavingsProvider } from "./SavingsContext";
 import { CoachProvider } from "./CoachContext";
+import { AppProvider as LegacyAppProvider } from "./AppContext";
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   return (
@@ -11,7 +12,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       <PortfolioProvider>
         <SavingsProvider>
           <CoachProvider>
-            {children}
+            <LegacyAppProvider>
+              {children}
+            </LegacyAppProvider>
           </CoachProvider>
         </SavingsProvider>
       </PortfolioProvider>
@@ -23,3 +26,4 @@ export { useAuth } from "./AuthContext";
 export { usePortfolio } from "./PortfolioContext";
 export { useSavings } from "./SavingsContext";
 export { useCoach } from "./CoachContext";
+export { useApp } from "./AppContext";

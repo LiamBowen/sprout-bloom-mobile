@@ -6,6 +6,7 @@ interface SavingsContextType {
   savingPots: SavingPot[];
   addSavingPot: (pot: SavingPot) => void;
   updateSavingPot: (id: string, updates: Partial<SavingPot>) => void;
+  removeSavingPot: (id: string) => void; // Added this method
   groupFunds: GroupFund[];
   addGroupFund: (fund: GroupFund) => void;
   updateGroupFund: (id: string, updates: Partial<GroupFund>) => void;
@@ -93,6 +94,11 @@ export const SavingsProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  // Add the removeSavingPot method
+  const removeSavingPot = (id: string) => {
+    setSavingPots((prev) => prev.filter((pot) => pot.id !== id));
+  };
+
   const addGroupFund = (fund: GroupFund) => {
     setGroupFunds((prev) => [...prev, fund]);
   };
@@ -115,6 +121,7 @@ export const SavingsProvider = ({ children }: { children: ReactNode }) => {
         savingPots,
         addSavingPot,
         updateSavingPot,
+        removeSavingPot, // Add to the provider value
         groupFunds,
         addGroupFund,
         updateGroupFund,

@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePortfolio } from "@/contexts/PortfolioContext";
@@ -21,6 +22,7 @@ const Home = () => {
   const { portfolios } = usePortfolio();
   const { savingPots } = useSavings();
   const { user } = useAuth();
+  const navigate = useNavigate(); // Added this missing hook
   
   if (!user) return null;
   
