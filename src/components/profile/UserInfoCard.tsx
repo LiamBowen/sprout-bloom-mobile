@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Edit, User } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -38,10 +37,7 @@ export const UserInfoCard = () => {
     <Card className="p-6 animate-fade-in">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-sprout-green/20 rounded-full flex items-center justify-center mr-3">
-            <User size={24} />
-          </div>
-          <div>
+          <div className="space-y-1">
             <h2 className="font-bold text-lg">{user.name}</h2>
             <p className="text-sm text-gray-600">Member since 2025</p>
           </div>
