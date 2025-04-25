@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { fetchLivePrice } from "@/integrations/finnhub/client";
-import { useSupabaseClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CoachMessage {
   sender: "user" | "coach";
@@ -22,8 +22,6 @@ export const CoachProvider = ({ children }: { children: ReactNode }) => {
       text: "Hi there! I'm your financial coach. Ask me about investments, savings, or real-time market data to help you make informed decisions."
     }
   ]);
-  
-  const supabase = useSupabaseClient();
 
   const addCoachMessage = async (message: CoachMessage) => {
     setCoachMessages(prevMessages => [...prevMessages, message]);
