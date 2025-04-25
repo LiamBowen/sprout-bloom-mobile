@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Edit } from "lucide-react";
@@ -35,23 +36,25 @@ export const UserInfoCard = () => {
 
   return (
     <Card className="p-6 animate-fade-in">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center">
-          <div className="space-y-1">
-            <h2 className="font-bold text-lg">{user.name}</h2>
-            <p className="text-sm text-gray-600">Member since 2025</p>
+      <div className="flex flex-col items-center text-center mb-4">
+        <h2 className="font-bold text-lg mb-1">{user.name}</h2>
+        <p className="text-sm text-gray-600 mb-4">Member since 2025</p>
+        
+        <div className="w-full max-w-xs">
+          <div className="space-y-2">
+            <p className="text-sm text-gray-500">Date of Birth</p>
+            <p>{user.dateOfBirth}</p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setIsEditingProfile(true)}>
+        
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setIsEditingProfile(true)}
+          className="absolute top-4 right-4"
+        >
           <Edit size={18} />
         </Button>
-      </div>
-      
-      <div className="space-y-3">
-        <div>
-          <p className="text-sm text-gray-500">Date of Birth</p>
-          <p>{user.dateOfBirth}</p>
-        </div>
       </div>
 
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
