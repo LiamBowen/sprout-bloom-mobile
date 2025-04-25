@@ -1,13 +1,17 @@
 
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronRight, User, Mail, Phone } from "lucide-react";
+import { ChevronRight, User, Mail, Phone, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface PersonalInfoSectionProps {
   isOpen: boolean;
@@ -25,13 +29,15 @@ export const PersonalInfoSection = ({
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [mobile, setMobile] = useState(user?.mobile_number || '');
+  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(
+    user?.dateOfBirth ? new Date(user.dateOfBirth.split('/').reverse().join('-')) : undefined
+  );
   const [loading, setLoading] = useState(false);
 
   const handleUpdateProfile = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      // Update auth email if changed
       if (email !== user.email) {
         const { error: emailError } = await supabase.auth.updateUser({ 
           email: email 
@@ -39,7 +45,10 @@ export const PersonalInfoSection = ({
         if (emailError) throw emailError;
       }
 
-      // Update profile data
+      const formattedDOB = dateOfBirth 
+        ? `${dateOfBirth.getDate().toString().padStart(2, '0')}/${(dateOfBirth.getMonth() + 1).toString().padStart(2, '0')}/${dateOfBirth.getFullYear()}`
+        : user.dateOfBirth;
+
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -54,11 +63,12 @@ export const PersonalInfoSection = ({
         ...user,
         name,
         email,
-        mobile_number: mobile
+        mobile_number: mobile,
+        dateOfBirth: formattedDOB
       };
       
       setAuthUser(updatedUser);
-      setAppUser(updatedUser); // Also update in AppContext for compatibility
+      setAppUser(updatedUser);
 
       setIsEditing(false);
       toast({
@@ -117,6 +127,35 @@ export const PersonalInfoSection = ({
                 placeholder="Enter your mobile number"
               />
             </div>
+            <div>
+              <label className="text-sm text-gray-600 block mb-1">Date of Birth</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[240px] pl-3 text-left font-normal",
+                      !dateOfBirth && "text-muted-foreground"
+                    )}
+                  >
+                    {dateOfBirth ? format(dateOfBirth, "PPP") : <span>Pick a date</span>}
+                    <Calendar className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={dateOfBirth}
+                    onSelect={setDateOfBirth}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
             <div className="flex space-x-2">
               <Button onClick={handleUpdateProfile} disabled={loading}>
                 {loading ? "Saving..." : "Save Changes"}
@@ -148,6 +187,13 @@ export const PersonalInfoSection = ({
                 <span className="text-sm text-gray-600">Mobile</span>
               </div>
               <span className="text-sm font-medium">{user?.mobile_number || 'Not set'}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <Calendar size={16} className="mr-2 text-gray-600" />
+                <span className="text-sm text-gray-600">Date of Birth</span>
+              </div>
+              <span className="text-sm font-medium">{user?.dateOfBirth || 'Not set'}</span>
             </div>
             <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="mt-2">
               Edit Profile
