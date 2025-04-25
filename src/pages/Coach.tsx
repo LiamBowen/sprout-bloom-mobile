@@ -1,16 +1,17 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCoach } from "@/contexts/CoachContext";
 import { Send, Bot, User } from "lucide-react";
 
-// Example questions for the coach
+// Example questions for the coach focused on investments and real-time data
 const sampleQuestions = [
-  "What's a stock?",
-  "Is £10 enough to start?",
-  "How do I choose a portfolio?",
-  "What's the difference between saving and investing?",
-  "How do round-ups work?",
+  "What's the price of Bitcoin?",
+  "Tell me about ETFs",
+  "How should I diversify my portfolio?",
+  "What's a good savings rate?",
+  "Price of S&P 500 ETFs?",
 ];
 
 const Coach = () => {
@@ -35,9 +36,11 @@ const Coach = () => {
     setMessage("");
     setIsTyping(true);
     
+    // The typing state will be managed by the actual response timing in CoachContext
+    // but we'll set it here initially to ensure UI feels responsive
     setTimeout(() => {
       setIsTyping(false);
-    }, 1500);
+    }, 10000); // Fallback timeout in case something goes wrong
   };
   
   const handleSampleQuestion = (question: string) => {
@@ -49,43 +52,52 @@ const Coach = () => {
     }, 100);
   };
 
+  // Determine if a message is a typing indicator
+  const isTypingIndicator = (text: string) => text === "...";
+
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
         <h1 className="text-2xl font-bold">Coach 🤖</h1>
-        <p className="text-gray-600">Your friendly financial assistant</p>
+        <p className="text-gray-600">Your financial and investment assistant</p>
       </div>
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-[calc(100vh-230px)] flex flex-col animate-slide-up">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {coachMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-            >
-              {msg.sender === "coach" && (
-                <div className="w-8 h-8 rounded-full bg-sprout-blue/20 flex items-center justify-center mr-2 flex-shrink-0">
-                  <Bot size={18} />
-                </div>
-              )}
+          {coachMessages.map((msg, index) => {
+            // Skip rendering typing indicators - we render them differently
+            if (msg.sender === "coach" && isTypingIndicator(msg.text)) return null;
+            
+            return (
               <div
-                className={`rounded-2xl px-4 py-2 max-w-[80%] ${
-                  msg.sender === "user"
-                    ? "bg-sprout-blue text-white"
-                    : "bg-gray-100"
-                }`}
+                key={index}
+                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
               >
-                <p>{msg.text}</p>
-              </div>
-              {msg.sender === "user" && (
-                <div className="w-8 h-8 rounded-full bg-sprout-lavender/20 flex items-center justify-center ml-2 flex-shrink-0">
-                  <User size={18} />
+                {msg.sender === "coach" && (
+                  <div className="w-8 h-8 rounded-full bg-sprout-blue/20 flex items-center justify-center mr-2 flex-shrink-0">
+                    <Bot size={18} />
+                  </div>
+                )}
+                <div
+                  className={`rounded-2xl px-4 py-2 max-w-[80%] ${
+                    msg.sender === "user"
+                      ? "bg-sprout-blue text-white"
+                      : "bg-gray-100"
+                  }`}
+                >
+                  <p>{msg.text}</p>
                 </div>
-              )}
-            </div>
-          ))}
+                {msg.sender === "user" && (
+                  <div className="w-8 h-8 rounded-full bg-sprout-lavender/20 flex items-center justify-center ml-2 flex-shrink-0">
+                    <User size={18} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
           
-          {isTyping && (
+          {/* Show typing indicator if the last message has "..." or if isTyping is true */}
+          {(isTyping || coachMessages.some(msg => msg.sender === "coach" && isTypingIndicator(msg.text))) && (
             <div className="flex justify-start">
               <div className="w-8 h-8 rounded-full bg-sprout-blue/20 flex items-center justify-center mr-2 flex-shrink-0">
                 <Bot size={18} />
@@ -123,7 +135,7 @@ const Coach = () => {
         <div className="p-4 border-t border-gray-100">
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Ask Coach anything..."
+              placeholder="Ask Coach about investments, savings, or market data..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={(e) => {
