@@ -24,7 +24,7 @@ export const FriendsCard = () => {
   const navigate = useNavigate();
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [friends, setFriends] = useState<Friend[]>([
     {
       id: 1,
