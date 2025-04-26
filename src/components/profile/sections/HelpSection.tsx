@@ -26,12 +26,14 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
   };
 
   const handleCommunityClick = () => {
+    console.log('Community button clicked'); // Added for debugging
     logAnalyticsEvent('help_community_clicked', { source: 'settings' });
     toast({
       title: "Coming Soon!",
       description: "Sprout Community Incoming!",
       duration: 3000,
     });
+    console.log('Toast should have been triggered'); // Added for debugging
   };
 
   return (
