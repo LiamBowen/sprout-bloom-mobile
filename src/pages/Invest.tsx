@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Shield } from "lucide-react";
+import { TrendingUp, Shield, Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolio } from "@/contexts/PortfolioContext";
 import { InvestmentCategory } from "@/components/invest/InvestmentCategory";
@@ -10,6 +10,7 @@ import { InvestmentGoal } from "@/components/invest/InvestmentGoal";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { investmentCategories, mockTransactions, portfolioTypes } from "@/data/investment-data";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const generatePerformanceData = (growth: number, timeRange: string) => {
   const data = [];
@@ -53,7 +54,7 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
 };
 
 const Invest = () => {
-  const { portfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolio();
+  const { portfolios, selectedPortfolio, setSelectedPortfolio, investments } = usePortfolio();
   const [activeTab, setActiveTab] = useState("portfolios");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRiskLevel, setSelectedRiskLevel] = useState<string | null>(null);
@@ -84,6 +85,10 @@ const Invest = () => {
     return portfolioTypes[portfolioId] || defaultPortfolioType;
   };
 
+  const portfolioInvestments = investments.filter(
+    investment => selectedPortfolio && investment.portfolioId === selectedPortfolio.id
+  );
+
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
@@ -102,8 +107,9 @@ const Invest = () => {
       </Card>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
-        <TabsList className="grid grid-cols-2 mb-4">
+        <TabsList className="grid grid-cols-3 mb-4">
           <TabsTrigger value="portfolios">Portfolios</TabsTrigger>
+          <TabsTrigger value="investments">Investments</TabsTrigger>
           <TabsTrigger value="round-ups">Round-ups</TabsTrigger>
         </TabsList>
         
@@ -193,6 +199,45 @@ const Invest = () => {
               )}
             </Card>
           ))}
+        </TabsContent>
+        
+        <TabsContent value="investments" className="space-y-4">
+          <h3 className="font-semibold">Your Investments</h3>
+          {portfolioInvestments.length > 0 ? (
+            <ScrollArea className="h-[400px]">
+              <div className="space-y-3">
+                {portfolioInvestments.map((investment) => (
+                  <Card key={investment.id} className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">{investment.asset}</h4>
+                          <Badge variant="outline">{investment.riskLevel}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {investment.category}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold">£{investment.amount.toFixed(2)}</div>
+                        <div className="flex items-center text-xs text-gray-500 mt-1">
+                          <Clock size={12} className="mr-1" />
+                          {new Date(investment.date).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <Card className="p-6 text-center bg-gray-50">
+              <p className="text-gray-600">You haven't made any investments in this portfolio yet.</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Go to the Portfolios tab to start investing.
+              </p>
+            </Card>
+          )}
         </TabsContent>
         
         <TabsContent value="round-ups" className="space-y-4">

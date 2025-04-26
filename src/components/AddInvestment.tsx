@@ -1,16 +1,15 @@
+
 import React from 'react';
 import { 
   Card, 
   CardContent, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ChevronRight, Leaf } from "lucide-react";
-import { useApp } from "@/contexts/AppContext";
+import { usePortfolio } from "@/contexts/PortfolioContext";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Form,
@@ -25,6 +24,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { LivePrice } from './LivePrice';
+import { DialogClose } from '@/components/ui/dialog';
 
 // Define form validation schema
 const investmentFormSchema = z.object({
@@ -48,7 +48,7 @@ const AddInvestment = ({
   recommendedAssets: string[];
 }) => {
   const { toast } = useToast();
-  const { selectedPortfolio } = useApp();
+  const { selectedPortfolio, addInvestment } = usePortfolio();
   
   // Form definition
   const form = useForm<InvestmentFormValues>({
@@ -60,14 +60,37 @@ const AddInvestment = ({
   });
   
   const handleAddInvestment = (data: InvestmentFormValues) => {
+    if (!selectedPortfolio) {
+      toast({
+        title: "Error",
+        description: "Please select a portfolio first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const amount = parseFloat(data.amount);
+    
+    // Add the investment to the portfolio
+    addInvestment({
+      portfolioId: selectedPortfolio.id,
+      asset: data.asset,
+      amount: amount,
+      category: category,
+      riskLevel: riskLevel,
+    });
+    
     toast({
       title: "Investment added",
-      description: `£${data.amount} added to ${data.asset} in your ${selectedPortfolio?.name || 'portfolio'}`,
+      description: `£${amount.toFixed(2)} added to ${data.asset} in your ${selectedPortfolio.name} portfolio`,
     });
     
     if (onSuccess) {
       onSuccess();
     }
+    
+    // Reset form
+    form.reset();
   };
   
   return (
@@ -137,13 +160,16 @@ const AddInvestment = ({
               )}
             />
             
-            <Button 
-              type="submit" 
-              className="w-full btn-action btn-primary mt-4"
-              disabled={!form.formState.isValid}
-            >
-              Add Investment <ChevronRight size={18} />
-            </Button>
+            <DialogClose asChild>
+              <Button 
+                type="submit" 
+                className="w-full btn-action btn-primary mt-4"
+                disabled={!form.formState.isValid}
+                onClick={form.handleSubmit(handleAddInvestment)}
+              >
+                Add Investment <ChevronRight size={18} />
+              </Button>
+            </DialogClose>
           </form>
         </Form>
       </CardContent>

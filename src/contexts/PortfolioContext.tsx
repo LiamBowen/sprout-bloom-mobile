@@ -10,12 +10,24 @@ interface Portfolio {
   color: string;
 }
 
+interface Investment {
+  id: string;
+  portfolioId: string;
+  asset: string;
+  amount: number;
+  date: string;
+  category: string;
+  riskLevel: string;
+}
+
 interface PortfolioContextType {
   portfolios: Portfolio[];
   selectedPortfolio: Portfolio | null;
   setSelectedPortfolio: (portfolio: Portfolio | null) => void;
   showConfetti: boolean;
   triggerConfetti: () => void;
+  investments: Investment[];
+  addInvestment: (investment: Omit<Investment, "id" | "date">) => void;
 }
 
 const mockPortfolios: Portfolio[] = [
@@ -56,13 +68,35 @@ const mockPortfolios: Portfolio[] = [
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
-  const [portfolios] = useState(mockPortfolios);
+  const [portfolios, setPortfolios] = useState(mockPortfolios);
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(mockPortfolios[0]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [investments, setInvestments] = useState<Investment[]>([]);
 
   const triggerConfetti = () => {
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 3000);
+  };
+
+  const addInvestment = (investment: Omit<Investment, "id" | "date">) => {
+    const newInvestment: Investment = {
+      ...investment,
+      id: `inv-${Date.now()}`,
+      date: new Date().toISOString(),
+    };
+    
+    setInvestments(prev => [...prev, newInvestment]);
+    
+    // Update portfolio value with new investment
+    setPortfolios(prev => 
+      prev.map(portfolio => 
+        portfolio.id === investment.portfolioId 
+          ? { ...portfolio, value: portfolio.value + investment.amount }
+          : portfolio
+      )
+    );
+    
+    triggerConfetti();
   };
 
   return (
@@ -73,6 +107,8 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         setSelectedPortfolio,
         showConfetti,
         triggerConfetti,
+        investments,
+        addInvestment,
       }}
     >
       {children}
