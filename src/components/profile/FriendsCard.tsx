@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { logAnalyticsEvent } from "@/utils/analytics";
 import { logError } from "@/utils/error-logging";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Friend {
   id: number;
@@ -28,6 +28,8 @@ export const FriendsCard = () => {
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
+  
   const [friends, setFriends] = useState<Friend[]>([
     {
       id: 1,
@@ -128,7 +130,8 @@ export const FriendsCard = () => {
                 size="sm"
                 className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
               >
-                <UserPlus size={16} className="mr-1" /> Find Friends
+                <UserPlus size={16} className={isMobile ? "" : "mr-1"} />
+                {!isMobile && "Find Friends"}
               </Button>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
