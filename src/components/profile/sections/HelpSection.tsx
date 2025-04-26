@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, HelpCircle, MessageSquare, LifeBuoy } from "lucide-react";
 import { logAnalyticsEvent } from "@/utils/analytics";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface HelpSectionProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface HelpSectionProps {
 
 export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const handleSupportClick = () => {
     logAnalyticsEvent('help_support_clicked', { source: 'settings' });
@@ -20,7 +22,7 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
 
   const handleFaqClick = () => {
     logAnalyticsEvent('help_faq_clicked', { source: 'settings' });
-    window.open('/app/faq', '_blank');
+    navigate('/app/faq');
   };
 
   const handleCommunityClick = () => {
@@ -35,7 +37,6 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     <Collapsible 
       open={isOpen} 
       onOpenChange={onOpenChange}
-      className="mb-4"
     >
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
         <div className="flex items-center">
@@ -83,3 +84,4 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     </Collapsible>
   );
 };
+
