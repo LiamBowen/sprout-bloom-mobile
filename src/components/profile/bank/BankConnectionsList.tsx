@@ -27,37 +27,23 @@ export const BankConnectionsList = ({
 
   if (connections.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Link Bank Account</span>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="h-7 text-xs"
-            onClick={onConnectBank}
-            disabled={isConnecting}
-          >
-            {isConnecting ? "Connecting..." : "Connect"}
-          </Button>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Round-ups</span>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => window.location.href = '/app/invest'}
-          >
-            View
-          </Button>
-        </div>
+      <div className="flex justify-between items-center whitespace-nowrap">
+        <span className="text-sm text-gray-600">Link Bank Account</span>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-7 text-xs"
+          onClick={onConnectBank}
+          disabled={isConnecting}
+        >
+          {isConnecting ? "Connecting..." : "Connect"}
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <>
       {connections.map((connection) => (
         <div 
           key={connection.id} 
@@ -67,11 +53,11 @@ export const BankConnectionsList = ({
           <span className="text-xs text-gray-500">{connection.account_type || 'Connected Account'}</span>
         </div>
       ))}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-2">
         <span className="text-sm text-gray-600">Add Another Account</span>
         <Button 
           variant="outline" 
-          size="sm"
+          size="sm" 
           className="h-7 text-xs"
           onClick={onConnectBank}
           disabled={isConnecting}
@@ -79,18 +65,6 @@ export const BankConnectionsList = ({
           {isConnecting ? "Connecting..." : "Connect"}
         </Button>
       </div>
-      
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Round-ups</span>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => window.location.href = '/app/invest'}
-        >
-          View
-        </Button>
-      </div>
-    </div>
+    </>
   );
 };
