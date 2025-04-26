@@ -1,12 +1,13 @@
+
 import { useState } from "react";
-import { ArrowLeft, Search, UserPlus, UserX } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { FriendRequestCard } from "@/components/friends/FriendRequestCard";
+import { SuggestedFriendCard } from "@/components/friends/SuggestedFriendCard";
 
 const FindFriends = () => {
   const navigate = useNavigate();
@@ -25,11 +26,11 @@ const FindFriends = () => {
     { id: 3, name: "Olivia Williams", portfolioType: "Balanced Mix", mutualFriends: 0 },
     { id: 4, name: "Noah Brown", portfolioType: "Crypto Explorer", mutualFriends: 2 },
   ];
-  
+
   const handleBack = () => {
     navigate('/app/profile');
   };
-  
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) {
@@ -44,7 +45,7 @@ const FindFriends = () => {
       description: `Finding users matching "${searchQuery}"`,
     });
   };
-  
+
   const handleAddFriend = (friendId: number) => {
     if (followedUsers.includes(friendId)) {
       setFollowedUsers(followedUsers.filter(id => id !== friendId));
@@ -60,7 +61,7 @@ const FindFriends = () => {
       });
     }
   };
-  
+
   const handleFriendRequest = (requestId: number, accept: boolean) => {
     const request = friendRequests.find(req => req.id === requestId);
     setFriendRequests(friendRequests.filter(req => req.id !== requestId));
@@ -78,7 +79,7 @@ const FindFriends = () => {
       });
     }
   };
-  
+
   const handleInvite = (e) => {
     e.preventDefault();
     const emailInput = e.target.elements[0] as HTMLInputElement;
@@ -121,44 +122,12 @@ const FindFriends = () => {
           <h2 className="font-semibold text-lg mb-4">Friend Requests</h2>
           <div className="space-y-3">
             {friendRequests.map((request) => (
-              <div key={request.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                    <AvatarFallback>{request.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm sm:text-base truncate">{request.name}</p>
-                    <div className="flex flex-col items-start gap-0.5">
-                      <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
-                        {request.portfolioType}
-                      </Badge>
-                      <span className="text-[10px] sm:text-xs text-gray-500">
-                        {request.mutualFriends === 1
-                          ? "1 mutual friend"
-                          : `${request.mutualFriends} mutual friends`}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    variant="outline"
-                    size="icon"
-                    className="text-sprout-lavender hover:bg-sprout-lavender/10 border-sprout-lavender"
-                    onClick={() => handleFriendRequest(request.id, true)}
-                  >
-                    <UserPlus size={16} />
-                  </Button>
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:bg-destructive/10"
-                    onClick={() => handleFriendRequest(request.id, false)}
-                  >
-                    <UserX size={16} />
-                  </Button>
-                </div>
-              </div>
+              <FriendRequestCard
+                key={request.id}
+                {...request}
+                onAccept={(id) => handleFriendRequest(id, true)}
+                onDecline={(id) => handleFriendRequest(id, false)}
+              />
             ))}
           </div>
         </Card>
@@ -180,43 +149,13 @@ const FindFriends = () => {
         
         <div className="space-y-3">
           <h2 className="font-semibold text-lg">Suggested Friends</h2>
-          
           {suggestedFriends.map((friend) => (
-            <div key={friend.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                  <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="min-w-0">
-                  <p className="font-medium text-sm sm:text-base truncate">{friend.name}</p>
-                  <div className="flex flex-col items-start gap-0.5">
-                    <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
-                      {friend.portfolioType}
-                    </Badge>
-                    <span className="text-[10px] sm:text-xs text-gray-500">
-                      {friend.mutualFriends === 0
-                        ? "No mutual friends"
-                        : friend.mutualFriends === 1
-                          ? "1 mutual friend"
-                          : `${friend.mutualFriends} mutual friends`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <Button 
-                variant="outline"
-                size="sm"
-                onClick={() => handleAddFriend(friend.id)}
-                className={followedUsers.includes(friend.id) 
-                  ? "bg-sprout-lavender text-white hover:bg-sprout-lavender/90" 
-                  : "border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"}
-              >
-                <UserPlus size={16} className="sm:mr-1" />
-                <span className="hidden sm:inline">
-                  {followedUsers.includes(friend.id) ? 'Following' : 'Follow'}
-                </span>
-              </Button>
-            </div>
+            <SuggestedFriendCard
+              key={friend.id}
+              {...friend}
+              isFollowing={followedUsers.includes(friend.id)}
+              onFollow={handleAddFriend}
+            />
           ))}
         </div>
       </Card>
