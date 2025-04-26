@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
@@ -31,21 +30,11 @@ export const ReferralCard = () => {
 
   return (
     <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-sprout-pink/20 rounded-full flex items-center justify-center mr-2">
-            <Gift size={18} className="text-sprout-pink" />
-          </div>
-          <h3 className="font-bold">Refer a Friend!</h3>
+      <div className="flex items-center mb-4">
+        <div className="w-8 h-8 bg-sprout-pink/20 rounded-full flex items-center justify-center mr-2">
+          <Gift size={18} className="text-sprout-pink" />
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleCopyReferralCode}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          {copied ? <Check size={18} /> : <Copy size={18} />}
-        </Button>
+        <h3 className="font-bold">Refer a Friend!</h3>
       </div>
       
       <p className="text-sm text-gray-600 mb-4">

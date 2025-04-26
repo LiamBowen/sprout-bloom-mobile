@@ -10,62 +10,50 @@ import { HelpSection } from "./sections/HelpSection";
 import { Separator } from "@/components/ui/separator";
 
 export const SettingsSections = () => {
-  const [openSettings, setOpenSettings] = useState({
-    personal: false,
-    bank: false,
-    investment: false,
-    notifications: false,
-    security: false,
-    legal: false,
-    help: false
-  });
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
-  const toggleSettingsSection = (section: keyof typeof openSettings) => {
-    setOpenSettings({
-      ...openSettings,
-      [section]: !openSettings[section]
-    });
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section === activeSection ? null : section);
   };
 
   return (
     <>
       <PersonalInfoSection 
-        isOpen={openSettings.personal}
-        onOpenChange={() => toggleSettingsSection('personal')}
+        isOpen={activeSection === 'personal'}
+        onOpenChange={() => handleSectionChange('personal')}
       />
       
       <BankSection 
-        isOpen={openSettings.bank}
-        onOpenChange={() => toggleSettingsSection('bank')}
+        isOpen={activeSection === 'bank'}
+        onOpenChange={() => handleSectionChange('bank')}
       />
       
       <InvestmentSection 
-        isOpen={openSettings.investment}
-        onOpenChange={() => toggleSettingsSection('investment')}
+        isOpen={activeSection === 'investment'}
+        onOpenChange={() => handleSectionChange('investment')}
       />
       
       <NotificationsSection 
-        isOpen={openSettings.notifications}
-        onOpenChange={() => toggleSettingsSection('notifications')}
+        isOpen={activeSection === 'notifications'}
+        onOpenChange={() => handleSectionChange('notifications')}
       />
       
       <SecuritySection 
-        isOpen={openSettings.security}
-        onOpenChange={() => toggleSettingsSection('security')}
+        isOpen={activeSection === 'security'}
+        onOpenChange={() => handleSectionChange('security')}
       />
       
       <LegalSection 
-        isOpen={openSettings.legal}
-        onOpenChange={() => toggleSettingsSection('legal')}
+        isOpen={activeSection === 'legal'}
+        onOpenChange={() => handleSectionChange('legal')}
       />
       
       <Separator className="my-4" />
       
       <HelpSection 
-        isOpen={openSettings.help}
-        onOpenChange={() => toggleSettingsSection('help')}
+        isOpen={activeSection === 'help'}
+        onOpenChange={() => handleSectionChange('help')}
       />
     </>
   );
 };
-

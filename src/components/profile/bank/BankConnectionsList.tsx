@@ -28,7 +28,7 @@ export const BankConnectionsList = ({
   if (connections.length === 0) {
     return (
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Connect Bank Account</span>
+        <span className="text-sm text-gray-600 whitespace-nowrap">Link Bank Account</span>
         <Button 
           variant="outline" 
           size="sm" 
@@ -36,7 +36,7 @@ export const BankConnectionsList = ({
           onClick={onConnectBank}
           disabled={isConnecting}
         >
-          {isConnecting ? "Connecting..." : "Connect Bank"}
+          {isConnecting ? "Connecting..." : "Connect"}
         </Button>
       </div>
     );
