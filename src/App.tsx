@@ -14,7 +14,6 @@ import Index from './pages/Index';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Invest from './pages/Invest';
-import NewInvestment from './pages/NewInvestment';
 import Save from './pages/Save';
 import Coach from './pages/Coach';
 import NotFound from './pages/NotFound';
@@ -92,7 +91,6 @@ function App() {
               <Route path="home" element={<Home />} />
               <Route path="profile" element={<Profile />} />
               <Route path="invest" element={<Invest />} />
-              <Route path="new-investment" element={<NewInvestment />} />
               <Route path="save" element={<Save />} />
               <Route path="coach" element={<Coach />} />
               <Route path="find-friends" element={<FindFriends />} />

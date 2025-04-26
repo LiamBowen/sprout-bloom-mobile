@@ -1,18 +1,16 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Shield, Clock, Plus } from "lucide-react";
+import { TrendingUp, Shield, Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolio } from "@/contexts/PortfolioContext";
+import { InvestmentCategory } from "@/components/invest/InvestmentCategory";
 import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
 import { RoundUps } from "@/components/invest/RoundUps";
 import { InvestmentGoal } from "@/components/invest/InvestmentGoal";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { mockTransactions, portfolioTypes } from "@/data/investment-data";
+import { investmentCategories, mockTransactions, portfolioTypes } from "@/data/investment-data";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 const generatePerformanceData = (growth: number, timeRange: string) => {
   const data = [];
@@ -58,12 +56,23 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
 const Invest = () => {
   const { portfolios, selectedPortfolio, setSelectedPortfolio, investments } = usePortfolio();
   const [activeTab, setActiveTab] = useState("portfolios");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedRiskLevel, setSelectedRiskLevel] = useState<string | null>(null);
   const [investmentGoal, setInvestmentGoal] = useState(1000);
   const [roundUpAmount, setRoundUpAmount] = useState(1);
   const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
 
   const handlePortfolioSelect = (portfolio: any) => {
     setSelectedPortfolio(portfolio);
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
+    setSelectedRiskLevel(null);
+  };
+
+  const handleRiskLevelSelect = (level: string) => {
+    setSelectedRiskLevel(level);
   };
 
   const defaultPortfolioType = {
@@ -82,18 +91,9 @@ const Invest = () => {
 
   return (
     <div className="space-y-6">
-      <div className="animate-fade-in flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
-          <p className="text-gray-600 text-sm">
-            🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
-          </p>
-        </div>
-        <Link to="/app/new-investment">
-          <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
-            <Plus size={20} />
-          </Button>
-        </Link>
+      <div className="animate-fade-in">
+        <h1 className="text-2xl font-bold">Invest 📈</h1>
+        <p className="text-gray-600">Grow your money with round-ups</p>
       </div>
       
       <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
@@ -107,12 +107,26 @@ const Invest = () => {
       </Card>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
-        <TabsList className="grid grid-cols-2 mb-4">
+        <TabsList className="grid grid-cols-3 mb-4">
           <TabsTrigger value="portfolios">Portfolios</TabsTrigger>
+          <TabsTrigger value="investments">Investments</TabsTrigger>
           <TabsTrigger value="round-ups">Round-ups</TabsTrigger>
         </TabsList>
         
         <TabsContent value="portfolios" className="space-y-4">
+          <div className="space-y-4">
+            {investmentCategories.map((category) => (
+              <InvestmentCategory
+                key={category.id}
+                {...category}
+                selectedCategory={selectedCategory}
+                selectedRiskLevel={selectedRiskLevel}
+                onCategorySelect={handleCategorySelect}
+                onRiskLevelSelect={handleRiskLevelSelect}
+              />
+            ))}
+          </div>
+          
           <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
           {portfolios.map((portfolio) => (
             <Card 
@@ -181,42 +195,49 @@ const Invest = () => {
                     onGoalChange={setInvestmentGoal}
                     portfolioColor={portfolio.color}
                   />
-
-                  {portfolioInvestments.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="text-sm font-semibold mb-2">Recent Investments</h4>
-                      <ScrollArea className="h-[200px]">
-                        <div className="space-y-3">
-                          {portfolioInvestments.map((investment) => (
-                            <Card key={investment.id} className="p-3">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <h4 className="font-medium text-sm">{investment.asset}</h4>
-                                    <Badge variant="outline" className="text-xs">{investment.riskLevel}</Badge>
-                                  </div>
-                                  <p className="text-xs text-gray-600 mt-1">
-                                    {investment.category}
-                                  </p>
-                                </div>
-                                <div className="text-right">
-                                  <div className="font-bold text-sm">£{investment.amount.toFixed(2)}</div>
-                                  <div className="flex items-center text-xs text-gray-500 mt-1">
-                                    <Clock size={10} className="mr-1" />
-                                    {new Date(investment.date).toLocaleDateString()}
-                                  </div>
-                                </div>
-                              </div>
-                            </Card>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </div>
-                  )}
                 </>
               )}
             </Card>
           ))}
+        </TabsContent>
+        
+        <TabsContent value="investments" className="space-y-4">
+          <h3 className="font-semibold">Your Investments</h3>
+          {portfolioInvestments.length > 0 ? (
+            <ScrollArea className="h-[400px]">
+              <div className="space-y-3">
+                {portfolioInvestments.map((investment) => (
+                  <Card key={investment.id} className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">{investment.asset}</h4>
+                          <Badge variant="outline">{investment.riskLevel}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {investment.category}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold">£{investment.amount.toFixed(2)}</div>
+                        <div className="flex items-center text-xs text-gray-500 mt-1">
+                          <Clock size={12} className="mr-1" />
+                          {new Date(investment.date).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <Card className="p-6 text-center bg-gray-50">
+              <p className="text-gray-600">You haven't made any investments in this portfolio yet.</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Go to the Portfolios tab to start investing.
+              </p>
+            </Card>
+          )}
         </TabsContent>
         
         <TabsContent value="round-ups" className="space-y-4">
