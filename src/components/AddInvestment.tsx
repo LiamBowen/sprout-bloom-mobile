@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -28,7 +27,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { LivePrice } from './LivePrice';
 import { DialogClose, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-// Define form validation schema
 const investmentFormSchema = z.object({
   asset: z.string({
     required_error: "Please select an investment asset",
@@ -53,7 +51,6 @@ const AddInvestment = ({
   const navigate = useNavigate();
   const { addInvestment } = usePortfolio();
   
-  // Form definition
   const form = useForm<InvestmentFormValues>({
     resolver: zodResolver(investmentFormSchema),
     defaultValues: {
@@ -65,10 +62,8 @@ const AddInvestment = ({
   const handleAddInvestment = (data: InvestmentFormValues) => {
     const amount = parseFloat(data.amount);
     
-    // Get investment type based on category
     const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
     
-    // Add the new portfolio and investment
     addInvestment({
       asset: data.asset,
       amount: amount,
@@ -81,14 +76,15 @@ const AddInvestment = ({
       description: `£${amount.toFixed(2)} invested in ${data.asset}`,
     });
     
-    // Navigate back to invest page with the correct filter
-    navigate('/app/invest', { state: { selectedType: investmentType } });
+    navigate('/app/invest', { 
+      state: { selectedType: investmentType },
+      replace: true
+    });
     
     if (onSuccess) {
       onSuccess();
     }
     
-    // Reset form
     form.reset();
   };
   

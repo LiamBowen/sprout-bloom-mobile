@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Shield, Bitcoin, PieChart } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
 import { portfolioTypes } from "@/data/investment-data";
@@ -84,6 +84,13 @@ export const PortfolioList = ({
   const [selectedType, setSelectedType] = useState(() => {
     return (location.state as any)?.selectedType || "stocks-etfs";
   });
+
+  useEffect(() => {
+    const filtered = portfolios.filter(portfolio => portfolio.category === selectedType);
+    if (filtered.length > 0 && !selectedPortfolio) {
+      setSelectedPortfolio(filtered[0]);
+    }
+  }, [selectedType, portfolios, selectedPortfolio, setSelectedPortfolio]);
 
   const getPortfolioTypeInfo = (portfolio: Portfolio) => {
     return portfolioTypeInfoMap[portfolio.category] || portfolioTypeInfoMap["stocks-etfs"];
