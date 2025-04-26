@@ -80,3 +80,4 @@ export const BankConnectionsList = ({
     </div>
   );
 };
+

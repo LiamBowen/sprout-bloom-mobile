@@ -51,27 +51,12 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent className="pt-2 pb-4">
         <div className="space-y-4">
-          {bankConnections.length > 0 || isLoading ? (
-            <BankConnectionsList
-              connections={bankConnections}
-              isLoading={isLoading}
-              isConnecting={isConnecting}
-              onConnectBank={handleConnectBank}
-            />
-          ) : (
-            <p className="text-gray-600 text-sm">
-              Connect your bank account to automate your deposits and track your spending.
-            </p>
-          )}
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleConnectBank}
-            disabled={isConnecting}
-          >
-            {isConnecting ? "Generating Link..." : "Connect Bank Account"}
-          </Button>
+          <BankConnectionsList
+            connections={bankConnections}
+            isLoading={isLoading}
+            isConnecting={isConnecting}
+            onConnectBank={handleConnectBank}
+          />
           
           <ConnectBankDialog 
             open={isDialogOpen}
@@ -84,3 +69,4 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     </Collapsible>
   );
 };
+
