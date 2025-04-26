@@ -42,36 +42,43 @@ const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
     }
   };
 
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
     <Card className="p-4">
-      <Collapsible open={!isCollapsed} onOpenChange={setIsCollapsed}>
-        <div className="flex justify-between items-start mb-2">
-          <CollapsibleTrigger asChild>
-            <button className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left">
-              <h3 className="font-bold text-base md:text-lg">{pot.name}</h3>
-              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isCollapsed ? "" : "rotate-180"}`} />
-            </button>
-          </CollapsibleTrigger>
-          <div className="inline-block bg-sprout-blue/10 px-2 py-0.5 rounded text-xs font-medium text-sprout-blue">
-            {pot.apy}% APY
-          </div>
+      <div className="flex justify-between items-start mb-2">
+        <button 
+          onClick={toggleCollapse} 
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left"
+        >
+          <h3 className="font-bold text-base md:text-lg">{pot.name}</h3>
+          <ChevronDown 
+            className={`h-4 w-4 transition-transform duration-200 ${isCollapsed ? "" : "rotate-180"}`} 
+          />
+        </button>
+        <div className="inline-block bg-sprout-blue/10 px-2 py-0.5 rounded text-xs font-medium text-sprout-blue">
+          {pot.apy}% APY
         </div>
-        
-        <div className="flex justify-between mb-1 text-sm">
-          <span>Progress</span>
-          <span className="whitespace-nowrap">
-            £{pot.amount.toFixed(2)} / £{pot.target.toFixed(2)}
-          </span>
-        </div>
-        
-        <div className="progress-bar mb-4">
-          <div
-            className="progress-fill bg-sprout-blue"
-            style={{ width: `${Math.min(100, (pot.amount / pot.target) * 100)}%` }}
-          ></div>
-        </div>
-        
-        <CollapsibleContent className="space-y-3">
+      </div>
+      
+      <div className="flex justify-between mb-1 text-sm">
+        <span>Progress</span>
+        <span className="whitespace-nowrap">
+          £{pot.amount.toFixed(2)} / £{pot.target.toFixed(2)}
+        </span>
+      </div>
+      
+      <div className="progress-bar mb-4">
+        <div
+          className="progress-fill bg-sprout-blue"
+          style={{ width: `${Math.min(100, (pot.amount / pot.target) * 100)}%` }}
+        ></div>
+      </div>
+      
+      {!isCollapsed && (
+        <div className="space-y-3">
           <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'space-x-2'}`}>
             <Button 
               className={`${isMobile ? 'w-full' : 'flex-1'} btn-action btn-outline py-2 h-auto`} 
@@ -95,8 +102,8 @@ const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
           >
             <Trash size={16} className="mr-1" /> Close Pot
           </Button>
-        </CollapsibleContent>
-      </Collapsible>
+        </div>
+      )}
       
       <SavingPotDetails 
         isOpen={isDetailsOpen} 
@@ -131,4 +138,3 @@ const SavingPot = ({ pot, onDeletePot }: SavingPotProps) => {
 };
 
 export default SavingPot;
-
