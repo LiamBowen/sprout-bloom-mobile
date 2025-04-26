@@ -35,17 +35,17 @@ export const LearnCard = () => {
               <Book size={18} className="text-sprout-blue" />
             </div>
             <h3 className="font-bold">Learn</h3>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <ChevronDown
-                  size={18}
-                  className={`transition-transform duration-200 ${
-                    isOpen ? "transform rotate-180" : ""
-                  }`}
-                />
-              </Button>
-            </CollapsibleTrigger>
           </div>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <ChevronDown
+                size={18}
+                className={`transition-transform duration-200 ${
+                  isOpen ? "transform rotate-180" : ""
+                }`}
+              />
+            </Button>
+          </CollapsibleTrigger>
         </div>
         
         <p className="text-sm text-gray-600 mb-4 ml-10">Coming soon: Sprout's own learning hub!</p>
@@ -70,4 +70,3 @@ export const LearnCard = () => {
     </Card>
   );
 };
-
