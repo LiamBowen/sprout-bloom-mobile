@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Shield, Bitcoin, PieChart } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
@@ -82,15 +83,24 @@ export const PortfolioList = ({
   const [investmentGoal, setInvestmentGoal] = useState(1000);
   const location = useLocation();
   const [selectedType, setSelectedType] = useState(() => {
+    console.log("Location state:", location.state);
     return (location.state as any)?.selectedType || "stocks-etfs";
   });
 
+  // Effect to select the first portfolio of the selected type if none is selected
   useEffect(() => {
     const filtered = portfolios.filter(portfolio => portfolio.category === selectedType);
     if (filtered.length > 0 && !selectedPortfolio) {
       setSelectedPortfolio(filtered[0]);
     }
   }, [selectedType, portfolios, selectedPortfolio, setSelectedPortfolio]);
+
+  // Effect to handle incoming navigation state changes
+  useEffect(() => {
+    if (location.state && (location.state as any).selectedType) {
+      setSelectedType((location.state as any).selectedType);
+    }
+  }, [location.state]);
 
   const getPortfolioTypeInfo = (portfolio: Portfolio) => {
     return portfolioTypeInfoMap[portfolio.category] || portfolioTypeInfoMap["stocks-etfs"];
@@ -100,6 +110,9 @@ export const PortfolioList = ({
     return portfolio.category === selectedType;
   });
 
+  console.log("Selected type:", selectedType);
+  console.log("Filtered portfolios:", filteredPortfolios);
+
   return (
     <div className="space-y-4">
       <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
@@ -107,7 +120,12 @@ export const PortfolioList = ({
       <ToggleGroup 
         type="single" 
         value={selectedType}
-        onValueChange={(value) => value && setSelectedType(value)}
+        onValueChange={(value) => {
+          if (value) {
+            console.log("Setting selected type:", value);
+            setSelectedType(value);
+          }
+        }}
         className="justify-start w-full border rounded-lg p-1 bg-muted"
       >
         <ToggleGroupItem value="stocks-etfs" className="flex-1">

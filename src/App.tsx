@@ -24,6 +24,7 @@ import AppLayout from './layouts/AppLayout';
 import { useAuth } from './contexts/AuthContext';
 import { Toaster } from "@/components/ui/sonner";
 import BankCallback from './pages/BankCallback';
+import Confetti from './components/Confetti';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, isLoading } = useAuth();
@@ -102,6 +103,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <Confetti />
         <Toaster />
       </div>
     </Router>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Card, 
@@ -49,7 +50,7 @@ const AddInvestment = ({
 }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { addInvestment } = usePortfolio();
+  const { addInvestment, triggerConfetti } = usePortfolio();
   
   const form = useForm<InvestmentFormValues>({
     resolver: zodResolver(investmentFormSchema),
@@ -64,6 +65,7 @@ const AddInvestment = ({
     
     const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
     
+    // Add the investment first
     addInvestment({
       asset: data.asset,
       amount: amount,
@@ -71,19 +73,26 @@ const AddInvestment = ({
       riskLevel: riskLevel,
     });
     
+    // Show success toast
     toast({
       title: "Investment created",
       description: `£${amount.toFixed(2)} invested in ${data.asset}`,
     });
     
-    navigate('/app/invest', { 
-      state: { selectedType: investmentType },
-      replace: true
-    });
+    // Explicitly trigger confetti
+    triggerConfetti();
     
-    if (onSuccess) {
-      onSuccess();
-    }
+    // Navigate with replaced state and delay a bit to ensure context updates are processed
+    setTimeout(() => {
+      navigate('/app/invest', { 
+        state: { selectedType: investmentType },
+        replace: true
+      });
+      
+      if (onSuccess) {
+        onSuccess();
+      }
+    }, 100);
     
     form.reset();
   };
@@ -91,13 +100,15 @@ const AddInvestment = ({
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Leaf className="text-sprout-green h-5 w-5" />
-          Add Investment
-        </CardTitle>
-        <CardDescription>
-          Create a new investment portfolio
-        </CardDescription>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Leaf className="text-sprout-green h-5 w-5" />
+            Add Investment
+          </DialogTitle>
+          <CardDescription>
+            Create a new investment portfolio
+          </CardDescription>
+        </DialogHeader>
       </CardHeader>
       
       <CardContent>
