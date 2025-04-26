@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { Send, Bot, User } from "lucide-react";
 
 const sampleQuestions = [
   "What are round-ups?",
-  "How do I invite friends?",
+  "How do I invite friends?", 
   "Can I save for a specific goal?",
   "What features come with Sprout?"
 ];
@@ -42,7 +41,12 @@ const Coach = () => {
     setMessage(question);
     
     setTimeout(() => {
-      handleSendMessage();
+      addCoachMessage({
+        sender: "user",
+        text: question,
+      });
+      
+      setMessage("");
     }, 100);
   };
 
