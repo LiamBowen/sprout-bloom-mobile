@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -9,6 +10,8 @@ import { useState } from "react";
 import { FriendDetailsDialog } from "./FriendDetailsDialog";
 import { useToast } from "@/hooks/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { logAnalyticsEvent } from "@/utils/analytics";
+import { logError } from "@/utils/error-logging";
 
 interface Friend {
   id: number;
@@ -56,24 +59,61 @@ export const FriendsCard = () => {
   ]);
 
   const handleFindFriends = () => {
+    logAnalyticsEvent('find_friends_clicked', { 
+      source: 'profile_page',
+      current_friends_count: friends.length
+    });
     navigate('/app/find-friends');
   };
 
   const handleRemoveFriend = (friendId: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    const friendToRemove = friends.find(f => f.id === friendId);
-    setFriends(friends.filter(friend => friend.id !== friendId));
-    
-    toast({
-      title: "Friend Removed",
-      description: `You have removed ${friendToRemove?.name} from your friends list`,
+    try {
+      event.stopPropagation();
+      const friendToRemove = friends.find(f => f.id === friendId);
+      if (!friendToRemove) {
+        throw new Error(`Friend with id ${friendId} not found`);
+      }
+      
+      setFriends(friends.filter(friend => friend.id !== friendId));
+      
+      toast({
+        title: "Friend Removed",
+        description: `You have removed ${friendToRemove.name} from your friends list`,
+      });
+      
+      logAnalyticsEvent('friend_removed', {
+        friend_id: friendId,
+        friend_name: friendToRemove.name
+      });
+    } catch (error) {
+      logError(error as Error, { action: 'remove_friend', friendId });
+      toast({
+        title: "Error",
+        description: "Failed to remove friend. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleViewFriendDetails = (friend: Friend) => {
+    setSelectedFriend(friend);
+    logAnalyticsEvent('friend_details_viewed', {
+      friend_id: friend.id,
+      friend_name: friend.name
+    });
+  };
+
+  const handleToggleList = (open: boolean) => {
+    setIsOpen(open);
+    logAnalyticsEvent('friends_list_toggled', {
+      new_state: open ? 'expanded' : 'collapsed'
     });
   };
 
   return (
     <>
       <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <Collapsible open={isOpen} onOpenChange={handleToggleList}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-sprout-lavender/20 rounded-full flex items-center justify-center mr-2">
@@ -117,7 +157,7 @@ export const FriendsCard = () => {
                     <div 
                       key={friend.id} 
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                      onClick={() => setSelectedFriend(friend)}
+                      onClick={() => handleViewFriendDetails(friend)}
                     >
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-10 w-10">
