@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -19,7 +18,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,7 +30,7 @@ import { DialogClose, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 const investmentFormSchema = z.object({
   asset: z.string({
     required_error: "Please select an investment asset",
-  }),
+  }).min(1, "Please select an investment asset"),
   amount: z.string().min(1, "Please enter an investment amount"),
 });
 
@@ -62,10 +61,8 @@ const AddInvestment = ({
   
   const handleAddInvestment = (data: InvestmentFormValues) => {
     const amount = parseFloat(data.amount);
-    
     const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
     
-    // Add the investment first
     addInvestment({
       asset: data.asset,
       amount: amount,
@@ -73,18 +70,14 @@ const AddInvestment = ({
       riskLevel: riskLevel,
     });
     
-    // Show success toast
     toast({
       title: "Investment created",
       description: `£${amount.toFixed(2)} invested in ${data.asset}`,
     });
     
-    // Explicitly trigger confetti
     triggerConfetti();
     
-    // Navigate with replaced state and delay a bit to ensure context updates are processed
     setTimeout(() => {
-      // Include the newInvestment flag in the state
       navigate('/app/invest', { 
         state: { 
           selectedType: investmentType === "fractional-shares" ? "fractional" : investmentType,
