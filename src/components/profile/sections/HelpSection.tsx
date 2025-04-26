@@ -1,7 +1,6 @@
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, HelpCircle, MessageSquareQuestion, LifeBuoy } from "lucide-react";
+import { ChevronRight, HelpCircle, MessageSquare, LifeBuoy } from "lucide-react";
 import { logAnalyticsEvent } from "@/utils/analytics";
 
 interface HelpSectionProps {
@@ -50,7 +49,7 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
               className="w-full justify-start" 
               onClick={handleSupportClick}
             >
-              <MessageSquareQuestion className="mr-2" />
+              <MessageSquare className="mr-2" />
               Contact Support
             </Button>
             
