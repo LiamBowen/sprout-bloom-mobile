@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Edit } from "lucide-react";
+import { Pencil } from "lucide-react";  // Using Pencil instead of Edit for clarity
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -36,8 +36,20 @@ export const UserInfoCard = () => {
 
   return (
     <Card className="p-6 animate-fade-in">
-      <div className="flex flex-col items-center text-center mb-4">
-        <h2 className="font-bold text-lg mb-1">{user.name}</h2>
+      <div className="flex flex-col items-center text-center mb-4 relative">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex-1"></div>  {/* Empty div for layout balance */}
+          <h2 className="font-bold text-lg mb-1 flex-grow">{user.name}</h2>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsEditingProfile(true)}
+            className="text-gray-500 hover:text-gray-700"
+            title="Edit Profile"
+          >
+            <Pencil size={18} />
+          </Button>
+        </div>
         <p className="text-sm text-gray-600 mb-4">Member since 2025</p>
         
         <div className="w-full max-w-xs">
@@ -46,15 +58,6 @@ export const UserInfoCard = () => {
             <p>{user.dateOfBirth}</p>
           </div>
         </div>
-        
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setIsEditingProfile(true)}
-          className="absolute top-4 right-4"
-        >
-          <Edit size={18} />
-        </Button>
       </div>
 
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
@@ -132,3 +135,5 @@ export const UserInfoCard = () => {
     </Card>
   );
 };
+
+export default UserInfoCard;
