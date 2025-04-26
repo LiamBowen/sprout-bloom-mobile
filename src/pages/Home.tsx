@@ -3,18 +3,17 @@ import { Button } from "@/components/ui/button";
 import { usePortfolio } from "@/contexts/PortfolioContext";
 import { useSavings } from "@/contexts/SavingsContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sprout,
   Bot,
   ChevronsUp,
   TrendingUp,
   User,
-  Wallet,
   MessageSquare
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Confetti from "@/components/Confetti";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const Home = () => {
@@ -80,34 +79,38 @@ const Home = () => {
       </Card>
       
       <div className="space-y-4 animate-slide-up" style={{ animationDelay: "0.15s" }}>
-        <h2 className="text-xl font-semibold">What your friends are investing in <Wallet className="inline w-5 h-5" /></h2>
+        <h2 className="text-xl font-semibold">What your friends are investing in 💰</h2>
         
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex justify-between items-center">
-            <p>
-              <strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span>
-            </p>
-            <Badge variant="green">ETF</Badge>
+        <ScrollArea className="h-[300px]">
+          <div className="space-y-3">
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Jess</strong> rounded up <span className="font-medium">£1.20</span> into <span className="text-green-600">Tech I Use</span>
+                </p>
+                <Badge variant="green">ETF</Badge>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span>
+                </p>
+                <Badge variant="blue">Crypto</Badge>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span>
+                </p>
+                <Badge variant="lavender">ESG</Badge>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex justify-between items-center">
-            <p>
-              <strong>Sam</strong> invested <span className="font-medium">£10</span> in <span className="text-green-600">Crypto Growth</span>
-            </p>
-            <Badge variant="blue">Crypto</Badge>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex justify-between items-center">
-            <p>
-              <strong>You</strong> invested <span className="font-medium">£5</span> in <span className="text-green-600">Sustainable Future</span>
-            </p>
-            <Badge variant="lavender">ESG</Badge>
-          </div>
-        </div>
+        </ScrollArea>
       </div>
       
       <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.25s" }}>
