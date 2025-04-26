@@ -5,6 +5,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
 import { InvestmentGoal } from "@/components/invest/InvestmentGoal";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import type { Portfolio, Investment } from "@/types/investment";
 
 interface PortfolioCardProps {
@@ -88,8 +89,8 @@ export const PortfolioCard = ({
         </div>
       </div>
       
-      {isSelected && (
-        <>
+      <Collapsible open={isSelected}>
+        <CollapsibleContent>
           <PortfolioPerformance
             data={performanceData}
             color={portfolio.color}
@@ -135,8 +136,8 @@ export const PortfolioCard = ({
               </ScrollArea>
             </div>
           )}
-        </>
-      )}
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
