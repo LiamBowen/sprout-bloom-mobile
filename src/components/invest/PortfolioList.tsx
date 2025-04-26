@@ -4,6 +4,7 @@ import { Shield } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
 import { portfolioTypes } from "@/data/investment-data";
 import type { Portfolio } from "@/types/investment";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface PortfolioListProps {
   portfolios: Portfolio[];
@@ -61,6 +62,7 @@ export const PortfolioList = ({
 }: PortfolioListProps) => {
   const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
   const [investmentGoal, setInvestmentGoal] = useState(1000);
+  const [selectedType, setSelectedType] = useState("stocks-etfs");
 
   const defaultPortfolioType = {
     type: "Stocks & ETFs",
@@ -72,10 +74,33 @@ export const PortfolioList = ({
     return portfolioTypes[portfolioId] || defaultPortfolioType;
   };
 
+  const filteredPortfolios = portfolios.filter(portfolio => {
+    const type = portfolioTypes[portfolio.id]?.type.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+    return type === selectedType;
+  });
+
   return (
     <div className="space-y-4">
       <h3 className="font-semibold mt-6">Your Investment Portfolios</h3>
-      {portfolios.map((portfolio) => (
+      
+      <ToggleGroup 
+        type="single" 
+        value={selectedType}
+        onValueChange={(value) => value && setSelectedType(value)}
+        className="justify-start w-full border rounded-lg p-1 bg-muted"
+      >
+        <ToggleGroupItem value="stocks-etfs" className="flex-1">
+          Stocks & ETFs
+        </ToggleGroupItem>
+        <ToggleGroupItem value="crypto" className="flex-1">
+          Crypto
+        </ToggleGroupItem>
+        <ToggleGroupItem value="fractional" className="flex-1">
+          Fractional Shares
+        </ToggleGroupItem>
+      </ToggleGroup>
+
+      {filteredPortfolios.map((portfolio) => (
         <PortfolioCard
           key={portfolio.id}
           portfolio={portfolio}
