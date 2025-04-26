@@ -1,7 +1,6 @@
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, LifeBuoy, MessageSquare, HelpCircle } from "lucide-react";
+import { ChevronRight, HelpCircle, MessageSquare, LifeBuoy } from "lucide-react";
 import { logAnalyticsEvent } from "@/utils/analytics";
 
 interface HelpSectionProps {
@@ -29,7 +28,7 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     <Collapsible 
       open={isOpen} 
       onOpenChange={onOpenChange}
-      className="mb-4"
+      className="mb-4 border-b pb-2"
     >
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
         <div className="flex items-center">
