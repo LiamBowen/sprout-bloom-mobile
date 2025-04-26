@@ -109,6 +109,42 @@ const Home = () => {
                 <Badge variant="lavender">ESG</Badge>
               </div>
             </div>
+
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Alex</strong> invested <span className="font-medium">£25</span> in <span className="text-green-600">Green Energy</span>
+                </p>
+                <Badge variant="green">ETF</Badge>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Emma</strong> rounded up <span className="font-medium">£2.50</span> into <span className="text-green-600">Healthcare Innovation</span>
+                </p>
+                <Badge variant="blue">Stocks</Badge>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Mike</strong> invested <span className="font-medium">£15</span> in <span className="text-green-600">AI Tech</span>
+                </p>
+                <Badge variant="lavender">Tech</Badge>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center">
+                <p>
+                  <strong>Sarah</strong> rounded up <span className="font-medium">£0.75</span> into <span className="text-green-600">Renewable Energy</span>
+                </p>
+                <Badge variant="green">ETF</Badge>
+              </div>
+            </div>
           </div>
         </ScrollArea>
       </div>
