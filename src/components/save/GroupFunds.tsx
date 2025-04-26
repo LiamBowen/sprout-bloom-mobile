@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Users } from "lucide-react";
 import GroupFundsList from "./GroupFundsList";
 import GroupFundDetails from "./GroupFundDetails";
 import NewGroupFundDialog from "./NewGroupFundDialog";
@@ -31,6 +33,19 @@ const GroupFunds = ({ groupFunds, onCreateGroupFund, onSendMessage, onDeleteFund
         />
       ) : (
         <>
+          <Card className="p-4 bg-sprout-lavender/10 border-sprout-lavender/20">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-base md:text-lg">Group Savings</h3>
+                <p className="text-sm text-gray-600 mb-1">Save together, achieve more</p>
+                <div className="inline-block bg-sprout-lavender/20 px-2 py-0.5 rounded text-sm font-medium">
+                  Split costs with friends
+                </div>
+              </div>
+              <div className="text-2xl">👥</div>
+            </div>
+          </Card>
+
           <GroupFundsList 
             groupFunds={groupFunds} 
             onSelectFund={(fundId) => setSelectedFund(fundId)} 
