@@ -1,3 +1,4 @@
+
 import { Shield, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,8 +6,9 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
 import { InvestmentGoal } from "@/components/invest/InvestmentGoal";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { Portfolio, Investment } from "@/types/investment";
+import { useState } from "react";
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
@@ -37,59 +39,67 @@ export const PortfolioCard = ({
   portfolioTypeInfo,
   performanceData,
 }: PortfolioCardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    onSelect(portfolio);
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <Card 
-      key={portfolio.id}
-      className={`p-4 cursor-pointer transition-all ${
-        isSelected
-          ? `border-2 border-${portfolio.color} bg-${portfolio.color}/5`
-          : ""
-      }`}
-      onClick={() => onSelect(portfolio)}
-    >
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
-              <span>{portfolio.emoji}</span>
+    <Collapsible open={isSelected && isOpen} onOpenChange={setIsOpen}>
+      <Card 
+        key={portfolio.id}
+        className={`p-4 cursor-pointer transition-all ${
+          isSelected
+            ? `border-2 border-${portfolio.color} bg-${portfolio.color}/5`
+            : ""
+        }`}
+      >
+        <CollapsibleTrigger className="w-full text-left" onClick={handleClick}>
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className={`text-xl mr-2 ${portfolio.color === "bg-sprout-green" ? "bg-sprout-green/10" : portfolio.color === "bg-sprout-blue" ? "bg-sprout-blue/10" : portfolio.color === "bg-sprout-lavender" ? "bg-sprout-lavender/10" : "bg-sprout-pink/10"} p-2 rounded-full`}>
+                  <span>{portfolio.emoji}</span>
+                </div>
+                <h3 className="font-bold">{portfolio.name}</h3>
+              </div>
+              <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
+                {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth.toFixed(2)}%
+              </div>
             </div>
-            <h3 className="font-bold">{portfolio.name}</h3>
+            
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-600">£{portfolio.value.toFixed(2)}</p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge 
+                      variant={
+                        portfolio.color === "bg-sprout-green" ? "green" :
+                        portfolio.color === "bg-sprout-blue" ? "blue" :
+                        portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
+                      }
+                      className="cursor-pointer"
+                    >
+                      <div className="flex items-center">
+                        {portfolioTypeInfo.icon}
+                        {portfolioTypeInfo.type}
+                      </div>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs font-medium">
+                      {portfolioTypeInfo.risk}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
-          <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-            {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth.toFixed(2)}%
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">£{portfolio.value.toFixed(2)}</p>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge 
-                  variant={
-                    portfolio.color === "bg-sprout-green" ? "green" :
-                    portfolio.color === "bg-sprout-blue" ? "blue" :
-                    portfolio.color === "bg-sprout-lavender" ? "lavender" : "pink"
-                  }
-                  className="cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    {portfolioTypeInfo.icon}
-                    {portfolioTypeInfo.type}
-                  </div>
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs font-medium">
-                  {portfolioTypeInfo.risk}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
+        </CollapsibleTrigger>
       
-      <Collapsible open={isSelected}>
         <CollapsibleContent>
           <PortfolioPerformance
             data={performanceData}
@@ -137,7 +147,7 @@ export const PortfolioCard = ({
             </div>
           )}
         </CollapsibleContent>
-      </Collapsible>
-    </Card>
+      </Card>
+    </Collapsible>
   );
 };
