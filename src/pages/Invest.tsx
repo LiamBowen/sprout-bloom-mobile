@@ -7,13 +7,11 @@ import { mockTransactions } from "@/data/investment-data";
 import { InvestHeader } from "@/components/invest/InvestHeader";
 import { MarketTrends } from "@/components/invest/MarketTrends";
 import { PortfolioList } from "@/components/invest/PortfolioList";
-import { InvestmentTypeSelector } from "@/components/invest/InvestmentTypeSelector";
 
 const Invest = () => {
   const { portfolios, selectedPortfolio, setSelectedPortfolio, investments } = usePortfolio();
   const [activeTab, setActiveTab] = useState("portfolios");
   const [roundUpAmount, setRoundUpAmount] = useState(1);
-  const [selectedType, setSelectedType] = useState("stocks_etfs");
 
   return (
     <div className="space-y-6">
@@ -27,22 +25,8 @@ const Invest = () => {
         </TabsList>
         
         <TabsContent value="portfolios">
-          <InvestmentTypeSelector
-            selectedType={selectedType}
-            onTypeSelect={setSelectedType}
-          />
           <PortfolioList
-            portfolios={portfolios.filter(p => {
-              const type = selectedType === "stocks_etfs" ? "Stocks & ETFs" :
-                         selectedType === "crypto" ? "Cryptocurrencies" :
-                         "Fractional Shares";
-              return portfolios.some(portfolio => 
-                investments.some(inv => 
-                  inv.portfolioId === portfolio.id && 
-                  inv.category === type
-                )
-              );
-            })}
+            portfolios={portfolios}
             selectedPortfolio={selectedPortfolio}
             setSelectedPortfolio={setSelectedPortfolio}
             investments={investments}
