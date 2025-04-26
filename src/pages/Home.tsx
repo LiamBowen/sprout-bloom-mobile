@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePortfolio } from "@/contexts/PortfolioContext";
@@ -22,7 +21,15 @@ const Home = () => {
   const { portfolios } = usePortfolio();
   const { savingPots } = useSavings();
   const { user } = useAuth();
-  const navigate = useNavigate(); // Added this missing hook
+  const navigate = useNavigate();
+  
+  const handleInvestmentClick = () => {
+    navigate('/app/invest');
+  };
+  
+  const handleSavingsClick = () => {
+    navigate('/app/save');
+  };
   
   if (!user) return null;
   
@@ -48,7 +55,10 @@ const Home = () => {
         <div className="text-2xl font-bold mb-3">£{totalValue.toFixed(2)}</div>
         
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white/50 rounded-lg p-3">
+          <div 
+            className="bg-white/50 rounded-lg p-3 cursor-pointer hover:bg-white/70 transition-colors"
+            onClick={handleInvestmentClick}
+          >
             <div className="flex items-center mb-1">
               <TrendingUp size={16} className="mr-1 text-gray-600" />
               <span className="text-xs text-gray-600">Investments</span>
@@ -56,7 +66,10 @@ const Home = () => {
             <div className="font-semibold">£{totalPortfolioValue.toFixed(2)}</div>
           </div>
           
-          <div className="bg-white/50 rounded-lg p-3">
+          <div 
+            className="bg-white/50 rounded-lg p-3 cursor-pointer hover:bg-white/70 transition-colors"
+            onClick={handleSavingsClick}
+          >
             <div className="flex items-center mb-1">
               <ChevronsUp size={16} className="mr-1 text-gray-600" />
               <span className="text-xs text-gray-600">Savings</span>
