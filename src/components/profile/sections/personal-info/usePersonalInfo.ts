@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -71,6 +70,7 @@ export const usePersonalInfo = () => {
   };
 
   return {
+    user,
     isEditing,
     setIsEditing,
     name,
