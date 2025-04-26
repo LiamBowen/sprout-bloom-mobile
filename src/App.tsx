@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
@@ -25,6 +26,17 @@ import { Toaster } from "@/components/ui/sonner";
 import BankCallback from './pages/BankCallback';
 import Confetti from './components/Confetti';
 import FAQ from './pages/FAQ';
+
+// Scroll to top component
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, isLoading } = useAuth();
@@ -61,6 +73,7 @@ function App() {
   
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <main>
           <Routes>
