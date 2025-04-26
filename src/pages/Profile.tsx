@@ -11,11 +11,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Profile = () => {
   const { user, setUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
   
   if (!user) return null;
 
