@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Share2, PlusCircle, User, Send, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { GroupFund } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useSavings } from "@/contexts/SavingsContext";
@@ -21,6 +21,7 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
   const [amount, setAmount] = useState("");
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const { toast } = useToast();
   const { updateGroupFund } = useSavings();
 
@@ -288,13 +289,31 @@ const GroupFundDetails = ({ fund, onBack, onSendMessage, onDeleteFund }: GroupFu
       </Card>
       
       <div className="mt-6">
-        <Button 
-          variant="destructive" 
-          className="w-full"
-          onClick={handleDeleteFund}
-        >
-          <Trash size={16} className="mr-1" /> Close Fund
-        </Button>
+        <AlertDialog open={showDeleteConfirmation} onOpenChange={setShowDeleteConfirmation}>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="destructive" 
+              className="w-full"
+              onClick={() => setShowDeleteConfirmation(true)}
+            >
+              <Trash size={16} className="mr-1" /> Close Fund
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the group fund and remove all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteFund}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </>
   );
