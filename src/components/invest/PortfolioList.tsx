@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Shield } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
 import { portfolioTypes } from "@/data/investment-data";
 import type { Portfolio } from "@/types/investment";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useLocation } from "react-router-dom";
 
 interface PortfolioListProps {
   portfolios: Portfolio[];
@@ -62,7 +62,10 @@ export const PortfolioList = ({
 }: PortfolioListProps) => {
   const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
   const [investmentGoal, setInvestmentGoal] = useState(1000);
-  const [selectedType, setSelectedType] = useState("stocks-etfs");
+  const location = useLocation();
+  const [selectedType, setSelectedType] = useState(() => {
+    return (location.state as any)?.selectedType || "stocks-etfs";
+  });
 
   const defaultPortfolioType = {
     type: "Stocks & ETFs",

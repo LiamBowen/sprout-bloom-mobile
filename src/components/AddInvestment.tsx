@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronRight, Leaf } from "lucide-react";
 import { usePortfolio } from "@/contexts/PortfolioContext";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 import { 
   Form,
   FormControl,
@@ -48,6 +49,7 @@ const AddInvestment = ({
   recommendedAssets: string[];
 }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { selectedPortfolio, addInvestment } = usePortfolio();
   
   // Form definition
@@ -71,6 +73,9 @@ const AddInvestment = ({
 
     const amount = parseFloat(data.amount);
     
+    // Get investment type based on category
+    const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+    
     // Add the investment to the portfolio
     addInvestment({
       portfolioId: selectedPortfolio.id,
@@ -84,6 +89,9 @@ const AddInvestment = ({
       title: "Investment added",
       description: `£${amount.toFixed(2)} added to ${data.asset} in your ${selectedPortfolio.name} portfolio`,
     });
+    
+    // Navigate back to invest page with the correct filter
+    navigate('/app/invest', { state: { selectedType: investmentType } });
     
     if (onSuccess) {
       onSuccess();
