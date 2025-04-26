@@ -30,6 +30,7 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     toast({
       title: "Coming Soon!",
       description: "Sprout Community Incoming!",
+      duration: 3000,
     });
   };
 
@@ -84,4 +85,3 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     </Collapsible>
   );
 };
-
