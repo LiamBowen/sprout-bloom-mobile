@@ -1,4 +1,4 @@
-import { Shield, Clock, Trash, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,7 @@ import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
 import { InvestmentGoal } from "@/components/invest/InvestmentGoal";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import type { Portfolio, Investment } from "@/types/investment";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -125,13 +126,25 @@ export const PortfolioCard = ({
           />
 
           <div className="flex justify-end mt-4 mb-2">
-            <Button 
-              variant="destructive" 
-              onClick={handleSell}
-              className="flex items-center gap-2"
-            >
-              Sell Investment <ArrowRight className="h-4 w-4" />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  Sell
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to sell?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will initiate the withdrawal of funds from your {portfolio.name} portfolio. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleSell}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           {portfolioInvestments.length > 0 && (
