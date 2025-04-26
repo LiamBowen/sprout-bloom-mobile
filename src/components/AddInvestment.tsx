@@ -84,8 +84,12 @@ const AddInvestment = ({
     
     // Navigate with replaced state and delay a bit to ensure context updates are processed
     setTimeout(() => {
+      // Include the newInvestment flag in the state
       navigate('/app/invest', { 
-        state: { selectedType: investmentType },
+        state: { 
+          selectedType: investmentType === "fractional-shares" ? "fractional" : investmentType,
+          newInvestment: true
+        },
         replace: true
       });
       

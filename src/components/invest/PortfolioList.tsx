@@ -82,25 +82,49 @@ export const PortfolioList = ({
   const [performanceTimeRange, setPerformanceTimeRange] = useState("12m");
   const [investmentGoal, setInvestmentGoal] = useState(1000);
   const location = useLocation();
+  
   const [selectedType, setSelectedType] = useState(() => {
-    console.log("Location state:", location.state);
-    return (location.state as any)?.selectedType || "stocks-etfs";
+    // Handle both "fractional" and "fractional-shares" format in state
+    const locationState = location.state as any;
+    if (locationState?.selectedType) {
+      // Normalize "fractional-shares" to "fractional"
+      if (locationState.selectedType === "fractional-shares") {
+        return "fractional";
+      }
+      return locationState.selectedType;
+    }
+    return "stocks-etfs"; // Default
   });
+
+  // Effect to handle incoming navigation state changes
+  useEffect(() => {
+    if (location.state) {
+      const stateType = (location.state as any).selectedType;
+      if (stateType) {
+        // Normalize "fractional-shares" to "fractional"
+        if (stateType === "fractional-shares") {
+          setSelectedType("fractional");
+        } else {
+          setSelectedType(stateType);
+        }
+      }
+    }
+  }, [location.state]);
 
   // Effect to select the first portfolio of the selected type if none is selected
   useEffect(() => {
     const filtered = portfolios.filter(portfolio => portfolio.category === selectedType);
-    if (filtered.length > 0 && !selectedPortfolio) {
-      setSelectedPortfolio(filtered[0]);
+    if (filtered.length > 0) {
+      // If there's a newly created investment, select it
+      if (location.state && (location.state as any).newInvestment) {
+        const newPortfolio = filtered[filtered.length - 1]; // Last added portfolio
+        setSelectedPortfolio(newPortfolio);
+      } else if (!selectedPortfolio || selectedPortfolio.category !== selectedType) {
+        // If no portfolio is selected or the selected one doesn't match the current type
+        setSelectedPortfolio(filtered[0]);
+      }
     }
-  }, [selectedType, portfolios, selectedPortfolio, setSelectedPortfolio]);
-
-  // Effect to handle incoming navigation state changes
-  useEffect(() => {
-    if (location.state && (location.state as any).selectedType) {
-      setSelectedType((location.state as any).selectedType);
-    }
-  }, [location.state]);
+  }, [selectedType, portfolios, selectedPortfolio, setSelectedPortfolio, location.state]);
 
   const getPortfolioTypeInfo = (portfolio: Portfolio) => {
     return portfolioTypeInfoMap[portfolio.category] || portfolioTypeInfoMap["stocks-etfs"];
@@ -141,7 +165,7 @@ export const PortfolioList = ({
 
       {filteredPortfolios.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          <p>No {selectedType.replace('-', ' ')} investments yet.</p>
+          <p>No {selectedType === "fractional" ? "fractional shares" : selectedType.replace('-', ' ')} investments yet.</p>
         </div>
       ) : (
         filteredPortfolios.map((portfolio) => (
