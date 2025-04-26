@@ -14,9 +14,40 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setUser } = useAuth();
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password reset email sent",
+        description: "Check your email for the password reset link",
+      });
+      
+      // Reset form state after successful password reset request
+      setIsForgotPassword(false);
+      setEmail("");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +136,53 @@ const Auth = () => {
     }
   };
 
+  if (isForgotPassword) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-white to-sprout-green/20">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center flex flex-col items-center">
+            <Logo size="lg" className="mb-4" />
+            <h2 className="text-2xl font-bold">Reset your password</h2>
+            <p className="mt-2 text-gray-600">
+              Enter your email to receive a password reset link
+            </p>
+          </div>
+
+          <Card className="p-6">
+            <form onSubmit={handlePasswordReset} className="space-y-4">
+              <div>
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoading}
+              >
+                {isLoading ? "Sending..." : "Send reset link"}
+              </Button>
+            </form>
+          </Card>
+
+          <div className="text-center">
+            <Button
+              variant="link"
+              onClick={() => setIsForgotPassword(false)}
+              className="text-sm"
+            >
+              Back to sign in
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-white to-sprout-green/20">
       <div className="w-full max-w-md space-y-8">
@@ -140,6 +218,18 @@ const Auth = () => {
                 required
               />
             </div>
+            {!isSignUp && (
+              <div className="text-right">
+                <Button
+                  variant="link"
+                  type="button"
+                  onClick={() => setIsForgotPassword(true)}
+                  className="text-sm text-gray-600 hover:text-gray-900"
+                >
+                  Forgot password?
+                </Button>
+              </div>
+            )}
             <Button 
               type="submit" 
               className="w-full" 
