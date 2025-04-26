@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -13,9 +14,35 @@ export const usePersonalInfo = () => {
   const [email, setEmail] = useState(user?.email || '');
   const [mobile, setMobile] = useState(user?.mobile_number || '');
   const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(
-    user?.dateOfBirth ? new Date(user.dateOfBirth.split('/').reverse().join('-')) : undefined
+    user?.dateOfBirth ? parseDateString(user.dateOfBirth) : undefined
   );
   const [loading, setLoading] = useState(false);
+  
+  // Parse date string in DD/MM/YYYY format to Date object
+  function parseDateString(dateString: string): Date | undefined {
+    if (!dateString) return undefined;
+    
+    const parts = dateString.split('/');
+    if (parts.length !== 3) return undefined;
+    
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JS Date
+    const year = parseInt(parts[2], 10);
+    
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return undefined;
+    
+    return new Date(year, month, day);
+  }
+
+  // Update state when user changes
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setMobile(user.mobile_number || '');
+      setDateOfBirth(user.dateOfBirth ? parseDateString(user.dateOfBirth) : undefined);
+    }
+  }, [user]);
 
   const handleUpdateProfile = async () => {
     if (!user) return;

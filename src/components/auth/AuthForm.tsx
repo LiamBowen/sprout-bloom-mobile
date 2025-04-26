@@ -14,7 +14,6 @@ export const AuthForm = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setUser } = useAuth();
@@ -61,20 +60,30 @@ export const AuthForm = () => {
         if (error) throw error;
         
         if (data.user) {
+          // Fetch user profile data including date of birth
           const { data: profileData } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', data.user.id)
             .single();
             
+          // Get user data from a separate query to merge all needed information
+          const { data: userData, error: userError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+            
+          if (userError) console.error("Error fetching user data:", userError);
+            
           setUser({
             id: data.user.id,
             name: profileData?.display_name || email.split('@')[0],
             email: data.user.email || "",
-            dateOfBirth: "",
+            dateOfBirth: userData?.date_of_birth || "",
             referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
-            friendsReferred: 0,
-            rewardsEarned: 0,
+            friendsReferred: userData?.friends_referred || 0,
+            rewardsEarned: userData?.rewards_earned || 0,
             avatar_url: profileData?.avatar_url,
             mobile_number: profileData?.mobile_number,
             portfolioThemes: profileData?.portfolio_themes || [],
@@ -131,18 +140,16 @@ export const AuthForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            {!isSignUp && (
-              <div className="text-center">
-                <Button
-                  variant="link"
-                  type="button"
-                  onClick={() => setIsForgotPassword(true)}
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Forgot password?
-                </Button>
-              </div>
-            )}
+            <div className="text-center">
+              <Button
+                variant="link"
+                type="button"
+                onClick={() => window.location.href = "/auth/forgot-password"}
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Forgot password?
+              </Button>
+            </div>
             <Button 
               type="submit" 
               className="w-full" 
