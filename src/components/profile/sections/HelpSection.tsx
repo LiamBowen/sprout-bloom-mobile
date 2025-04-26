@@ -3,6 +3,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button";
 import { ChevronRight, HelpCircle, MessageSquare, LifeBuoy } from "lucide-react";
 import { logAnalyticsEvent } from "@/utils/analytics";
+import { useToast } from "@/hooks/use-toast";
 
 interface HelpSectionProps {
   isOpen: boolean;
@@ -10,19 +11,24 @@ interface HelpSectionProps {
 }
 
 export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
+  const { toast } = useToast();
+  
   const handleSupportClick = () => {
     logAnalyticsEvent('help_support_clicked', { source: 'settings' });
-    window.location.href = 'mailto:support@sproutapp.com';
+    window.location.href = 'mailto:grow@getsproutapp.com';
   };
 
   const handleFaqClick = () => {
     logAnalyticsEvent('help_faq_clicked', { source: 'settings' });
-    window.open('https://sproutapp.com/faq', '_blank');
+    window.open('/app/faq', '_blank');
   };
 
   const handleCommunityClick = () => {
     logAnalyticsEvent('help_community_clicked', { source: 'settings' });
-    window.open('https://community.sproutapp.com', '_blank');
+    toast({
+      title: "Coming Soon!",
+      description: "Sprout Community Incoming!",
+    });
   };
 
   return (
@@ -77,4 +83,3 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
     </Collapsible>
   );
 };
-

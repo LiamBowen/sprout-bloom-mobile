@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
@@ -25,6 +24,7 @@ import { useAuth } from './contexts/AuthContext';
 import { Toaster } from "@/components/ui/sonner";
 import BankCallback from './pages/BankCallback';
 import Confetti from './components/Confetti';
+import FAQ from './pages/FAQ';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, isLoading } = useAuth();
@@ -49,12 +49,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const { initializeAuth, isLoggedIn, isLoading, isOnboarded } = useAuth();
   
-  // Run initializeAuth only once when the component mounts
   useEffect(() => {
     initializeAuth();
-  }, []); // Empty dependency array ensures this runs only once
-  
-  // Wait for auth to initialize before rendering routes
+  }, []);
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">
       <p className="text-lg">Loading...</p>
@@ -66,11 +64,9 @@ function App() {
       <div className="App">
         <main>
           <Routes>
-            {/* Public routes that redirect logged in users to app */}
             <Route path="/" element={isLoggedIn ? <Navigate to="/app" /> : <Index />} />
             <Route path="/auth" element={isLoggedIn ? <Navigate to="/app" /> : <Auth />} />
             
-            {/* Onboarding route - accessible when logged in but not onboarded */}
             <Route 
               path="/onboarding" 
               element={
@@ -80,7 +76,6 @@ function App() {
               } 
             />
             
-            {/* Protected routes */}
             <Route
               path="/app"
               element={
@@ -98,6 +93,7 @@ function App() {
               <Route path="coach" element={<Coach />} />
               <Route path="find-friends" element={<FindFriends />} />
               <Route path="bank-callback" element={<BankCallback />} />
+              <Route path="faq" element={<FAQ />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
