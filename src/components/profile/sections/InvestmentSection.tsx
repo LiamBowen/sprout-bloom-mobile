@@ -8,6 +8,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { INVESTMENT_THEMES } from "@/data/investment-themes";
 
 interface InvestmentSectionProps {
   isOpen: boolean;
