@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSavings } from "@/contexts/SavingsContext";
@@ -16,18 +15,15 @@ const Save = () => {
   const { groupFunds, addGroupFund, updateGroupFund, removeGroupFund } = useSavings();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(() => {
-    // Check if we're coming from another page with a specific tab request
     return location.state?.activeTab || "pots";
   });
   const [showNewPotForm, setShowNewPotForm] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   
-  // Reset state when navigation occurs
   useEffect(() => {
     if (location.state?.activeTab) {
       setActiveTab(location.state.activeTab);
-      // Clear the state to prevent it from persisting on refresh
       window.history.replaceState({}, "");
     }
   }, [location]);
@@ -126,8 +122,8 @@ const Save = () => {
 
   return (
     <div className="space-y-4 md:space-y-6 pb-4">
-      <div className="animate-fade-in">
-        <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">Save 🏦</h1>
+      <div className="animate-fade-in text-center">
+        <h1 className="text-xl md:text-2xl font-bold inline-flex items-center justify-center gap-2 w-full">Save 🏦</h1>
         <p className="text-sm md:text-base text-gray-600">Reach your goals faster</p>
       </div>
       
@@ -163,4 +159,3 @@ const Save = () => {
 };
 
 export default Save;
-
