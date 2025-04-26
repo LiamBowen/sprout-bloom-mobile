@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ArrowLeft, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ const FindFriends = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [followedUsers, setFollowedUsers] = useState<number[]>([]);
   
   const suggestedFriends = [
     { id: 1, name: "Emma Johnson", portfolioType: "Tech Growth", mutualFriends: 3 },
@@ -26,22 +28,61 @@ const FindFriends = () => {
   
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Please enter a search term",
+        description: "Enter a name or email to search for friends",
+      });
+      return;
+    }
+    toast({
+      title: "Searching...",
+      description: `Finding users matching "${searchQuery}"`,
+    });
   };
   
-  const handleAddFriend = (friendId) => {
-    toast({
-      title: "Friend request sent!",
-      description: "They'll receive a notification to accept your request.",
-    });
+  const handleAddFriend = (friendId: number) => {
+    if (followedUsers.includes(friendId)) {
+      setFollowedUsers(followedUsers.filter(id => id !== friendId));
+      toast({
+        title: "Unfollowed",
+        description: "You've unfollowed this user.",
+      });
+    } else {
+      setFollowedUsers([...followedUsers, friendId]);
+      toast({
+        title: "Following!",
+        description: "You're now following this user. They'll receive a notification.",
+      });
+    }
   };
   
   const handleInvite = (e) => {
     e.preventDefault();
+    const emailInput = e.target.elements[0] as HTMLInputElement;
+    const email = emailInput.value.trim();
+    
+    if (!email) {
+      toast({
+        title: "Please enter an email",
+        description: "Enter your friend's email address to send an invitation",
+      });
+      return;
+    }
+    
+    if (!email.includes('@')) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+      });
+      return;
+    }
+    
     toast({
       title: "Invitation sent!",
       description: "We've sent an invitation to join Sprout.",
     });
+    emailInput.value = '';
   };
 
   return (
@@ -96,10 +137,14 @@ const FindFriends = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleAddFriend(friend.id)}
-                className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10 ml-2"
+                className={followedUsers.includes(friend.id) 
+                  ? "bg-sprout-lavender text-white hover:bg-sprout-lavender/90" 
+                  : "border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"}
               >
                 <UserPlus size={16} className="sm:mr-1" />
-                <span className="hidden sm:inline">Follow</span>
+                <span className="hidden sm:inline">
+                  {followedUsers.includes(friend.id) ? 'Following' : 'Follow'}
+                </span>
               </Button>
             </div>
           ))}
@@ -124,3 +169,4 @@ const FindFriends = () => {
 };
 
 export default FindFriends;
+
