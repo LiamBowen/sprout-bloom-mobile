@@ -36,3 +36,13 @@ export interface PortfolioType {
   risk: string;
   icon: JSX.Element;
 }
+
+export interface Investment {
+  id: string;
+  portfolioId: string;
+  asset: string;
+  amount: number;
+  date: string;
+  category: string;
+  riskLevel: string;
+}
