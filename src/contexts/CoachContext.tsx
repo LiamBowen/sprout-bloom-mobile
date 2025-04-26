@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { fetchLivePrice } from "@/integrations/finnhub/client";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface CoachMessage {
   sender: "user" | "coach";
@@ -22,6 +23,7 @@ export const CoachProvider = ({ children }: { children: ReactNode }) => {
       text: "Hi there! I'm your financial coach. Ask me about investments, savings, or real-time market data to help you make informed decisions."
     }
   ]);
+  const { toast } = useToast();
 
   const addCoachMessage = async (message: CoachMessage) => {
     setCoachMessages(prevMessages => [...prevMessages, message]);
@@ -66,6 +68,12 @@ export const CoachProvider = ({ children }: { children: ReactNode }) => {
             sender: "coach", 
             text: "I'm having trouble providing information at the moment. Please try again later." 
           }];
+        });
+        
+        toast({
+          title: "Connection Issue",
+          description: "Having trouble connecting to the AI coach service. Please try again later.",
+          variant: "destructive"
         });
       }
     }

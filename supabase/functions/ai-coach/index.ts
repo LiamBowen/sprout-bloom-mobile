@@ -47,6 +47,22 @@ serve(async (req) => {
 
     const data = await response.json();
     
+    // Check if there's an error in the API response
+    if (data.error) {
+      console.error('OpenAI API error:', data.error);
+      
+      // Customize error message based on the error type
+      if (data.error.type === 'insufficient_quota') {
+        return new Response(JSON.stringify({ 
+          response: "I'm currently experiencing high demand and can't process your request at the moment. Our team is working to increase capacity. Please try again later." 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      throw new Error(data.error.message || 'Unknown error from OpenAI API');
+    }
+    
     // Check if the response has the expected structure
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Unexpected API response structure:', data);
@@ -60,8 +76,10 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in AI coach function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+    return new Response(JSON.stringify({ 
+      response: "I'm having trouble connecting to my knowledge base right now. Please try again in a few moments." 
+    }), {
+      status: 200, // Return 200 instead of 500 to ensure the message is displayed
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
