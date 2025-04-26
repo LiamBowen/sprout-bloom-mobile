@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ArrowLeft, Search, UserPlus, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -126,7 +127,7 @@ const FindFriends = () => {
                   <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                     <AvatarFallback>{request.name.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="font-medium text-sm sm:text-base truncate">{request.name}</p>
                     <div className="flex flex-col items-start gap-0.5">
                       <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
@@ -140,24 +141,24 @@ const FindFriends = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
+                    className="w-full sm:w-auto border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
                     onClick={() => handleFriendRequest(request.id, true)}
                   >
-                    <UserPlus size={16} className="sm:mr-1" />
-                    <span className="hidden sm:inline">Accept</span>
+                    <UserPlus size={16} className="mr-1" />
+                    Accept
                   </Button>
                   <Button 
                     variant="ghost"
                     size="sm"
-                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => handleFriendRequest(request.id, false)}
                   >
-                    <UserX size={16} className="sm:mr-1" />
-                    <span className="hidden sm:inline">Decline</span>
+                    <UserX size={16} className="mr-1" />
+                    Decline
                   </Button>
                 </div>
               </div>
