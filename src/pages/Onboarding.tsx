@@ -137,6 +137,23 @@ const Onboarding = () => {
     }
   };
   
+  const handleThemeChange = (theme: string, checked: boolean) => {
+    if (checked && portfolioThemes.length >= 3) {
+      toast({
+        title: "Maximum themes reached",
+        description: "You can only select up to 3 investment themes",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setPortfolioThemes(
+      checked 
+        ? [...portfolioThemes, theme]
+        : portfolioThemes.filter(t => t !== theme)
+    );
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -265,7 +282,7 @@ const Onboarding = () => {
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-bold mb-6">Investment Preferences 📈</h2>
-            <p className="mb-6 text-gray-600">What kind of investments interest you?</p>
+            <p className="mb-6 text-gray-600">What kind of investments interest you? (Select up to 3)</p>
             
             <div className="space-y-4 mb-6">
               <ScrollArea className="h-[280px] rounded-md border p-4">
@@ -275,13 +292,7 @@ const Onboarding = () => {
                       <Checkbox 
                         id={id} 
                         checked={portfolioThemes.includes(id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setPortfolioThemes([...portfolioThemes, id]);
-                          } else {
-                            setPortfolioThemes(portfolioThemes.filter(theme => theme !== id));
-                          }
-                        }}
+                        onCheckedChange={(checked) => handleThemeChange(id, checked as boolean)}
                       />
                       <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         {label}

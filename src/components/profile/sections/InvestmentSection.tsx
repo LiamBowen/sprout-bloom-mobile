@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -15,24 +14,6 @@ interface InvestmentSectionProps {
   onOpenChange: () => void;
 }
 
-const INVESTMENT_THEMES = [
-  { id: "Tech", label: "Technology & Innovation" },
-  { id: "Sustainable", label: "Sustainable & Green Energy" },
-  { id: "Crypto", label: "Cryptocurrency" },
-  { id: "HealthTech", label: "Healthcare & Biotech" },
-  { id: "AI", label: "Artificial Intelligence" },
-  { id: "RealEstate", label: "Real Estate" },
-  { id: "Fintech", label: "Financial Technology" },
-  { id: "CleanEnergy", label: "Clean Energy" },
-  { id: "EVs", label: "Electric Vehicles" },
-  { id: "ConsumerTech", label: "Consumer Technology" },
-  { id: "CloudComputing", label: "Cloud Computing" },
-  { id: "Robotics", label: "Robotics & Automation" },
-  { id: "Gaming", label: "Gaming & eSports" },
-  { id: "Space", label: "Space Technology" },
-  { id: "Agriculture", label: "AgTech & FoodTech" },
-];
-
 export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionProps) => {
   const { user, setUser } = useApp();
   const { toast } = useToast();
@@ -40,6 +21,23 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
   const [portfolioThemes, setPortfolioThemes] = useState<string[]>(user?.portfolioThemes || []);
   const [riskLevel, setRiskLevel] = useState(user?.riskLevel || "Medium");
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleThemeChange = (theme: string, checked: boolean) => {
+    if (checked && portfolioThemes.length >= 3) {
+      toast({
+        title: "Maximum themes reached",
+        description: "You can only select up to 3 investment themes",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setPortfolioThemes(
+      checked 
+        ? [...portfolioThemes, theme]
+        : portfolioThemes.filter(t => t !== theme)
+    );
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -95,23 +93,19 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <h4 className="text-sm text-gray-600">Portfolio Themes</h4>
+              <h4 className="text-sm text-gray-600">Portfolio Themes (Select up to 3)</h4>
               <ScrollArea className="h-[280px] rounded-md border p-4">
                 <div className="space-y-2">
                   {INVESTMENT_THEMES.map(({ id, label }) => (
                     <div key={id} className="flex items-center space-x-2">
                       <Checkbox 
-                        id={`theme-${id}`}
+                        id={id}
                         checked={portfolioThemes.includes(id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setPortfolioThemes([...portfolioThemes, id]);
-                          } else {
-                            setPortfolioThemes(portfolioThemes.filter(t => t !== id));
-                          }
-                        }}
+                        onCheckedChange={(checked) => handleThemeChange(id, checked as boolean)}
                       />
-                      <label htmlFor={`theme-${id}`} className="text-sm">{label}</label>
+                      <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {label}
+                      </label>
                     </div>
                   ))}
                 </div>
@@ -182,4 +176,3 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
     </Collapsible>
   );
 };
-
