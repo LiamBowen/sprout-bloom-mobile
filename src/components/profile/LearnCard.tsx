@@ -1,9 +1,13 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Book, ChevronRight } from "lucide-react";
+import { Book, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useState } from "react";
 
 export const LearnCard = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   const educationalContent = [
     {
       title: "Investing Basics",
@@ -24,36 +28,46 @@ export const LearnCard = () => {
 
   return (
     <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-sprout-blue/20 rounded-full flex items-center justify-center mr-2">
-            <Book size={18} className="text-sprout-blue" />
-          </div>
-          <h3 className="font-bold">Learn</h3>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {}}
-        >
-          <ChevronRight size={18} />
-        </Button>
-      </div>
-      
-      <div className="space-y-3">
-        {educationalContent.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center border-b last:border-0 border-gray-100 py-2"
-          >
-            <div className="text-xl mr-3">{item.icon}</div>
-            <div>
-              <p className="font-medium">{item.title}</p>
-              <p className="text-xs text-gray-600">{item.description}</p>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-sprout-blue/20 rounded-full flex items-center justify-center">
+              <Book size={18} className="text-sprout-blue" />
             </div>
+            <h3 className="font-bold">Learn</h3>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ChevronDown
+                  size={18}
+                  className={`transition-transform duration-200 ${
+                    isOpen ? "transform rotate-180" : ""
+                  }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
           </div>
-        ))}
-      </div>
+        </div>
+        
+        <p className="text-sm text-gray-600 mb-4 ml-10">Coming soon: Sprout's own learning hub!</p>
+        
+        <CollapsibleContent>
+          <div className="space-y-3 mt-4">
+            {educationalContent.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 border-b last:border-0 border-gray-100 py-2"
+              >
+                <div className="text-xl">{item.icon}</div>
+                <div>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="text-xs text-gray-600">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
+
