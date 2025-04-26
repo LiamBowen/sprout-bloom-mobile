@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Shield } from "lucide-react";
+import { Shield, Bitcoin, PieChart } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
 import { portfolioTypes } from "@/data/investment-data";
 import type { Portfolio } from "@/types/investment";
@@ -54,6 +55,22 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
   return data;
 };
 
+// Map portfolio IDs to their categories based on related investments
+const getPortfolioCategory = (portfolioId: string, investments: any[]): string => {
+  const investment = investments.find(inv => inv.portfolioId === portfolioId);
+  if (investment) {
+    return investment.category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+  }
+  // Default mappings for original portfolios
+  const defaultCategories: Record<string, string> = {
+    "green-growth": "stocks-etfs",
+    "future-tech": "stocks-etfs",
+    "travel-freedom": "fractional",
+    "ethical-brands": "stocks-etfs",
+  };
+  return defaultCategories[portfolioId] || "stocks-etfs";
+};
+
 export const PortfolioList = ({
   portfolios,
   selectedPortfolio,
@@ -67,19 +84,35 @@ export const PortfolioList = ({
     return (location.state as any)?.selectedType || "stocks-etfs";
   });
 
-  const defaultPortfolioType = {
-    type: "Stocks & ETFs",
-    risk: "Medium Risk",
-    icon: <Shield className="h-3 w-3 mr-1" />,
-  };
-  
   const getPortfolioTypeInfo = (portfolioId: string) => {
-    return portfolioTypes[portfolioId] || defaultPortfolioType;
+    // Get category from investments if it exists
+    const portfolioCategory = getPortfolioCategory(portfolioId, investments);
+    
+    // Default type infos based on category
+    const typeInfoMap: Record<string, any> = {
+      "stocks-etfs": {
+        type: "Stocks & ETFs",
+        risk: "Medium Risk",
+        icon: <Shield className="h-3 w-3 mr-1" />,
+      },
+      "crypto": {
+        type: "Crypto",
+        risk: "High Risk",
+        icon: <Bitcoin className="h-3 w-3 mr-1" />,
+      },
+      "fractional": {
+        type: "Fractional Shares",
+        risk: "Low-Medium Risk",
+        icon: <PieChart className="h-3 w-3 mr-1" />,
+      }
+    };
+    
+    return typeInfoMap[portfolioCategory] || typeInfoMap["stocks-etfs"];
   };
 
   const filteredPortfolios = portfolios.filter(portfolio => {
-    const type = portfolioTypes[portfolio.id]?.type.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
-    return type === selectedType;
+    const portfolioCategory = getPortfolioCategory(portfolio.id, investments);
+    return portfolioCategory === selectedType;
   });
 
   return (
@@ -103,23 +136,29 @@ export const PortfolioList = ({
         </ToggleGroupItem>
       </ToggleGroup>
 
-      {filteredPortfolios.map((portfolio) => (
-        <PortfolioCard
-          key={portfolio.id}
-          portfolio={portfolio}
-          isSelected={selectedPortfolio?.id === portfolio.id}
-          onSelect={setSelectedPortfolio}
-          performanceTimeRange={performanceTimeRange}
-          onTimeRangeChange={setPerformanceTimeRange}
-          investmentGoal={investmentGoal}
-          onGoalChange={setInvestmentGoal}
-          portfolioInvestments={investments.filter(
-            investment => selectedPortfolio && investment.portfolioId === portfolio.id
-          )}
-          portfolioTypeInfo={getPortfolioTypeInfo(portfolio.id)}
-          performanceData={generatePerformanceData(portfolio.growth, performanceTimeRange)}
-        />
-      ))}
+      {filteredPortfolios.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <p>No {selectedType.replace('-', ' ')} investments yet.</p>
+        </div>
+      ) : (
+        filteredPortfolios.map((portfolio) => (
+          <PortfolioCard
+            key={portfolio.id}
+            portfolio={portfolio}
+            isSelected={selectedPortfolio?.id === portfolio.id}
+            onSelect={setSelectedPortfolio}
+            performanceTimeRange={performanceTimeRange}
+            onTimeRangeChange={setPerformanceTimeRange}
+            investmentGoal={investmentGoal}
+            onGoalChange={setInvestmentGoal}
+            portfolioInvestments={investments.filter(
+              investment => investment.portfolioId === portfolio.id
+            )}
+            portfolioTypeInfo={getPortfolioTypeInfo(portfolio.id)}
+            performanceData={generatePerformanceData(portfolio.growth, performanceTimeRange)}
+          />
+        ))
+      )}
     </div>
   );
 };

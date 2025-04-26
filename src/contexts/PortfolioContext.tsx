@@ -27,7 +27,7 @@ interface PortfolioContextType {
   showConfetti: boolean;
   triggerConfetti: () => void;
   investments: Investment[];
-  addInvestment: (investment: Omit<Investment, "id" | "date">) => void;
+  addInvestment: (investment: Omit<Investment, "id" | "date" | "portfolioId">) => void;
 }
 
 const mockPortfolios: Portfolio[] = [
@@ -65,6 +65,25 @@ const mockPortfolios: Portfolio[] = [
   },
 ];
 
+// Get a random emoji based on category
+const getEmojiForCategory = (category: string): string => {
+  const emojiMap: Record<string, string[]> = {
+    "Stocks & ETFs": ["📈", "💼", "🏢", "📊"],
+    "Crypto": ["₿", "🔒", "💰", "🌐"],
+    "Fractional Shares": ["🧩", "🔢", "🏙️", "🛍️"]
+  };
+  
+  const defaultEmojis = ["💸", "💵", "💹"];
+  const emojis = emojiMap[category] || defaultEmojis;
+  return emojis[Math.floor(Math.random() * emojis.length)];
+};
+
+// Get a random color for new portfolios
+const getRandomColor = (): string => {
+  const colors = ["bg-sprout-green", "bg-sprout-blue", "bg-sprout-lavender", "bg-sprout-pink"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
@@ -78,23 +97,36 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     setTimeout(() => setShowConfetti(false), 3000);
   };
 
-  const addInvestment = (investment: Omit<Investment, "id" | "date">) => {
+  const addInvestment = (investment: Omit<Investment, "id" | "date" | "portfolioId">) => {
+    // Generate a new portfolio ID based on the asset name
+    const portfolioId = `${investment.asset.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now()}`;
+    
+    // Create a new portfolio for this investment
+    const newPortfolio: Portfolio = {
+      id: portfolioId,
+      name: investment.asset,
+      value: investment.amount,
+      growth: Math.random() * 10 - 2, // Random growth between -2% and 8%
+      emoji: getEmojiForCategory(investment.category),
+      color: getRandomColor(),
+    };
+    
+    // Add the new portfolio
+    setPortfolios(prev => [...prev, newPortfolio]);
+    
+    // Create the investment
     const newInvestment: Investment = {
       ...investment,
+      portfolioId,
       id: `inv-${Date.now()}`,
       date: new Date().toISOString(),
     };
     
+    // Add the investment
     setInvestments(prev => [...prev, newInvestment]);
     
-    // Update portfolio value with new investment
-    setPortfolios(prev => 
-      prev.map(portfolio => 
-        portfolio.id === investment.portfolioId 
-          ? { ...portfolio, value: portfolio.value + investment.amount }
-          : portfolio
-      )
-    );
+    // Set the newly created portfolio as selected
+    setSelectedPortfolio(newPortfolio);
     
     triggerConfetti();
   };

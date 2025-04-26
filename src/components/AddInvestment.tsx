@@ -4,7 +4,8 @@ import {
   Card, 
   CardContent, 
   CardHeader, 
-  CardTitle 
+  CardTitle,
+  CardDescription 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +26,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { LivePrice } from './LivePrice';
-import { DialogClose } from '@/components/ui/dialog';
+import { DialogClose, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // Define form validation schema
 const investmentFormSchema = z.object({
@@ -50,7 +51,7 @@ const AddInvestment = ({
 }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { selectedPortfolio, addInvestment } = usePortfolio();
+  const { addInvestment } = usePortfolio();
   
   // Form definition
   const form = useForm<InvestmentFormValues>({
@@ -62,23 +63,13 @@ const AddInvestment = ({
   });
   
   const handleAddInvestment = (data: InvestmentFormValues) => {
-    if (!selectedPortfolio) {
-      toast({
-        title: "Error",
-        description: "Please select a portfolio first",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const amount = parseFloat(data.amount);
     
     // Get investment type based on category
     const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
     
-    // Add the investment to the portfolio
+    // Add the new portfolio and investment
     addInvestment({
-      portfolioId: selectedPortfolio.id,
       asset: data.asset,
       amount: amount,
       category: category,
@@ -86,8 +77,8 @@ const AddInvestment = ({
     });
     
     toast({
-      title: "Investment added",
-      description: `£${amount.toFixed(2)} added to ${data.asset} in your ${selectedPortfolio.name} portfolio`,
+      title: "Investment created",
+      description: `£${amount.toFixed(2)} invested in ${data.asset}`,
     });
     
     // Navigate back to invest page with the correct filter
@@ -108,6 +99,9 @@ const AddInvestment = ({
           <Leaf className="text-sprout-green h-5 w-5" />
           Add Investment
         </CardTitle>
+        <CardDescription>
+          Create a new investment portfolio
+        </CardDescription>
       </CardHeader>
       
       <CardContent>
@@ -175,7 +169,7 @@ const AddInvestment = ({
                 disabled={!form.formState.isValid}
                 onClick={form.handleSubmit(handleAddInvestment)}
               >
-                Add Investment <ChevronRight size={18} />
+                Create Investment <ChevronRight size={18} />
               </Button>
             </DialogClose>
           </form>
