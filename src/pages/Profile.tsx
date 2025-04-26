@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -23,6 +23,9 @@ const Profile = () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Clear user data but maintain onboarding status
+      setUser(null);
       navigate("/auth");
     } catch (error: any) {
       toast({

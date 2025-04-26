@@ -219,7 +219,7 @@ const Auth = () => {
               />
             </div>
             {!isSignUp && (
-              <div className="text-right">
+              <div className="text-center">
                 <Button
                   variant="link"
                   type="button"
