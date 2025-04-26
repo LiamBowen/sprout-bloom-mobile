@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Clock, Plus } from "lucide-react";
@@ -81,13 +82,15 @@ const Invest = () => {
 
   return (
     <div className="space-y-6">
-      <div className="animate-fade-in flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Invest 📈</h1>
-        <Link to="/app/new-investment">
-          <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
-            <Plus size={20} />
-          </Button>
-        </Link>
+      <div className="animate-fade-in">
+        <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
+        <div className="flex justify-between items-center">
+          <Link to="/app/new-investment">
+            <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
+              <Plus size={20} />
+            </Button>
+          </Link>
+        </div>
       </div>
       
       <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
@@ -226,3 +229,4 @@ const Invest = () => {
 };
 
 export default Invest;
+
