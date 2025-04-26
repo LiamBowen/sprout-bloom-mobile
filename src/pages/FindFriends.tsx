@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowLeft, Search, UserPlus, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -141,24 +140,22 @@ const FindFriends = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex items-center gap-2">
                   <Button 
                     variant="outline"
-                    size="sm"
-                    className="w-full sm:w-auto border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
+                    size="icon"
+                    className="text-sprout-lavender hover:bg-sprout-lavender/10 border-sprout-lavender"
                     onClick={() => handleFriendRequest(request.id, true)}
                   >
-                    <UserPlus size={16} className="mr-1" />
-                    Accept
+                    <UserPlus size={16} />
                   </Button>
                   <Button 
                     variant="ghost"
-                    size="sm"
-                    className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    size="icon"
+                    className="text-destructive hover:bg-destructive/10"
                     onClick={() => handleFriendRequest(request.id, false)}
                   >
-                    <UserX size={16} className="mr-1" />
-                    Decline
+                    <UserX size={16} />
                   </Button>
                 </div>
               </div>
