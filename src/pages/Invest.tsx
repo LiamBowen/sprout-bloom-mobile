@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Shield, Clock, Plus } from "lucide-react";
+import { TrendingUp, Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolio } from "@/contexts/PortfolioContext";
 import { PortfolioPerformance } from "@/components/invest/PortfolioPerformance";
@@ -85,9 +84,7 @@ const Invest = () => {
       <div className="animate-fade-in flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
-          <p className="text-gray-600 text-sm">
-            🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
-          </p>
+          <p className="text-gray-600 text-sm">Grow your wealth, one small seed at a time</p>
         </div>
         <Link to="/app/new-investment">
           <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
