@@ -18,7 +18,7 @@ export const SecuritySection = ({ isOpen, onOpenChange }: SecuritySectionProps) 
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
         <div className="flex items-center">
           <ShieldAlert size={16} className="mr-2 text-gray-600" />
-          <span className="font-medium">Security</span>
+          <span className="font-medium">Security & Privacy</span>
         </div>
         <ChevronRight size={18} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </CollapsibleTrigger>

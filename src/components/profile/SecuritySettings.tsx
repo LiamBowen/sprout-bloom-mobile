@@ -9,11 +9,11 @@ import { useApp } from "@/contexts/AppContext";
 
 export const SecuritySettings = () => {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [facialRecognition, setFacialRecognition] = useState(false);
+  const [profileVisibility, setProfileVisibility] = useState(true);
   const { toast } = useToast();
   const { user } = useApp();
 
@@ -55,19 +55,6 @@ export const SecuritySettings = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
   const toggleFacialRecognition = async () => {
     if (!user) return;
     
@@ -83,6 +70,31 @@ export const SecuritySettings = () => {
       toast({
         title: "Success",
         description: `Facial recognition ${!facialRecognition ? 'enabled' : 'disabled'} successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleProfileVisibility = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_public: !profileVisibility })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setProfileVisibility(!profileVisibility);
+      toast({
+        title: "Success",
+        description: `Profile visibility ${!profileVisibility ? 'enabled' : 'disabled'} successfully`,
       });
     } catch (error: any) {
       toast({
@@ -116,15 +128,11 @@ export const SecuritySettings = () => {
       </div>
 
       <div className="flex justify-between items-center mt-3">
-        <span className="text-sm text-gray-600">Sign Out</span>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="h-7 text-xs text-destructive border-destructive hover:bg-destructive/10"
-          onClick={handleSignOut}
-        >
-          Sign Out
-        </Button>
+        <span className="text-sm text-gray-600">Profile Visibility</span>
+        <Switch
+          checked={profileVisibility}
+          onCheckedChange={toggleProfileVisibility}
+        />
       </div>
 
       <Dialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen}>
