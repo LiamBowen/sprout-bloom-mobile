@@ -1,6 +1,13 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { usePortfolio } from "@/contexts/PortfolioContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Transaction {
   id: string;
@@ -21,7 +28,30 @@ export const RoundUps = ({
   roundUpAmount, 
   onRoundUpChange 
 }: RoundUpsProps) => {
+  const [isInvestDialogOpen, setIsInvestDialogOpen] = useState(false);
+  const [selectedPortfolio, setSelectedPortfolio] = useState<string>("");
+  const { portfolios } = usePortfolio();
+  const { toast } = useToast();
+  
   const totalRoundUps = transactions.reduce((acc, tx) => acc + tx.roundUp * roundUpAmount, 0);
+
+  const handleInvest = () => {
+    if (selectedPortfolio) {
+      toast({
+        title: "Round-ups invested!",
+        description: `Successfully invested £${totalRoundUps.toFixed(2)} into ${portfolios.find(p => p.id === selectedPortfolio)?.name}`,
+      });
+      setIsInvestDialogOpen(false);
+      setSelectedPortfolio("");
+    }
+  };
+
+  const handleWithdraw = () => {
+    toast({
+      title: "Withdrawal initiated",
+      description: `Your round-ups worth £${totalRoundUps.toFixed(2)} will be withdrawn to your connected bank account.`,
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -55,12 +85,69 @@ export const RoundUps = ({
         </div>
         
         <div className="flex flex-col space-y-3 mt-4">
-          <Button className="w-full btn-action btn-primary">
-            Invest Round-ups <ArrowRight size={18} />
-          </Button>
-          <Button variant="outline" className="w-full">
-            Withdraw Round-ups
-          </Button>
+          <Dialog open={isInvestDialogOpen} onOpenChange={setIsInvestDialogOpen}>
+            <Button className="w-full btn-action btn-primary" onClick={() => setIsInvestDialogOpen(true)}>
+              Invest Round-ups <ArrowRight size={18} />
+            </Button>
+            
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Choose Investment Portfolio</DialogTitle>
+                <DialogDescription>
+                  Select which portfolio you'd like to invest your round-ups worth £{totalRoundUps.toFixed(2)} into.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="py-4">
+                <Select value={selectedPortfolio} onValueChange={setSelectedPortfolio}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a portfolio" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {portfolios.map((portfolio) => (
+                      <SelectItem key={portfolio.id} value={portfolio.id}>
+                        <span className="flex items-center gap-2">
+                          {portfolio.emoji} {portfolio.name}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsInvestDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleInvest} disabled={!selectedPortfolio}>
+                  Confirm Investment
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="w-full">
+                Withdraw Round-ups
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will withdraw £{totalRoundUps.toFixed(2)} of round-ups to your connected bank account.
+                  This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="flex justify-end gap-2">
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleWithdraw}>
+                  Confirm Withdrawal
+                </AlertDialogAction>
+              </div>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </Card>
 
