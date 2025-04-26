@@ -1,13 +1,13 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Users, UserPlus } from "lucide-react";
+import { Users, UserPlus, UserMinus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FriendDetailsDialog } from "./FriendDetailsDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface Friend {
   id: number;
@@ -22,9 +22,8 @@ interface Friend {
 export const FriendsCard = () => {
   const navigate = useNavigate();
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
-  
-  // Mock data for followed friends
-  const friends: Friend[] = [
+  const { toast } = useToast();
+  const [friends, setFriends] = useState<Friend[]>([
     {
       id: 1,
       name: "Emma Johnson",
@@ -52,10 +51,21 @@ export const FriendsCard = () => {
       investmentPreferences: ["Index Funds", "Bonds", "Blue Chip Stocks"],
       totalInvestments: 12
     }
-  ];
+  ]);
 
   const handleFindFriends = () => {
     navigate('/app/find-friends');
+  };
+
+  const handleRemoveFriend = (friendId: number, event: React.MouseEvent) => {
+    event.stopPropagation();
+    const friendToRemove = friends.find(f => f.id === friendId);
+    setFriends(friends.filter(friend => friend.id !== friendId));
+    
+    toast({
+      title: "Friend Removed",
+      description: `You have removed ${friendToRemove?.name} from your friends list`,
+    });
   };
 
   return (
@@ -104,6 +114,14 @@ export const FriendsCard = () => {
                       </Badge>
                     </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={(e) => handleRemoveFriend(friend.id, e)}
+                  >
+                    <UserMinus size={16} />
+                  </Button>
                 </div>
               ))}
             </div>
