@@ -115,7 +115,7 @@ export const RoundUps = ({
                 </Select>
               </div>
               
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setIsInvestDialogOpen(false)}>
                   Cancel
                 </Button>
@@ -140,7 +140,7 @@ export const RoundUps = ({
                   This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end space-x-2">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleWithdraw}>
                   Confirm Withdrawal
