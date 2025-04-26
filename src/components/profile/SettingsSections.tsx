@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PersonalInfoSection } from "./sections/PersonalInfoSection";
 import { BankSection } from "./sections/BankSection";
@@ -6,6 +5,7 @@ import { InvestmentSection } from "./sections/InvestmentSection";
 import { NotificationsSection } from "./sections/NotificationsSection";
 import { SecuritySection } from "./sections/SecuritySection";
 import { LegalSection } from "./sections/LegalSection";
+import { HelpSection } from "./sections/HelpSection";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
@@ -14,7 +14,8 @@ export const SettingsSections = () => {
     investment: false,
     notifications: false,
     security: false,
-    legal: false
+    legal: false,
+    help: false
   });
 
   const toggleSettingsSection = (section: keyof typeof openSettings) => {
@@ -54,6 +55,11 @@ export const SettingsSections = () => {
       <LegalSection 
         isOpen={openSettings.legal}
         onOpenChange={() => toggleSettingsSection('legal')}
+      />
+      
+      <HelpSection 
+        isOpen={openSettings.help}
+        onOpenChange={() => toggleSettingsSection('help')}
       />
     </>
   );
