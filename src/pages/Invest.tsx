@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolio } from "@/contexts/PortfolioContext";
 import { RoundUps } from "@/components/invest/RoundUps";
 import { mockTransactions } from "@/data/investment-data";
-import InvestHeader from "@/components/invest/InvestHeader";  // Changed from { InvestHeader } to default import
+import { InvestHeader } from "@/components/invest/InvestHeader";
 import { MarketTrends } from "@/components/invest/MarketTrends";
 import { PortfolioList } from "@/components/invest/PortfolioList";
 
@@ -46,4 +46,3 @@ const Invest = () => {
 };
 
 export default Invest;
-
