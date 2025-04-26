@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface Portfolio {
@@ -48,6 +49,24 @@ const mockPortfolios: Portfolio[] = [
     emoji: "💻",
     color: "bg-sprout-blue",
     category: "stocks-etfs"
+  },
+  {
+    id: "bitcoin-fund",
+    name: "Bitcoin Fund",
+    value: 2150.25,
+    growth: 12.5,
+    emoji: "₿",
+    color: "bg-sprout-lavender",
+    category: "crypto"
+  },
+  {
+    id: "eth-portfolio",
+    name: "ETH Portfolio",
+    value: 1580.00,
+    growth: -3.2,
+    emoji: "🔗",
+    color: "bg-sprout-pink",
+    category: "crypto"
   },
   {
     id: "travel-freedom",
