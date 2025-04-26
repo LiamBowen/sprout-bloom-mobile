@@ -83,11 +83,11 @@ const Invest = () => {
   return (
     <div className="space-y-6">
       <div className="animate-fade-in flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
-          <p className="text-gray-600 text-sm">Grow your wealth, one small seed at a time</p>
+        <div className="text-center w-full">
+          <h1 className="text-2xl font-bold mb-2 text-center">Invest 📈</h1>
+          <p className="text-gray-600 text-sm text-center">Grow your wealth, one small seed at a time</p>
         </div>
-        <Link to="/app/new-investment">
+        <Link to="/app/new-investment" className="absolute right-0 top-0">
           <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
             <Plus size={20} />
           </Button>
