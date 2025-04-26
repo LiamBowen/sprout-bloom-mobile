@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { LegalDialog } from "./legal/LegalDialog";
 
 interface LegalSectionProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ interface LegalSectionProps {
 
 export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [legalDialogType, setLegalDialogType] = useState<"terms" | "privacy" | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -73,11 +75,25 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
       <CollapsibleContent className="pt-2 pb-4 space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Terms & Conditions</span>
-          <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
+          <Button 
+            variant="link" 
+            size="sm" 
+            className="h-7 text-xs p-0"
+            onClick={() => setLegalDialogType("terms")}
+          >
+            View
+          </Button>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Privacy Policy</span>
-          <Button variant="link" size="sm" className="h-7 text-xs p-0">View</Button>
+          <Button 
+            variant="link" 
+            size="sm" 
+            className="h-7 text-xs p-0"
+            onClick={() => setLegalDialogType("privacy")}
+          >
+            View
+          </Button>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Close Account</span>
@@ -87,7 +103,6 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
                 variant="outline" 
                 size="sm" 
                 className="h-7 text-xs text-destructive border-destructive hover:bg-destructive/10"
-                onClick={() => setIsAlertOpen(true)}
               >
                 Close
               </Button>
@@ -109,6 +124,12 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
           </AlertDialog>
         </div>
       </CollapsibleContent>
+
+      <LegalDialog
+        isOpen={legalDialogType !== null}
+        onClose={() => setLegalDialogType(null)}
+        type={legalDialogType || "terms"}
+      />
     </Collapsible>
   );
 };
