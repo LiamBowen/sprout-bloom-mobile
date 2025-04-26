@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -149,7 +148,6 @@ export const RoundUps = ({
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </Card>
 
       <h3 className="font-semibold mt-4">Recent Transactions</h3>
       
