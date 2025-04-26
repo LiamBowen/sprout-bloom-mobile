@@ -46,6 +46,13 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    
+    // Check if the response has the expected structure
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Unexpected API response structure:', data);
+      throw new Error('Invalid response from OpenAI API');
+    }
+    
     const generatedText = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ response: generatedText }), {
