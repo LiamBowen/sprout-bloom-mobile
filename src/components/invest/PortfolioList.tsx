@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Shield, Bitcoin, PieChart } from "lucide-react";
 import { PortfolioCard } from "./PortfolioCard";
@@ -55,20 +54,22 @@ const generatePerformanceData = (growth: number, timeRange: string) => {
   return data;
 };
 
-// Map portfolio IDs to their categories based on related investments
-const getPortfolioCategory = (portfolioId: string, investments: any[]): string => {
-  const investment = investments.find(inv => inv.portfolioId === portfolioId);
-  if (investment) {
-    return investment.category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+const portfolioTypeInfoMap: Record<string, any> = {
+  "stocks-etfs": {
+    type: "Stocks & ETFs",
+    risk: "Medium Risk",
+    icon: <Shield className="h-3 w-3 mr-1" />,
+  },
+  "crypto": {
+    type: "Crypto",
+    risk: "High Risk",
+    icon: <Bitcoin className="h-3 w-3 mr-1" />,
+  },
+  "fractional": {
+    type: "Fractional Shares",
+    risk: "Low-Medium Risk",
+    icon: <PieChart className="h-3 w-3 mr-1" />,
   }
-  // Default mappings for original portfolios
-  const defaultCategories: Record<string, string> = {
-    "green-growth": "stocks-etfs",
-    "future-tech": "stocks-etfs",
-    "travel-freedom": "fractional",
-    "ethical-brands": "stocks-etfs",
-  };
-  return defaultCategories[portfolioId] || "stocks-etfs";
 };
 
 export const PortfolioList = ({
@@ -84,35 +85,12 @@ export const PortfolioList = ({
     return (location.state as any)?.selectedType || "stocks-etfs";
   });
 
-  const getPortfolioTypeInfo = (portfolioId: string) => {
-    // Get category from investments if it exists
-    const portfolioCategory = getPortfolioCategory(portfolioId, investments);
-    
-    // Default type infos based on category
-    const typeInfoMap: Record<string, any> = {
-      "stocks-etfs": {
-        type: "Stocks & ETFs",
-        risk: "Medium Risk",
-        icon: <Shield className="h-3 w-3 mr-1" />,
-      },
-      "crypto": {
-        type: "Crypto",
-        risk: "High Risk",
-        icon: <Bitcoin className="h-3 w-3 mr-1" />,
-      },
-      "fractional": {
-        type: "Fractional Shares",
-        risk: "Low-Medium Risk",
-        icon: <PieChart className="h-3 w-3 mr-1" />,
-      }
-    };
-    
-    return typeInfoMap[portfolioCategory] || typeInfoMap["stocks-etfs"];
+  const getPortfolioTypeInfo = (portfolio: Portfolio) => {
+    return portfolioTypeInfoMap[portfolio.category] || portfolioTypeInfoMap["stocks-etfs"];
   };
 
   const filteredPortfolios = portfolios.filter(portfolio => {
-    const portfolioCategory = getPortfolioCategory(portfolio.id, investments);
-    return portfolioCategory === selectedType;
+    return portfolio.category === selectedType;
   });
 
   return (
@@ -154,7 +132,7 @@ export const PortfolioList = ({
             portfolioInvestments={investments.filter(
               investment => investment.portfolioId === portfolio.id
             )}
-            portfolioTypeInfo={getPortfolioTypeInfo(portfolio.id)}
+            portfolioTypeInfo={getPortfolioTypeInfo(portfolio)}
             performanceData={generatePerformanceData(portfolio.growth, performanceTimeRange)}
           />
         ))

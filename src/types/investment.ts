@@ -29,6 +29,7 @@ export interface Portfolio {
   growth: number;
   emoji: string;
   color: string;
+  category: string;
 }
 
 export interface PortfolioType {

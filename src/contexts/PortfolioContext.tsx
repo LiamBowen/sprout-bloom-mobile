@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface Portfolio {
@@ -8,6 +7,7 @@ interface Portfolio {
   growth: number;
   emoji: string;
   color: string;
+  category: string;
 }
 
 interface Investment {
@@ -38,6 +38,7 @@ const mockPortfolios: Portfolio[] = [
     growth: 5.2,
     emoji: "🌱",
     color: "bg-sprout-green",
+    category: "stocks-etfs"
   },
   {
     id: "future-tech",
@@ -46,6 +47,7 @@ const mockPortfolios: Portfolio[] = [
     growth: 8.7,
     emoji: "💻",
     color: "bg-sprout-blue",
+    category: "stocks-etfs"
   },
   {
     id: "travel-freedom",
@@ -54,6 +56,7 @@ const mockPortfolios: Portfolio[] = [
     growth: 3.9,
     emoji: "✈️",
     color: "bg-sprout-lavender",
+    category: "fractional"
   },
   {
     id: "ethical-brands",
@@ -62,10 +65,10 @@ const mockPortfolios: Portfolio[] = [
     growth: 2.1,
     emoji: "🛍️",
     color: "bg-sprout-pink",
+    category: "stocks-etfs"
   },
 ];
 
-// Get a random emoji based on category
 const getEmojiForCategory = (category: string): string => {
   const emojiMap: Record<string, string[]> = {
     "Stocks & ETFs": ["📈", "💼", "🏢", "📊"],
@@ -78,10 +81,19 @@ const getEmojiForCategory = (category: string): string => {
   return emojis[Math.floor(Math.random() * emojis.length)];
 };
 
-// Get a random color for new portfolios
 const getRandomColor = (): string => {
   const colors = ["bg-sprout-green", "bg-sprout-blue", "bg-sprout-lavender", "bg-sprout-pink"];
   return colors[Math.floor(Math.random() * colors.length)];
+};
+
+const mapCategoryToToggleValue = (category: string): string => {
+  if (category.toLowerCase().includes("crypto")) {
+    return "crypto";
+  } else if (category.toLowerCase().includes("fractional")) {
+    return "fractional";
+  } else {
+    return "stocks-etfs";
+  }
 };
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
@@ -98,23 +110,22 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addInvestment = (investment: Omit<Investment, "id" | "date" | "portfolioId">) => {
-    // Generate a new portfolio ID based on the asset name
     const portfolioId = `${investment.asset.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now()}`;
     
-    // Create a new portfolio for this investment
+    const categoryToggleValue = mapCategoryToToggleValue(investment.category);
+    
     const newPortfolio: Portfolio = {
       id: portfolioId,
       name: investment.asset,
       value: investment.amount,
-      growth: Math.random() * 10 - 2, // Random growth between -2% and 8%
+      growth: Math.random() * 10 - 2,
       emoji: getEmojiForCategory(investment.category),
       color: getRandomColor(),
+      category: categoryToggleValue,
     };
     
-    // Add the new portfolio
     setPortfolios(prev => [...prev, newPortfolio]);
     
-    // Create the investment
     const newInvestment: Investment = {
       ...investment,
       portfolioId,
@@ -122,10 +133,8 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       date: new Date().toISOString(),
     };
     
-    // Add the investment
     setInvestments(prev => [...prev, newInvestment]);
     
-    // Set the newly created portfolio as selected
     setSelectedPortfolio(newPortfolio);
     
     triggerConfetti();
