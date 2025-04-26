@@ -1,4 +1,3 @@
-
 import { Shield, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,7 +55,7 @@ export const PortfolioCard = ({
             <h3 className="font-bold">{portfolio.name}</h3>
           </div>
           <div className={`text-sm font-semibold ${portfolio.growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-            {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth}%
+            {portfolio.growth >= 0 ? "+" : ""}{portfolio.growth.toFixed(2)}%
           </div>
         </div>
         
