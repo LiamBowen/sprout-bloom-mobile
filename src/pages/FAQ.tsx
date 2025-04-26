@@ -1,5 +1,7 @@
-
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -8,9 +10,25 @@ import {
 } from "@/components/ui/accordion";
 
 const FAQ = () => {
+  const navigate = useNavigate();
+
+  const handleBackToProfile = () => {
+    navigate('/app/profile');
+  };
+
   return (
     <div className="container max-w-3xl py-8 space-y-6">
-      <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
+      <div className="flex items-center space-x-4">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={handleBackToProfile}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
+      </div>
       
       <Card className="p-6">
         <Accordion type="single" collapsible className="space-y-2">
