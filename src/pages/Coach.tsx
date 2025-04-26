@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,11 +6,11 @@ import { useCoach } from "@/contexts/CoachContext";
 import { Send, Bot, User } from "lucide-react";
 
 const sampleQuestions = [
-  "How do I start investing?",
-  "What is a high-yield savings account?",
-  "How much should I save for emergencies?",
-  "What are the main features of Sprout?",
-  "Is my money safe with Sprout?",
+  "How do I start investing with Sprout?",
+  "What's the difference between stocks and ETFs?",
+  "Is investing risky?",
+  "How much should I invest?",
+  "Why should I invest instead of save?",
 ];
 
 const Coach = () => {
