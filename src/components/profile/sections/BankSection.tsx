@@ -55,6 +55,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
             <BankConnectionsList
               connections={bankConnections}
               isLoading={isLoading}
+              isConnecting={isConnecting}
+              onConnectBank={handleConnectBank}
             />
           ) : (
             <p className="text-gray-600 text-sm">

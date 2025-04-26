@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,30 +59,27 @@ export const AuthForm = () => {
         if (error) throw error;
         
         if (data.user) {
-          // Fetch user profile data including date of birth
-          const { data: profileData } = await supabase
+          // Fetch user profile data
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', data.user.id)
             .single();
             
-          // Get user data from a separate query to merge all needed information
-          const { data: userData, error: userError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
-            
-          if (userError) console.error("Error fetching user data:", userError);
-            
+          if (profileError) {
+            console.error("Error fetching profile data:", profileError);
+            throw profileError;
+          }
+          
+          // We need to create a properly shaped User object with default values for missing fields
           setUser({
             id: data.user.id,
             name: profileData?.display_name || email.split('@')[0],
             email: data.user.email || "",
-            dateOfBirth: userData?.date_of_birth || "",
-            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
-            friendsReferred: userData?.friends_referred || 0,
-            rewardsEarned: userData?.rewards_earned || 0,
+            dateOfBirth: "", // Not available in profiles table, using default value
+            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`, // Generate a random referral code
+            friendsReferred: 0, // Not available in profiles table, using default value
+            rewardsEarned: 0, // Not available in profiles table, using default value
             avatar_url: profileData?.avatar_url,
             mobile_number: profileData?.mobile_number,
             portfolioThemes: profileData?.portfolio_themes || [],
