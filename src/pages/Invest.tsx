@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Clock, Plus } from "lucide-react";
@@ -82,13 +83,8 @@ const Invest = () => {
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
-            <p className="text-sm text-gray-700">
-              🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
-            </p>
-          </div>
+        <h1 className="text-2xl font-bold mb-2">Invest 📈</h1>
+        <div className="flex justify-between items-center">
           <Link to="/app/new-investment">
             <Button variant="ghost" size="icon" className="rounded-full bg-sprout-green text-white hover:bg-sprout-green/90">
               <Plus size={20} />
@@ -96,6 +92,16 @@ const Invest = () => {
           </Link>
         </div>
       </div>
+      
+      <Card className="p-4 bg-gray-50 text-center text-gray-700 animate-fade-in">
+        <div className="flex items-center justify-center mb-1">
+          <TrendingUp size={16} className="text-sprout-green mr-1" />
+          <span className="text-sm font-medium">Market Trends</span>
+        </div>
+        <p className="text-sm">
+          🌱 <strong>42%</strong> of Sprout users invested in <span className="text-green-600">Clean Energy</span> this week.
+        </p>
+      </Card>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
         <TabsList className="grid grid-cols-2 mb-4">
@@ -223,3 +229,4 @@ const Invest = () => {
 };
 
 export default Invest;
+
