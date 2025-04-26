@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Book, ChevronDown } from "lucide-react";
+import { Book, ChevronRight } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
 
@@ -38,10 +38,10 @@ export const LearnCard = () => {
           </div>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
-              <ChevronDown
+              <ChevronRight
                 size={18}
                 className={`transition-transform duration-200 ${
-                  isOpen ? "transform rotate-180" : ""
+                  isOpen ? "transform rotate-90" : ""
                 }`}
               />
             </Button>
