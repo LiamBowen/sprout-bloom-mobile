@@ -1,7 +1,9 @@
 
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { BankConnection } from "@/hooks/use-bank-connections";
+import { useState } from "react";
 
 interface BankConnectionsListProps {
   connections: BankConnection[];
@@ -16,6 +18,8 @@ export const BankConnectionsList = ({
   isConnecting,
   onConnectBank
 }: BankConnectionsListProps) => {
+  const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-2">
@@ -42,14 +46,13 @@ export const BankConnectionsList = ({
       
       <div className="flex justify-between items-center">
         <span className="text-sm text-gray-600">Round-ups</span>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => window.location.href = '/app/invest'}
-        >
-          View
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Switch 
+            checked={roundUpsEnabled}
+            onCheckedChange={setRoundUpsEnabled}
+          />
+          <span className="text-xs text-gray-500">{roundUpsEnabled ? 'On' : 'Off'}</span>
+        </div>
       </div>
 
       {connections.length > 0 && (
@@ -80,4 +83,3 @@ export const BankConnectionsList = ({
     </div>
   );
 };
-
