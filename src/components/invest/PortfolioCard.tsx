@@ -1,5 +1,4 @@
-
-import { Shield, Clock } from "lucide-react";
+import { Shield, Clock, Trash, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { Portfolio, Investment } from "@/types/investment";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
@@ -40,10 +41,18 @@ export const PortfolioCard = ({
   performanceData,
 }: PortfolioCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleClick = () => {
     onSelect(portfolio);
     setIsOpen(!isOpen);
+  };
+
+  const handleSell = () => {
+    toast({
+      title: "Sell request initiated",
+      description: `Your request to sell ${portfolio.name} has been received.`,
+    });
   };
 
   return (
@@ -114,6 +123,16 @@ export const PortfolioCard = ({
             onGoalChange={onGoalChange}
             portfolioColor={portfolio.color}
           />
+
+          <div className="flex justify-end mt-4 mb-2">
+            <Button 
+              variant="destructive" 
+              onClick={handleSell}
+              className="flex items-center gap-2"
+            >
+              Sell Investment <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
 
           {portfolioInvestments.length > 0 && (
             <div className="mt-4">
