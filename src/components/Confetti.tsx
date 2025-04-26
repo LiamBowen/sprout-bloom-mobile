@@ -50,23 +50,25 @@ const Confetti = () => {
   return (
     <div className="fixed inset-0 overflow-hidden z-50 pointer-events-none">
       {confetti}
-      <style jsx global>{`
-        @keyframes confetti-fall {
-          0% {
-            transform: translateY(-100px) rotate(0deg);
-            opacity: 1;
+      <style>
+        {`
+          @keyframes confetti-fall {
+            0% {
+              transform: translateY(-100px) rotate(0deg);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(100vh) rotate(720deg);
+              opacity: 0;
+            }
           }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
+          .confetti {
+            position: absolute;
+            top: -10px;
+            animation: confetti-fall var(--animation-duration, 3s) forwards;
           }
-        }
-        .confetti {
-          position: absolute;
-          top: -10px;
-          animation: confetti-fall var(--animation-duration, 3s) forwards;
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
