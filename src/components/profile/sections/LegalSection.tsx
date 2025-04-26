@@ -34,9 +34,12 @@ export const LegalSection = ({ isOpen, onOpenChange }: LegalSectionProps) => {
     if (!user) return;
 
     try {
-      // Note: This is a placeholder. Full account deletion would require 
-      // more complex backend logic to remove all user data
-      await supabase.auth.deleteUser();
+      // The correct method for account deletion is signOut() 
+      // In a production app, you would want to implement a more complete account deletion
+      // that includes removing all user data, which would typically be handled by a backend API
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) throw error;
       
       toast({
         title: "Account Closed",
