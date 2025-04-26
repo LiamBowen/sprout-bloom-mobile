@@ -3,8 +3,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button";
 import { ChevronRight, HelpCircle, MessageSquare, LifeBuoy } from "lucide-react";
 import { logAnalyticsEvent } from "@/utils/analytics";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface HelpSectionProps {
   isOpen: boolean;
@@ -12,7 +12,6 @@ interface HelpSectionProps {
 }
 
 export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   
   const handleSupportClick = () => {
@@ -26,14 +25,16 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
   };
 
   const handleCommunityClick = () => {
-    console.log('Community button clicked'); // Added for debugging
+    console.log('Community button clicked'); // For debugging
     logAnalyticsEvent('help_community_clicked', { source: 'settings' });
-    toast({
-      title: "Coming Soon!",
+    
+    // Use sonner toast instead of the previous implementation
+    toast("Coming Soon!", {
       description: "Sprout Community Incoming!",
       duration: 3000,
     });
-    console.log('Toast should have been triggered'); // Added for debugging
+    
+    console.log('Toast should have been triggered'); // For debugging
   };
 
   return (
