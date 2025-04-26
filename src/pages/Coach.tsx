@@ -1,17 +1,15 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCoach } from "@/contexts/CoachContext";
 import { Send, Bot, User } from "lucide-react";
 
-// Example questions for the coach focused on investments and real-time data
 const sampleQuestions = [
-  "What's the price of Bitcoin?",
-  "Tell me about ETFs",
-  "How should I diversify my portfolio?",
-  "What's a good savings rate?",
-  "Price of S&P 500 ETFs?",
+  "How do I start investing?",
+  "What is a high-yield savings account?",
+  "How much should I save for emergencies?",
+  "What are the main features of Sprout?",
+  "Is my money safe with Sprout?",
 ];
 
 const Coach = () => {
@@ -20,7 +18,6 @@ const Coach = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   
-  // Auto-scroll to bottom of messages
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [coachMessages]);
@@ -36,23 +33,19 @@ const Coach = () => {
     setMessage("");
     setIsTyping(true);
     
-    // The typing state will be managed by the actual response timing in CoachContext
-    // but we'll set it here initially to ensure UI feels responsive
     setTimeout(() => {
       setIsTyping(false);
-    }, 10000); // Fallback timeout in case something goes wrong
+    }, 10000);
   };
   
   const handleSampleQuestion = (question: string) => {
     setMessage(question);
     
-    // Small timeout to make the UI feel more natural
     setTimeout(() => {
       handleSendMessage();
     }, 100);
   };
 
-  // Determine if a message is a typing indicator
   const isTypingIndicator = (text: string) => text === "...";
 
   return (
@@ -65,7 +58,6 @@ const Coach = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-[calc(100vh-230px)] flex flex-col animate-slide-up">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {coachMessages.map((msg, index) => {
-            // Skip rendering typing indicators - we render them differently
             if (msg.sender === "coach" && isTypingIndicator(msg.text)) return null;
             
             return (
@@ -96,7 +88,6 @@ const Coach = () => {
             );
           })}
           
-          {/* Show typing indicator if the last message has "..." or if isTyping is true */}
           {(isTyping || coachMessages.some(msg => msg.sender === "coach" && isTypingIndicator(msg.text))) && (
             <div className="flex justify-start">
               <div className="w-8 h-8 rounded-full bg-sprout-blue/20 flex items-center justify-center mr-2 flex-shrink-0">

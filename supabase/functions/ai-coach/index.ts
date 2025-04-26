@@ -2,8 +2,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -17,69 +15,54 @@ serve(async (req) => {
   try {
     const { message } = await req.json();
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are Sprout AI, a financial advisor specializing in investments and savings. 
-            Your role is to provide accurate, helpful advice about:
-            - Real-time stock, ETF, and cryptocurrency prices and trends
-            - Investment strategies and portfolio diversification
-            - Savings accounts and interest rates
-            - Risk assessment and management
-            - Market analysis and timing
-            
-            Always strive to give specific, actionable advice while being mindful of risk factors.
-            If discussing specific investments, always include current market data when available.`
-          },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-      }),
-    });
-
-    const data = await response.json();
-    
-    // Check if there's an error in the API response
-    if (data.error) {
-      console.error('OpenAI API error:', data.error);
+    // Simple but effective coaching responses for financial questions
+    const responses = {
+      default: "I'm here to help you with any questions about investing, savings, or using the Sprout app. Feel free to ask anything!",
       
-      // Customize error message based on the error type
-      if (data.error.type === 'insufficient_quota') {
-        return new Response(JSON.stringify({ 
-          response: "I'm currently experiencing high demand and can't process your request at the moment. Our team is working to increase capacity. Please try again later." 
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+      // Investment basics
+      investment: "Investing is putting money into assets like stocks or bonds with the goal of growing your wealth over time. With Sprout, you can start investing with any amount and we'll help guide you through the process.",
+      
+      stocks: "Stocks represent ownership in companies. When you buy a stock, you own a small piece of that company. Through Sprout, you can invest in stocks with guidance on diversification and risk management.",
+      
+      etf: "ETFs (Exchange-Traded Funds) are collections of many stocks or bonds in one package. They're a great way for beginners to invest because they offer instant diversification. Sprout offers several ETF options for different investment goals.",
+      
+      risk: "Investment risk is the possibility of losing money. Sprout helps manage risk through diversification and personalized investment strategies based on your goals and comfort level.",
+      
+      // Savings related
+      savings: "Saving is setting aside money for future needs. Sprout offers high-yield savings accounts and helps you set and track savings goals.",
+      
+      interest: "Interest is what banks pay you for keeping money in savings accounts. Sprout's high-yield savings accounts offer competitive interest rates to help your money grow.",
+      
+      emergency: "An emergency fund is money saved for unexpected expenses. We recommend saving 3-6 months of expenses. Sprout can help you build this fund gradually.",
+      
+      // App specific
+      features: "Sprout offers investment accounts, high-yield savings, goal tracking, automated investing, and personalized financial guidance - all in one easy-to-use app.",
+      
+      start: "To get started with Sprout: 1) Create an account, 2) Set your financial goals, 3) Choose your investment strategy, and 4) Start investing or saving with any amount you're comfortable with.",
+      
+      security: "Sprout uses bank-level security to protect your information and investments. All accounts are FDIC/SIPC insured up to standard limits."
+    };
+
+    // Simple keyword matching for responses
+    const lowerMessage = message.toLowerCase();
+    let response = responses.default;
+
+    for (const [key, value] of Object.entries(responses)) {
+      if (lowerMessage.includes(key)) {
+        response = value;
+        break;
       }
-      
-      throw new Error(data.error.message || 'Unknown error from OpenAI API');
     }
-    
-    // Check if the response has the expected structure
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Unexpected API response structure:', data);
-      throw new Error('Invalid response from OpenAI API');
-    }
-    
-    const generatedText = data.choices[0].message.content;
 
-    return new Response(JSON.stringify({ response: generatedText }), {
+    return new Response(JSON.stringify({ response }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in AI coach function:', error);
     return new Response(JSON.stringify({ 
-      response: "I'm having trouble connecting to my knowledge base right now. Please try again in a few moments." 
+      response: "I'm here to help! Could you please rephrase your question?" 
     }), {
-      status: 200, // Return 200 instead of 500 to ensure the message is displayed
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
