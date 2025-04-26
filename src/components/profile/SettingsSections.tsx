@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { PersonalInfoSection } from "./sections/PersonalInfoSection";
 import { BankSection } from "./sections/BankSection";
@@ -6,6 +7,7 @@ import { NotificationsSection } from "./sections/NotificationsSection";
 import { SecuritySection } from "./sections/SecuritySection";
 import { LegalSection } from "./sections/LegalSection";
 import { HelpSection } from "./sections/HelpSection";
+import { Separator } from "@/components/ui/separator";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
@@ -31,31 +33,37 @@ export const SettingsSections = () => {
         isOpen={openSettings.personal}
         onOpenChange={() => toggleSettingsSection('personal')}
       />
+      <Separator className="my-4" />
       
       <BankSection 
         isOpen={openSettings.bank}
         onOpenChange={() => toggleSettingsSection('bank')}
       />
+      <Separator className="my-4" />
       
       <InvestmentSection 
         isOpen={openSettings.investment}
         onOpenChange={() => toggleSettingsSection('investment')}
       />
+      <Separator className="my-4" />
       
       <NotificationsSection 
         isOpen={openSettings.notifications}
         onOpenChange={() => toggleSettingsSection('notifications')}
       />
+      <Separator className="my-4" />
       
       <SecuritySection 
         isOpen={openSettings.security}
         onOpenChange={() => toggleSettingsSection('security')}
       />
+      <Separator className="my-4" />
       
       <LegalSection 
         isOpen={openSettings.legal}
         onOpenChange={() => toggleSettingsSection('legal')}
       />
+      <Separator className="my-4" />
       
       <HelpSection 
         isOpen={openSettings.help}
@@ -64,3 +72,4 @@ export const SettingsSections = () => {
     </>
   );
 };
+
