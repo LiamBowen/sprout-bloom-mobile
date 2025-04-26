@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,11 +5,10 @@ import { useCoach } from "@/contexts/CoachContext";
 import { Send, Bot, User } from "lucide-react";
 
 const sampleQuestions = [
+  "What are round-ups?",
   "How do I start investing with Sprout?",
-  "What's the difference between stocks and ETFs?",
   "Is investing risky?",
-  "How much should I invest?",
-  "Why should I invest instead of save?",
+  "How much should I invest?"
 ];
 
 const Coach = () => {
