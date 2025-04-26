@@ -179,7 +179,7 @@ export const PersonalInfoSection = ({
                 <Mail size={16} className="mr-2 text-gray-600" />
                 <span className="text-sm text-gray-600">Email</span>
               </div>
-              <span className="text-sm font-medium">{user?.email}</span>
+              <span className="text-sm font-medium max-w-[180px] truncate">{user?.email}</span>
             </div>
             <div className="flex justify-between items-center">
               <div className="flex items-center">
@@ -204,3 +204,4 @@ export const PersonalInfoSection = ({
     </Collapsible>
   );
 };
+
