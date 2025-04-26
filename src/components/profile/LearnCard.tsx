@@ -59,8 +59,8 @@ export const LearnCard = () => {
               >
                 <div className="text-xl">{item.icon}</div>
                 <div>
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-xs text-gray-600">{item.description}</p>
+                  <p className="font-medium text-left">{item.title}</p>
+                  <p className="text-xs text-gray-600 text-left">{item.description}</p>
                 </div>
               </div>
             ))}
