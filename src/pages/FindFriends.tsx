@@ -119,20 +119,20 @@ const FindFriends = () => {
       {friendRequests.length > 0 && (
         <Card className="p-4 sm:p-6">
           <h2 className="font-semibold text-lg mb-4">Friend Requests</h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {friendRequests.map((request) => (
-              <div key={request.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+              <div key={request.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-gray-100 rounded-lg gap-3">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10 flex-shrink-0">
                     <AvatarFallback>{request.name.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <div className="min-w-0">
-                    <p className="font-medium text-sm sm:text-base truncate">{request.name}</p>
-                    <div className="flex flex-col items-start gap-0.5">
-                      <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-base truncate">{request.name}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 mt-1">
+                      <Badge variant="lavender" className="text-xs w-fit">
                         {request.portfolioType}
                       </Badge>
-                      <span className="text-[10px] sm:text-xs text-gray-500">
+                      <span className="text-xs text-gray-500">
                         {request.mutualFriends === 1
                           ? "1 mutual friend"
                           : `${request.mutualFriends} mutual friends`}
@@ -140,24 +140,24 @@ const FindFriends = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 sm:flex-shrink-0">
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
+                    className="flex-1 sm:flex-initial border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"
                     onClick={() => handleFriendRequest(request.id, true)}
                   >
-                    <UserPlus size={16} className="sm:mr-1" />
-                    <span className="hidden sm:inline">Accept</span>
+                    <UserPlus size={16} className="mr-1.5" />
+                    Accept
                   </Button>
                   <Button 
                     variant="ghost"
                     size="sm"
-                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="flex-1 sm:flex-initial text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => handleFriendRequest(request.id, false)}
                   >
-                    <UserX size={16} className="sm:mr-1" />
-                    <span className="hidden sm:inline">Decline</span>
+                    <UserX size={16} className="mr-1.5" />
+                    Decline
                   </Button>
                 </div>
               </div>
@@ -180,22 +180,22 @@ const FindFriends = () => {
           <Button type="submit">Search</Button>
         </form>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
           <h2 className="font-semibold text-lg">Suggested Friends</h2>
           
           {suggestedFriends.map((friend) => (
-            <div key={friend.id} className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+            <div key={friend.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-gray-100 rounded-lg gap-3">
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-10 w-10 flex-shrink-0">
                   <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <div className="min-w-0">
-                  <p className="font-medium text-sm sm:text-base truncate">{friend.name}</p>
-                  <div className="flex flex-col items-start gap-0.5">
-                    <Badge variant="lavender" className="text-[10px] sm:text-xs mb-0">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-base truncate">{friend.name}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 mt-1">
+                    <Badge variant="lavender" className="text-xs w-fit">
                       {friend.portfolioType}
                     </Badge>
-                    <span className="text-[10px] sm:text-xs text-gray-500">
+                    <span className="text-xs text-gray-500">
                       {friend.mutualFriends === 0
                         ? "No mutual friends"
                         : friend.mutualFriends === 1
@@ -209,14 +209,12 @@ const FindFriends = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleAddFriend(friend.id)}
-                className={followedUsers.includes(friend.id) 
+                className={`w-full sm:w-auto ${followedUsers.includes(friend.id) 
                   ? "bg-sprout-lavender text-white hover:bg-sprout-lavender/90" 
-                  : "border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"}
+                  : "border-sprout-lavender text-sprout-lavender hover:bg-sprout-lavender/10"}`}
               >
-                <UserPlus size={16} className="sm:mr-1" />
-                <span className="hidden sm:inline">
-                  {followedUsers.includes(friend.id) ? 'Following' : 'Follow'}
-                </span>
+                <UserPlus size={16} className="mr-1.5" />
+                {followedUsers.includes(friend.id) ? 'Following' : 'Follow'}
               </Button>
             </div>
           ))}
