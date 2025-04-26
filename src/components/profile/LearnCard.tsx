@@ -48,7 +48,7 @@ export const LearnCard = () => {
           </CollapsibleTrigger>
         </div>
         
-        <p className="text-sm text-gray-600 mb-4 ml-10">Coming soon: Sprout's own learning hub!</p>
+        <p className="text-sm text-gray-600 mb-4 text-center">Coming soon: Sprout's own learning hub!</p>
         
         <CollapsibleContent>
           <div className="space-y-3 mt-4">
@@ -70,3 +70,4 @@ export const LearnCard = () => {
     </Card>
   );
 };
+
