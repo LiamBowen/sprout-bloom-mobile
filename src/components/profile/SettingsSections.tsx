@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { PersonalInfoSection } from "./sections/PersonalInfoSection";
 import { BankSection } from "./sections/BankSection";
@@ -6,6 +7,7 @@ import { NotificationsSection } from "./sections/NotificationsSection";
 import { SecuritySection } from "./sections/SecuritySection";
 import { LegalSection } from "./sections/LegalSection";
 import { HelpSection } from "./sections/HelpSection";
+import { Separator } from "@/components/ui/separator";
 
 export const SettingsSections = () => {
   const [openSettings, setOpenSettings] = useState({
@@ -57,6 +59,8 @@ export const SettingsSections = () => {
         onOpenChange={() => toggleSettingsSection('legal')}
       />
       
+      <Separator className="my-4" />
+      
       <HelpSection 
         isOpen={openSettings.help}
         onOpenChange={() => toggleSettingsSection('help')}
@@ -64,3 +68,4 @@ export const SettingsSections = () => {
     </>
   );
 };
+
