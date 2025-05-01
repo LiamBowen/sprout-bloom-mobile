@@ -67,6 +67,7 @@ export const AuthForm = () => {
           const { error: profileError } = await supabase
             .from('profiles')
             .update({
+              display_name: email.split('@')[0],
               referral_code: referralCode
             })
             .eq('id', data.user.id);

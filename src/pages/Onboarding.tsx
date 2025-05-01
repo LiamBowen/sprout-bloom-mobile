@@ -35,6 +35,9 @@ const Onboarding = () => {
   
   const totalSteps = 5;
   
+  const [currentReferralCode, setCurrentReferralCode] = useState(user?.referralCode || "");
+  const [customReferralInput, setCustomReferralInput] = useState("");
+  
   useEffect(() => {
     // Auto-focus on day input when step 2 is active
     if (step === 2 && dayInputRef.current) {
@@ -134,8 +137,8 @@ const Onboarding = () => {
       // Format the date of birth in DD/MM/YYYY format
       const formattedDob = `${day}/${month}/${year}`;
       
-      // Generate a referral code based on user's name
-      const referralCode = referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`;
+      // Use the current referral code or keep the existing one
+      const referralCode = customReferralInput || currentReferralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`;
       
       const { error } = await supabase
         .from('profiles')
@@ -407,8 +410,8 @@ const Onboarding = () => {
             <Input
               type="text"
               placeholder="Enter referral code (optional)"
-              value={referralCode}
-              onChange={(e) => setReferralCode(e.target.value)}
+              value={customReferralInput}
+              onChange={(e) => setCustomReferralInput(e.target.value)}
               className="mb-6"
             />
             

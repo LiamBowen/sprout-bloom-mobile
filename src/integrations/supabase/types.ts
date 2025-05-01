@@ -49,33 +49,48 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          date_of_birth: string | null
           display_name: string | null
           facial_recognition_enabled: boolean | null
+          financial_goals: string[] | null
+          friends_referred: number | null
           id: string
           mobile_number: string | null
           portfolio_themes: string[] | null
+          referral_code: string | null
+          rewards_earned: number | null
           risk_level: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          date_of_birth?: string | null
           display_name?: string | null
           facial_recognition_enabled?: boolean | null
+          financial_goals?: string[] | null
+          friends_referred?: number | null
           id: string
           mobile_number?: string | null
           portfolio_themes?: string[] | null
+          referral_code?: string | null
+          rewards_earned?: number | null
           risk_level?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          date_of_birth?: string | null
           display_name?: string | null
           facial_recognition_enabled?: boolean | null
+          financial_goals?: string[] | null
+          friends_referred?: number | null
           id?: string
           mobile_number?: string | null
           portfolio_themes?: string[] | null
+          referral_code?: string | null
+          rewards_earned?: number | null
           risk_level?: string | null
           updated_at?: string
         }
