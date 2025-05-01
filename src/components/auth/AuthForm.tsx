@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,16 +137,6 @@ export const AuthForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div className="text-center">
-              <Button
-                variant="link"
-                type="button"
-                onClick={() => window.location.href = "/auth/forgot-password"}
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                Forgot password?
-              </Button>
-            </div>
             <Button 
               type="submit" 
               className="w-full" 
@@ -155,6 +146,19 @@ export const AuthForm = () => {
                 ? "Loading..." 
                 : (isSignUp ? "Create account" : "Sign in")}
             </Button>
+            
+            {!isSignUp && (
+              <div className="text-center">
+                <Button
+                  variant="link"
+                  type="button"
+                  onClick={() => window.location.href = "/auth/forgot-password"}
+                  className="text-sm text-gray-600 hover:text-gray-900"
+                >
+                  Forgot password?
+                </Button>
+              </div>
+            )}
           </form>
         </Card>
 
