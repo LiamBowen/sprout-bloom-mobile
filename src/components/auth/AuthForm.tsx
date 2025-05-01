@@ -8,18 +8,35 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setUser } = useAuth();
 
+  const validatePassword = (password: string) => {
+    if (isSignUp && password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSignUp && !validatePassword(password)) {
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -106,6 +123,10 @@ export const AuthForm = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-white to-sprout-green/20">
       <div className="w-full max-w-md space-y-8">
@@ -130,13 +151,38 @@ export const AuthForm = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (isSignUp) validatePassword(e.target.value);
+                }}
+                required
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full px-3"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </Button>
+            </div>
+            
+            {isSignUp && (
+              <p className="text-xs text-muted-foreground">
+                Password must be at least 8 characters long
+              </p>
+            )}
+            
+            {passwordError && (
+              <p className="text-xs text-destructive">{passwordError}</p>
+            )}
+            
             <Button 
               type="submit" 
               className="w-full" 

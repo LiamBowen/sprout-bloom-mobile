@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +23,75 @@ const Onboarding = () => {
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
-  const [financialGoal, setFinancialGoal] = useState("");
+  const [financialGoals, setFinancialGoals] = useState<string[]>([]);
+  const [customGoal, setCustomGoal] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [dateError, setDateError] = useState("");
   const [portfolioThemes, setPortfolioThemes] = useState<string[]>([]);
   const [riskLevel, setRiskLevel] = useState("Medium");
   
+  const dayInputRef = useRef<HTMLInputElement>(null);
+  const monthInputRef = useRef<HTMLInputElement>(null);
+  const yearInputRef = useRef<HTMLInputElement>(null);
+  
   const totalSteps = 5;
+  
+  useEffect(() => {
+    // Auto-focus on day input when step 2 is active
+    if (step === 2 && dayInputRef.current) {
+      dayInputRef.current.focus();
+    }
+  }, [step]);
+  
+  const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
+    setDay(value);
+    if (value.length === 2 && monthInputRef.current) {
+      monthInputRef.current.focus();
+    }
+  };
+  
+  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
+    setMonth(value);
+    if (value.length === 2 && yearInputRef.current) {
+      yearInputRef.current.focus();
+    }
+  };
+  
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    setYear(value);
+  };
+  
+  const handleToggleFinancialGoal = (goal: string) => {
+    setFinancialGoals(prevGoals => 
+      prevGoals.includes(goal)
+        ? prevGoals.filter(g => g !== goal)
+        : [...prevGoals, goal]
+    );
+  };
+  
+  const handleCustomGoalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomGoal(e.target.value);
+    if (e.target.value && !financialGoals.includes(e.target.value)) {
+      setFinancialGoals(prev => prev.filter(goal => 
+        goal !== "Holiday" && 
+        goal !== "New phone" && 
+        goal !== "Emergency fund" && 
+        goal !== "Future home" &&
+        !prev.includes(e.target.value)
+      ));
+    }
+  };
+  
+  const handleCustomGoalBlur = () => {
+    if (customGoal) {
+      if (!financialGoals.includes(customGoal)) {
+        setFinancialGoals(prev => [...prev, customGoal]);
+      }
+    }
+  };
   
   const handleNextStep = async () => {
     if (step === 1 && !name) {
@@ -92,7 +155,7 @@ const Onboarding = () => {
         name,
         dateOfBirth: `${day}/${month}/${year}`,
         referralCode: referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`,
-        financialGoal: financialGoal || "Not specified",
+        financialGoal: financialGoals.join(", ") || "Not specified",
         portfolioThemes,
         riskLevel
       };
@@ -169,12 +232,10 @@ const Onboarding = () => {
                   type="text"
                   placeholder="DD"
                   value={day}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
-                    setDay(value);
-                  }}
+                  onChange={handleDayChange}
                   className="text-center"
                   maxLength={2}
+                  ref={dayInputRef}
                 />
                 <p className="text-xs text-center mt-1 text-gray-500">Day</p>
               </div>
@@ -183,12 +244,10 @@ const Onboarding = () => {
                   type="text"
                   placeholder="MM"
                   value={month}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
-                    setMonth(value);
-                  }}
+                  onChange={handleMonthChange}
                   className="text-center"
                   maxLength={2}
+                  ref={monthInputRef}
                 />
                 <p className="text-xs text-center mt-1 text-gray-500">Month</p>
               </div>
@@ -197,12 +256,10 @@ const Onboarding = () => {
                   type="text"
                   placeholder="YYYY"
                   value={year}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "").slice(0, 4);
-                    setYear(value);
-                  }}
+                  onChange={handleYearChange}
                   className="text-center"
                   maxLength={4}
+                  ref={yearInputRef}
                 />
                 <p className="text-xs text-center mt-1 text-gray-500">Year</p>
               </div>
@@ -218,10 +275,10 @@ const Onboarding = () => {
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-bold mb-6">
-              Set a financial goal 🎯
+              Set financial goals 🎯
             </h2>
             <p className="mb-6 text-gray-600">
-              What would you like to save or invest for?
+              What would you like to save or invest for? (Select all that apply)
             </p>
             
             <div className="space-y-3 mb-6">
@@ -229,15 +286,15 @@ const Onboarding = () => {
                 (goal) => (
                   <button
                     key={goal}
-                    onClick={() => setFinancialGoal(goal)}
+                    onClick={() => handleToggleFinancialGoal(goal)}
                     className={`flex justify-between items-center w-full p-3 rounded-lg border ${
-                      financialGoal === goal
+                      financialGoals.includes(goal)
                         ? "border-sprout-green bg-sprout-green/10"
                         : "border-gray-200"
                     }`}
                   >
                     <span>{goal}</span>
-                    {financialGoal === goal && (
+                    {financialGoals.includes(goal) && (
                       <Check size={18} className="text-sprout-green" />
                     )}
                   </button>
@@ -248,15 +305,34 @@ const Onboarding = () => {
                 <Input 
                   type="text"
                   placeholder="Or something else..."
-                  value={financialGoal !== "Holiday" && 
-                         financialGoal !== "New phone" && 
-                         financialGoal !== "Emergency fund" && 
-                         financialGoal !== "Future home" 
-                           ? financialGoal 
-                           : ""}
-                  onChange={(e) => setFinancialGoal(e.target.value)}
+                  value={customGoal}
+                  onChange={handleCustomGoalChange}
+                  onBlur={handleCustomGoalBlur}
                 />
               </div>
+              
+              {financialGoals.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {financialGoals.map(goal => (
+                    <div 
+                      key={goal} 
+                      className="bg-sprout-green/10 text-sprout-green rounded-full px-3 py-1 text-sm flex items-center gap-1"
+                    >
+                      {goal}
+                      <button 
+                        onClick={() => handleToggleFinancialGoal(goal)}
+                        className="ml-1 hover:bg-sprout-green/20 rounded-full p-1"
+                      >
+                        <span className="sr-only">Remove</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 6 6 18"></path>
+                          <path d="m6 6 12 12"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
