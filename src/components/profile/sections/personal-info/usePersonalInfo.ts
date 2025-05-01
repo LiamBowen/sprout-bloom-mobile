@@ -63,7 +63,8 @@ export const usePersonalInfo = () => {
         .from('profiles')
         .update({
           display_name: name,
-          mobile_number: mobile
+          mobile_number: mobile,
+          date_of_birth: formattedDOB
         })
         .eq('id', user.id);
 

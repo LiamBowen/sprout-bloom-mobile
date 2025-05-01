@@ -49,17 +49,31 @@ export const AuthForm = () => {
         if (error) throw error;
         
         if (data.user) {
+          const referralCode = `${email.split('@')[0].toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`;
+          
           setUser({
             id: data.user.id,
             name: email.split('@')[0],
             email: email,
             dateOfBirth: "",
-            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`,
+            referralCode: referralCode,
             friendsReferred: 0,
             rewardsEarned: 0,
             portfolioThemes: [],
             riskLevel: "Medium"
           });
+          
+          // Store the referral code in the profiles table
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              referral_code: referralCode
+            })
+            .eq('id', data.user.id);
+            
+          if (profileError) {
+            console.error("Error updating referral code:", profileError);
+          }
           
           toast({
             title: "Account created!",
@@ -89,15 +103,15 @@ export const AuthForm = () => {
             throw profileError;
           }
           
-          // We need to create a properly shaped User object with default values for missing fields
+          // Create a properly shaped User object with data from the profiles table
           setUser({
             id: data.user.id,
             name: profileData?.display_name || email.split('@')[0],
             email: data.user.email || "",
-            dateOfBirth: "", // Not available in profiles table, using default value
-            referralCode: `USER${Math.floor(1000 + Math.random() * 9000)}`, // Generate a random referral code
-            friendsReferred: 0, // Not available in profiles table, using default value
-            rewardsEarned: 0, // Not available in profiles table, using default value
+            dateOfBirth: profileData?.date_of_birth || "", 
+            referralCode: profileData?.referral_code || `USER${Math.floor(1000 + Math.random() * 9000)}`,
+            friendsReferred: profileData?.friends_referred || 0,
+            rewardsEarned: profileData?.rewards_earned || 0,
             avatar_url: profileData?.avatar_url,
             mobile_number: profileData?.mobile_number,
             portfolioThemes: profileData?.portfolio_themes || [],
@@ -192,21 +206,21 @@ export const AuthForm = () => {
                 ? "Loading..." 
                 : (isSignUp ? "Create account" : "Sign in")}
             </Button>
-            
-            {!isSignUp && (
-              <div className="text-center">
-                <Button
-                  variant="link"
-                  type="button"
-                  onClick={() => window.location.href = "/auth/forgot-password"}
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Forgot password?
-                </Button>
-              </div>
-            )}
           </form>
         </Card>
+        
+        {!isSignUp && (
+          <div className="text-center">
+            <Button
+              variant="link"
+              type="button"
+              onClick={() => window.location.href = "/auth/forgot-password"}
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              Forgot password?
+            </Button>
+          </div>
+        )}
 
         <div className="text-center">
           <Button

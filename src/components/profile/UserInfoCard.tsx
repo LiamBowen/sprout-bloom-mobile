@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,29 +5,59 @@ import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Pencil, Check, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const UserInfoCard = () => {
   const { setUser: setAppUser } = useApp();
   const { user, setUser: setAuthUser } = useAuth();
+  const { toast } = useToast();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [updatedName, setUpdatedName] = useState(user?.name || "");
   const [updatedDay, setUpdatedDay] = useState(user?.dateOfBirth?.split('/')[0] || "");
   const [updatedMonth, setUpdatedMonth] = useState(user?.dateOfBirth?.split('/')[1] || "");
   const [updatedYear, setUpdatedYear] = useState(user?.dateOfBirth?.split('/')[2] || "");
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (!user) return;
     
-    const updatedUser = {
-      ...user,
-      name: updatedName,
-      dateOfBirth: `${updatedDay}/${updatedMonth}/${updatedYear}`,
-    };
+    const formattedDob = `${updatedDay}/${updatedMonth}/${updatedYear}`;
     
-    setAuthUser(updatedUser);
-    setAppUser(updatedUser);
-    
-    setIsEditingProfile(false);
+    try {
+      // Update the profile in Supabase
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          display_name: updatedName,
+          date_of_birth: formattedDob
+        })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      // Update the local user state
+      const updatedUser = {
+        ...user,
+        name: updatedName,
+        dateOfBirth: formattedDob,
+      };
+      
+      setAuthUser(updatedUser);
+      setAppUser(updatedUser);
+      
+      toast({
+        title: "Success",
+        description: "Profile updated successfully."
+      });
+      
+      setIsEditingProfile(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleCancelEdit = () => {
@@ -149,7 +178,7 @@ export const UserInfoCard = () => {
           ) : (
             <div className="space-y-2">
               <p className="text-sm text-gray-500">Date of Birth</p>
-              <p>{user.dateOfBirth}</p>
+              <p>{user.dateOfBirth || "Not set"}</p>
             </div>
           )}
         </div>

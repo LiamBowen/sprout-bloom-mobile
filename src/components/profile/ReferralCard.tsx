@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
@@ -11,7 +10,7 @@ export const ReferralCard = () => {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
   
-  // Default values if user data is incomplete
+  // Use the referral code from the user object, don't generate a new one
   const referralCode = user?.referralCode || "USER2025";
   const friendsReferred = user?.friendsReferred || 0;
   const rewardsEarned = user?.rewardsEarned || 0;

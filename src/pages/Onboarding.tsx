@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -132,12 +131,21 @@ const Onboarding = () => {
         return;
       }
       
+      // Format the date of birth in DD/MM/YYYY format
+      const formattedDob = `${day}/${month}/${year}`;
+      
+      // Generate a referral code based on user's name
+      const referralCode = referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`;
+      
       const { error } = await supabase
         .from('profiles')
         .update({
           display_name: name,
           portfolio_themes: portfolioThemes,
-          risk_level: riskLevel
+          risk_level: riskLevel,
+          date_of_birth: formattedDob,
+          referral_code: referralCode,
+          financial_goals: financialGoals
         })
         .eq('id', user.id);
 
@@ -153,8 +161,8 @@ const Onboarding = () => {
       const updatedUser = {
         ...user,
         name,
-        dateOfBirth: `${day}/${month}/${year}`,
-        referralCode: referralCode || `${name.toUpperCase().substring(0, 4)}${Math.floor(1000 + Math.random() * 9000)}`,
+        dateOfBirth: formattedDob,
+        referralCode,
         financialGoal: financialGoals.join(", ") || "Not specified",
         portfolioThemes,
         riskLevel
