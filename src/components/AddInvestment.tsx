@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Card, 
@@ -61,7 +62,18 @@ const AddInvestment = ({
   
   const handleAddInvestment = (data: InvestmentFormValues) => {
     const amount = parseFloat(data.amount);
-    const investmentType = category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+    
+    // Normalize category for routing purposes
+    let investmentType = category.toLowerCase();
+    
+    // Map the category string to the correct toggle value
+    if (investmentType.includes("stocks")) {
+      investmentType = "stocks-etfs";
+    } else if (investmentType.includes("crypto")) {
+      investmentType = "crypto";
+    } else if (investmentType.includes("fractional")) {
+      investmentType = "fractional";
+    }
     
     addInvestment({
       asset: data.asset,
@@ -77,11 +89,14 @@ const AddInvestment = ({
     
     triggerConfetti();
     
+    // Fixed timeout to ensure state updates have completed
     setTimeout(() => {
+      // Navigate with state information to ensure the correct tab is selected
       navigate('/app/invest', { 
         state: { 
-          selectedType: investmentType === "fractional-shares" ? "fractional" : investmentType,
-          newInvestment: true
+          selectedType: investmentType,
+          newInvestment: true,
+          forceUpdate: Date.now() // Add timestamp to force update
         },
         replace: true
       });
@@ -89,7 +104,7 @@ const AddInvestment = ({
       if (onSuccess) {
         onSuccess();
       }
-    }, 100);
+    }, 300); // Increased timeout to ensure state updates
     
     form.reset();
   };

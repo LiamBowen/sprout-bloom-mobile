@@ -84,43 +84,58 @@ export const PortfolioList = ({
   const location = useLocation();
   
   const [selectedType, setSelectedType] = useState(() => {
-    // Handle both "fractional" and "fractional-shares" format in state
     const locationState = location.state as any;
     if (locationState?.selectedType) {
-      // Normalize "fractional-shares" to "fractional"
-      if (locationState.selectedType === "fractional-shares") {
-        return "fractional";
-      }
       return locationState.selectedType;
     }
     return "stocks-etfs"; // Default
   });
 
-  // Effect to handle incoming navigation state changes
+  // Immediately refresh component when location state changes
   useEffect(() => {
     if (location.state) {
       const stateType = (location.state as any).selectedType;
       if (stateType) {
-        // Normalize "fractional-shares" to "fractional"
-        if (stateType === "fractional-shares") {
-          setSelectedType("fractional");
-        } else {
-          setSelectedType(stateType);
-        }
+        console.log(`Updating selected type from location state: ${stateType}`);
+        setSelectedType(stateType);
       }
     }
   }, [location.state]);
 
-  // Effect to select the first portfolio of the selected type if none is selected
+  // Force update whenever forceUpdate timestamp changes
+  useEffect(() => {
+    const forceUpdateTimestamp = location.state && (location.state as any).forceUpdate;
+    if (forceUpdateTimestamp) {
+      console.log(`Force updating portfolio view at ${forceUpdateTimestamp}`);
+      
+      // Re-filter and select portfolios
+      const currentType = (location.state as any).selectedType || selectedType;
+      const filtered = portfolios.filter(portfolio => portfolio.category === currentType);
+      
+      if (filtered.length > 0 && (location.state as any).newInvestment) {
+        console.log("Selecting newly created portfolio");
+        // Always select the most recently created portfolio when coming from investment creation
+        const newPortfolio = filtered[filtered.length - 1];
+        setSelectedPortfolio(newPortfolio);
+      }
+    }
+  }, [location.state, portfolios, setSelectedPortfolio, selectedType]);
+
+  // Ensure a portfolio is selected when portfolio list or tab changes
   useEffect(() => {
     const filtered = portfolios.filter(portfolio => portfolio.category === selectedType);
+    console.log(`Filtered ${filtered.length} portfolios for type: ${selectedType}`);
+    
     if (filtered.length > 0) {
       // If there's a newly created investment, select it
       if (location.state && (location.state as any).newInvestment) {
-        const newPortfolio = filtered[filtered.length - 1]; // Last added portfolio
+        const newPortfolio = filtered[filtered.length - 1];
+        console.log(`Selecting new portfolio: ${newPortfolio.name}`);
         setSelectedPortfolio(newPortfolio);
-      } else if (!selectedPortfolio || selectedPortfolio.category !== selectedType) {
-        // If no portfolio is selected or the selected one doesn't match the current type
+      } 
+      // If no portfolio is selected or the selected one doesn't match the current type
+      else if (!selectedPortfolio || selectedPortfolio.category !== selectedType) {
+        console.log(`Selecting first available portfolio: ${filtered[0].name}`);
         setSelectedPortfolio(filtered[0]);
       }
     }
@@ -133,9 +148,6 @@ export const PortfolioList = ({
   const filteredPortfolios = portfolios.filter(portfolio => {
     return portfolio.category === selectedType;
   });
-
-  console.log("Selected type:", selectedType);
-  console.log("Filtered portfolios:", filteredPortfolios);
 
   return (
     <div className="space-y-4">
@@ -165,7 +177,7 @@ export const PortfolioList = ({
 
       {filteredPortfolios.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          <p>No {selectedType === "fractional" ? "fractional shares" : selectedType.replace('-', ' ')} investments yet.</p>
+          <p>No {selectedType === "fractional" ? "fractional shares" : selectedType === "crypto" ? "crypto" : selectedType.replace('-', ' ')} investments yet.</p>
         </div>
       ) : (
         filteredPortfolios.map((portfolio) => (

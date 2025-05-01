@@ -105,10 +105,12 @@ const getRandomColor = (): string => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
+// Improved category mapping function
 const mapCategoryToToggleValue = (category: string): string => {
-  if (category.toLowerCase().includes("crypto")) {
+  const lowerCategory = category.toLowerCase();
+  if (lowerCategory.includes("crypto")) {
     return "crypto";
-  } else if (category.toLowerCase().includes("fractional")) {
+  } else if (lowerCategory.includes("fractional")) {
     return "fractional";
   } else {
     return "stocks-etfs";
@@ -131,6 +133,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   const addInvestment = (investment: Omit<Investment, "id" | "date" | "portfolioId">) => {
     const portfolioId = `${investment.asset.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now()}`;
     
+    // Use the improved category mapping function
     const categoryToggleValue = mapCategoryToToggleValue(investment.category);
     
     const newPortfolio: Portfolio = {
@@ -153,9 +156,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     };
     
     setInvestments(prev => [...prev, newInvestment]);
-    
     setSelectedPortfolio(newPortfolio);
-    
     triggerConfetti();
   };
 
