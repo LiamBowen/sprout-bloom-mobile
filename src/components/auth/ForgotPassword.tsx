@@ -63,6 +63,7 @@ export const ForgotPassword = ({ onBack }: ForgotPasswordProps) => {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoFocus
               required
             />
             <Button 

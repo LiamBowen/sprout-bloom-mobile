@@ -1,19 +1,22 @@
 
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { ForgotPassword } from "@/components/auth/ForgotPassword";
-import { useLocation } from "react-router-dom";
 
 const Auth = () => {
-  // Check if the path includes 'forgot-password'
   const location = useLocation();
+  const navigate = useNavigate();
   const isForgotPassword = location.pathname.includes('forgot-password');
+  
+  const handleBackToSignIn = () => {
+    navigate("/auth");
+  };
 
-  if (isForgotPassword) {
-    return <ForgotPassword onBack={() => window.location.href = "/auth"} />;
-  }
-
-  return <AuthForm />;
+  return isForgotPassword ? (
+    <ForgotPassword onBack={handleBackToSignIn} />
+  ) : (
+    <AuthForm />
+  );
 };
 
 export default Auth;

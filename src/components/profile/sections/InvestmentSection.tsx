@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -104,7 +105,7 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
                         checked={portfolioThemes.includes(id)}
                         onCheckedChange={(checked) => handleThemeChange(id, checked as boolean)}
                       />
-                      <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 overflow-hidden whitespace-nowrap text-ellipsis max-w-[250px]">
                         {label}
                       </label>
                     </div>
@@ -150,8 +151,8 @@ export const InvestmentSection = ({ isOpen, onOpenChange }: InvestmentSectionPro
           <div className="space-y-3">
             <div className="flex justify-between items-start">
               <span className="text-sm text-gray-600">Portfolio Themes</span>
-              <div className="text-right">
-                <span className="text-sm font-medium">
+              <div className="text-right max-w-[70%]">
+                <span className="text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis block">
                   {portfolioThemes.length > 0 
                     ? portfolioThemes.map(theme => 
                         INVESTMENT_THEMES.find(t => t.id === theme)?.label

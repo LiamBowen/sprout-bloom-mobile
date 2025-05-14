@@ -41,7 +41,9 @@ const Index = () => {
             <div className="card bg-sprout-pink/10 border-sprout-pink/20">
               <div className="flex items-center mb-2">
                 <Users className="w-5 h-5 mr-2" />
-                <h3 className="font-bold">Save together</h3>
+                <h3 className="font-bold">
+                  <span className="decoration-transparent">Save together</span>
+                </h3>
               </div>
               <p className="text-sm text-gray-600">
                 Create group funds with friends for shared goals.

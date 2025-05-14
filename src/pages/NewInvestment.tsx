@@ -51,7 +51,7 @@ const NewInvestment = () => {
         <h1 className="text-2xl font-bold">New Investment</h1>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-4 text-left">
         {investmentCategories.map((category) => (
           <InvestmentCategory
             key={category.id}

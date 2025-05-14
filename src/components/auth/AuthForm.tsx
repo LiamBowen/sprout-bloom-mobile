@@ -164,6 +164,7 @@ export const AuthForm = () => {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoFocus
               required
             />
             <div className="relative">
@@ -214,8 +215,7 @@ export const AuthForm = () => {
           <div className="text-center">
             <Button
               variant="link"
-              type="button"
-              onClick={() => window.location.href = "/auth/forgot-password"}
+              onClick={() => navigate("/auth/forgot-password")}
               className="text-sm text-gray-600 hover:text-gray-900"
             >
               Forgot password?
