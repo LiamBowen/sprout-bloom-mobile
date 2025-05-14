@@ -58,21 +58,16 @@ export function useBankConnections() {
       
       console.log("useBankConnections: Initiating bank connection with callback URL:", callbackUrl);
       
-      // Using supabase.functions.invoke which handles proper authentication and headers
-      const { data, error } = await supabase.functions.invoke('truelayer', {
-        body: { 
-          action: 'generateAuthLink',
-          redirectUri: callbackUrl 
-        }
+      const { data, error } = await supabase.functions.invoke("truelayer", {
+        body: {
+          action: "generateAuthLink",
+          redirectUri: callbackUrl
+        },
       });
 
-      if (error) {
-        console.error("Error generating auth link:", error);
-        throw new Error(error.message || "Could not connect to bank service");
-      }
-      
-      if (!data?.authUrl) {
-        throw new Error("No authorization URL received from server");
+      if (error || !data?.authUrl) {
+        console.error("Error getting TrueLayer auth link:", error || data);
+        throw new Error(error?.message || "No authorization URL received from server");
       }
       
       console.log("useBankConnections: Received auth URL from TrueLayer:", data.authUrl);

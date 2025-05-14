@@ -57,10 +57,16 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     
     console.log('TrueLayer generateAuthLink: Generated auth URL:', authUrl.toString());
     
-    return createResponse({ 
-      authUrl: authUrl.toString(),
-      success: true 
-    });
+    return new Response(
+      JSON.stringify({ authUrl: authUrl.toString(), success: true }),
+      {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error('Error generating auth link:', error);
     return createResponse({ 
