@@ -1,8 +1,8 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const TRUELAYER_AUTH_URL = "https://auth.truelayer-sandbox.com"; // Changed to sandbox URL
-const TRUELAYER_API_URL = "https://api.truelayer-sandbox.com"; // Changed to sandbox URL
+// Using sandbox URLs for TrueLayer
+const TRUELAYER_AUTH_URL = "https://auth.truelayer-sandbox.com";
+const TRUELAYER_API_URL = "https://api.truelayer-sandbox.com";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,12 +25,9 @@ function getRedirectUri(req: Request, providedUri?: string): string {
     return providedUri;
   }
   
-  // Otherwise, try to construct from origin or use a fallback
+  // For local development, use the proper origin
   const origin = req.headers.get('origin') || '';
-  
-  // Use a local development URL for testing
-  const host = origin || 'http://localhost:3000';
-  return `${host}/app/bank-callback`;
+  return origin ? `${origin}/app/bank-callback` : 'http://localhost:3000/app/bank-callback';
 }
 
 // Helper function to create standardized responses
@@ -58,14 +55,13 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     // Build TrueLayer authorization URL with correct parameters
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/auth`);
     authUrl.searchParams.append('response_type', 'code');
-    authUrl.searchParams.append('client_id', clientId);
+    authUrl.searchParams.append('client_id', clientId.trim());
     authUrl.searchParams.append('scope', 'info accounts balance transactions');
     authUrl.searchParams.append('redirect_uri', effectiveRedirectUri);
     authUrl.searchParams.append('providers', 'uk-oauth-all uk-ob-all');
     
     console.log('TrueLayer generateAuthLink: Generated auth URL:', authUrl.toString());
     
-    // Always return proper JSON with content-type header
     return new Response(
       JSON.stringify({ 
         authUrl: authUrl.toString(), 
@@ -111,8 +107,8 @@ async function exchangeToken(req: Request, code: string, redirectUri?: string) {
       },
       body: JSON.stringify({
         grant_type: 'authorization_code',
-        client_id: clientId,
-        client_secret: clientSecret,
+        client_id: clientId.trim(),
+        client_secret: clientSecret.trim(),
         code,
         redirect_uri: effectiveRedirectUri,
       }),
