@@ -1,8 +1,9 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-// Using correct URLs for TrueLayer sandbox
+// Using correct URLs for TrueLayer
 // Auth should be auth.truelayer.com even in sandbox mode
+// For API, we use the sandbox version
 const TRUELAYER_AUTH_URL = "https://auth.truelayer.com";
 const TRUELAYER_API_URL = "https://api.truelayer-sandbox.com";
 
