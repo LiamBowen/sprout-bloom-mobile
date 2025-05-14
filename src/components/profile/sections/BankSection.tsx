@@ -7,6 +7,7 @@ import { useBankConnections } from "@/hooks/use-bank-connections";
 import { BankConnectionsList } from "@/components/profile/bank/BankConnectionsList";
 import { ConnectBankDialog } from "@/components/profile/bank/ConnectBankDialog";
 import { useToast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   } = useBankConnections();
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
 
   const initiateConnection = async () => {
     try {
@@ -47,6 +49,18 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     }
   };
 
+  const handleRoundUpsToggle = (enabled: boolean) => {
+    setRoundUpsEnabled(enabled);
+    
+    toast({
+      title: enabled ? "Round-ups Enabled" : "Round-ups Disabled",
+      description: enabled 
+        ? "Your purchases will be rounded up and the spare change will be invested" 
+        : "Round-ups have been turned off",
+      variant: enabled ? "default" : "destructive",
+    });
+  };
+
   return (
     <Collapsible open={isOpen} onOpenChange={onOpenChange} className="mb-4 border-b pb-2">
       <CollapsibleTrigger className="flex w-full justify-between items-center py-2">
@@ -58,6 +72,20 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent className="pt-2 pb-4">
         <div className="space-y-4">
+          {bankConnections.length > 0 && (
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-4">
+              <div>
+                <h4 className="font-medium text-sm">Round-ups</h4>
+                <p className="text-xs text-gray-500">Round up purchases and invest the spare change</p>
+              </div>
+              <Switch 
+                checked={roundUpsEnabled}
+                onCheckedChange={handleRoundUpsToggle}
+                className="data-[state=checked]:bg-sprout-green"
+              />
+            </div>
+          )}
+          
           <BankConnectionsList
             connections={bankConnections}
             isLoading={isLoading}
