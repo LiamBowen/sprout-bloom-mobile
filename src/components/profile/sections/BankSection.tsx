@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useBankConnections } from "@/hooks/use-bank-connections";
 import { BankConnectionsList } from "@/components/profile/bank/BankConnectionsList";
 import { ConnectBankDialog } from "@/components/profile/bank/ConnectBankDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -13,30 +14,36 @@ interface BankSectionProps {
 }
 
 export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
+  const { toast } = useToast();
   const { 
     bankConnections, 
     isLoading, 
-    isConnecting, 
-    authUrl,
-    generateAuthLink 
+    isConnecting,
+    handleConnectBank
   } = useBankConnections();
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleConnectBank = async () => {
-    // Generate the authentication link
-    const generatedUrl = await generateAuthLink();
-    
-    if (generatedUrl) {
-      setIsDialogOpen(true);
-    }
-  };
-  
-  const handleConfirmBankConnect = () => {
-    if (authUrl) {
-      // Open in a new tab
-      window.open(authUrl, "_blank", "noopener,noreferrer");
-      setIsDialogOpen(false);
+  const initiateConnection = async () => {
+    try {
+      const authUrl = await handleConnectBank();
+      
+      if (authUrl) {
+        // Redirect directly to TrueLayer auth URL
+        window.location.href = authUrl;
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to generate authentication link",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to connect to bank",
+        variant: "destructive"
+      });
     }
   };
 
@@ -55,18 +62,10 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
             connections={bankConnections}
             isLoading={isLoading}
             isConnecting={isConnecting}
-            onConnectBank={handleConnectBank}
-          />
-          
-          <ConnectBankDialog 
-            open={isDialogOpen}
-            authUrl={authUrl}
-            onOpenChange={setIsDialogOpen}
-            onConfirm={handleConfirmBankConnect}
+            onConnectBank={initiateConnection}
           />
         </div>
       </CollapsibleContent>
     </Collapsible>
   );
 };
-

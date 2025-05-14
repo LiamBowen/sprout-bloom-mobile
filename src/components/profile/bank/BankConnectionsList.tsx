@@ -1,9 +1,7 @@
 
-import { Loader2 } from "lucide-react";
+import { Bank, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { BankConnection } from "@/hooks/use-bank-connections";
-import { useState } from "react";
+import { type BankConnection } from "@/hooks/use-bank-connections";
 
 interface BankConnectionsListProps {
   connections: BankConnection[];
@@ -18,68 +16,64 @@ export const BankConnectionsList = ({
   isConnecting,
   onConnectBank
 }: BankConnectionsListProps) => {
-  const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
-
+  // Show loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-2">
-        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-        <span className="text-sm text-gray-500">Loading bank connections...</span>
+      <div className="flex justify-center p-4">
+        <div className="animate-pulse flex space-x-2 items-center">
+          <div className="rounded-full bg-gray-200 h-4 w-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-36"></div>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Link Bank Account</span>
+  // No connections yet
+  if (connections.length === 0) {
+    return (
+      <div className="text-center p-4 border rounded-lg bg-gray-50">
+        <div className="flex justify-center">
+          <Bank className="h-10 w-10 text-gray-400 mb-2" />
+        </div>
+        <h3 className="text-sm font-medium mb-1">No bank accounts connected</h3>
+        <p className="text-xs text-gray-500 mb-4">
+          Connect your bank account to track your spending and set up automatic investing.
+        </p>
         <Button 
-          variant="outline" 
-          size="sm"
-          className="h-7 text-xs"
+          variant="default" 
+          className="w-full flex items-center justify-center"
           onClick={onConnectBank}
           disabled={isConnecting}
         >
-          {isConnecting ? "Connecting..." : "Connect"}
+          <Plus className="h-4 w-4 mr-2" />
+          {isConnecting ? "Connecting..." : "Connect Bank"}
         </Button>
       </div>
-      
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Round-ups</span>
-        <div className="flex items-center space-x-2">
-          <Switch 
-            checked={roundUpsEnabled}
-            onCheckedChange={setRoundUpsEnabled}
-          />
-          <span className="text-xs text-gray-500">{roundUpsEnabled ? 'On' : 'Off'}</span>
-        </div>
-      </div>
+    );
+  }
 
-      {connections.length > 0 && (
-        <>
-          {connections.map((connection) => (
-            <div 
-              key={connection.id} 
-              className="flex justify-between items-center"
-            >
-              <span className="text-sm text-gray-600">{connection.account_name || 'Bank Account'}</span>
-              <span className="text-xs text-gray-500">{connection.account_type || 'Connected Account'}</span>
-            </div>
-          ))}
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Add Another Account</span>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="h-7 text-xs"
-              onClick={onConnectBank}
-              disabled={isConnecting}
-            >
-              {isConnecting ? "Connecting..." : "Connect"}
-            </Button>
+  // Display connected banks
+  return (
+    <div className="space-y-4">
+      {connections.map((connection) => (
+        <div key={connection.id} className="border rounded-lg p-3 flex justify-between items-center">
+          <div>
+            <h3 className="font-medium">{connection.account_name}</h3>
+            <p className="text-sm text-gray-500">{connection.account_type} · {connection.currency}</p>
           </div>
-        </>
-      )}
+          <Bank className="h-5 w-5 text-gray-500" />
+        </div>
+      ))}
+      
+      <Button 
+        variant="outline" 
+        className="w-full flex items-center justify-center mt-4"
+        onClick={onConnectBank}
+        disabled={isConnecting}
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        {isConnecting ? "Connecting..." : "Connect Another Bank"}
+      </Button>
     </div>
   );
 };

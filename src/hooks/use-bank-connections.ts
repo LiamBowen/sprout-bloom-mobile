@@ -19,7 +19,6 @@ export function useBankConnections() {
   const [bankConnections, setBankConnections] = useState<BankConnection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [authUrl, setAuthUrl] = useState("");
 
   useEffect(() => {
     fetchBankConnections();
@@ -49,7 +48,7 @@ export function useBankConnections() {
     }
   };
 
-  const generateAuthLink = async (): Promise<string | null> => {
+  const handleConnectBank = async (): Promise<string | null> => {
     try {
       setIsConnecting(true);
       
@@ -68,7 +67,7 @@ export function useBankConnections() {
 
       if (response.error) {
         console.error("Error generating auth link:", response.error);
-        throw response.error;
+        throw new Error(response.error.message || "Could not connect to bank service");
       }
       
       if (!response.data?.authUrl) {
@@ -77,7 +76,6 @@ export function useBankConnections() {
       
       console.log("useBankConnections: Received auth URL from TrueLayer:", response.data.authUrl);
       
-      setAuthUrl(response.data.authUrl);
       return response.data.authUrl;
     } catch (error: any) {
       console.error("Error generating auth link:", error);
@@ -96,8 +94,7 @@ export function useBankConnections() {
     bankConnections,
     isLoading,
     isConnecting,
-    authUrl,
     fetchBankConnections,
-    generateAuthLink
+    handleConnectBank
   };
 }
