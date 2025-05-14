@@ -31,7 +31,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       const authUrl = await handleConnectBank();
       
       if (authUrl) {
-        // Redirect directly to TrueLayer auth URL
+        // Use window.location.href to navigate to the auth URL
         window.location.href = authUrl;
       } else {
         toast({

@@ -58,25 +58,26 @@ export function useBankConnections() {
       
       console.log("useBankConnections: Initiating bank connection with callback URL:", callbackUrl);
       
-      const response = await supabase.functions.invoke('truelayer', {
+      // Using supabase.functions.invoke which handles proper authentication and headers
+      const { data, error } = await supabase.functions.invoke('truelayer', {
         body: { 
           action: 'generateAuthLink',
           redirectUri: callbackUrl 
         }
       });
 
-      if (response.error) {
-        console.error("Error generating auth link:", response.error);
-        throw new Error(response.error.message || "Could not connect to bank service");
+      if (error) {
+        console.error("Error generating auth link:", error);
+        throw new Error(error.message || "Could not connect to bank service");
       }
       
-      if (!response.data?.authUrl) {
+      if (!data?.authUrl) {
         throw new Error("No authorization URL received from server");
       }
       
-      console.log("useBankConnections: Received auth URL from TrueLayer:", response.data.authUrl);
+      console.log("useBankConnections: Received auth URL from TrueLayer:", data.authUrl);
       
-      return response.data.authUrl;
+      return data.authUrl;
     } catch (error: any) {
       console.error("Error generating auth link:", error);
       toast({
