@@ -1,7 +1,8 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const TRUELAYER_AUTH_URL = "https://auth.truelayer.com";
-const TRUELAYER_API_URL = "https://api.truelayer.com";
+const TRUELAYER_AUTH_URL = "https://auth.truelayer-sandbox.com"; // Changed to sandbox URL
+const TRUELAYER_API_URL = "https://api.truelayer-sandbox.com"; // Changed to sandbox URL
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,7 +28,7 @@ function getRedirectUri(req: Request, providedUri?: string): string {
   // Otherwise, try to construct from origin or use a fallback
   const origin = req.headers.get('origin') || '';
   
-  // Use the preview URL structure for development
+  // Use a local development URL for testing
   const host = origin || 'http://localhost:3000';
   return `${host}/app/bank-callback`;
 }
