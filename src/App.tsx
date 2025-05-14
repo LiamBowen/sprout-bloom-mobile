@@ -68,7 +68,7 @@ function App() {
   
   useEffect(() => {
     initializeAuth();
-  }, []);
+  }, [initializeAuth]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">
@@ -84,6 +84,8 @@ function App() {
           <Routes>
             <Route path="/" element={isLoggedIn ? <Navigate to="/app" /> : <Index />} />
             <Route path="/auth" element={isLoggedIn ? <Navigate to="/app" /> : <Auth />} />
+            <Route path="/auth/forgot-password" element={isLoggedIn ? <Navigate to="/app" /> : <Auth />} />
+            <Route path="/auth/reset-password" element={isLoggedIn ? <Navigate to="/app" /> : <Auth />} />
             
             <Route 
               path="/onboarding" 
