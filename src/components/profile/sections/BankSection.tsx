@@ -27,8 +27,9 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
+  const [authUrl, setAuthUrl] = useState("");
 
-  const handleConnectBank = async () => {
+  const prepareConnectBank = async () => {
     try {
       setIsConnecting(true);
       
@@ -56,8 +57,9 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       }
 
       if (data?.authUrl) {
-        console.log("✅ Redirecting to:", data.authUrl);
-        window.location.href = data.authUrl;
+        console.log("✅ Received auth URL:", data.authUrl);
+        setAuthUrl(data.authUrl);
+        setIsDialogOpen(true);
       } else {
         console.warn("⚠️ No authUrl received from function", data);
         toast({
@@ -67,7 +69,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         });
       }
     } catch (err: any) {
-      console.error("❌ Unexpected error in handleConnectBank:", err);
+      console.error("❌ Unexpected error in prepareConnectBank:", err);
       toast({
         title: "Error",
         description: err.message || "An unexpected error occurred",
@@ -75,6 +77,19 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
       });
     } finally {
       setIsConnecting(false);
+    }
+  };
+
+  const handleConnectBank = () => {
+    if (authUrl) {
+      console.log("BankSection: Redirecting to:", authUrl);
+      window.location.href = authUrl;
+    } else {
+      toast({
+        title: "Error",
+        description: "No authentication URL available",
+        variant: "destructive"
+      });
     }
   };
 
@@ -119,9 +134,16 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
             connections={bankConnections}
             isLoading={isLoading}
             isConnecting={isConnecting}
-            onConnectBank={handleConnectBank}
+            onConnectBank={prepareConnectBank}
           />
         </div>
+        
+        <ConnectBankDialog
+          open={isDialogOpen}
+          authUrl={authUrl}
+          onOpenChange={setIsDialogOpen}
+          onConfirm={handleConnectBank}
+        />
       </CollapsibleContent>
     </Collapsible>
   );

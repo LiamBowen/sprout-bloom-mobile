@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Using sandbox URLs for TrueLayer
@@ -25,9 +26,12 @@ function getRedirectUri(req: Request, providedUri?: string): string {
     return providedUri;
   }
   
-  // For local development, use the proper origin
-  const origin = req.headers.get('origin') || '';
-  return origin ? `${origin}/app/bank-callback` : 'http://localhost:3000/app/bank-callback';
+  // For preview/development, use the current domain
+  const url = new URL(req.url);
+  const origin = url.origin;
+  
+  console.log("Using origin from request:", origin);
+  return `${origin}/app/bank-callback`;
 }
 
 // Helper function to create standardized responses
@@ -51,6 +55,7 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     const effectiveRedirectUri = getRedirectUri(req, redirectUri);
     
     console.log("TrueLayer generateAuthLink: Using redirect URI:", effectiveRedirectUri);
+    console.log("TrueLayer generateAuthLink: Using client ID:", clientId);
     
     // Build TrueLayer authorization URL with correct parameters
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/auth`);
@@ -206,8 +211,19 @@ serve(async (req) => {
   }
 
   try {
-    const requestData = await req.json();
-    console.log("TrueLayer function received request:", JSON.stringify(requestData));
+    // Log the full request for debugging
+    console.log("TrueLayer function received request URL:", req.url);
+    
+    // Get the request body
+    let requestData;
+    try {
+      requestData = await req.json();
+      console.log("TrueLayer function received request body:", JSON.stringify(requestData));
+    } catch (e) {
+      console.error("Error parsing request JSON:", e);
+      return createResponse({ error: "Invalid JSON in request body" }, 400);
+    }
+    
     const { action, code, redirectUri } = requestData;
 
     switch (action) {
