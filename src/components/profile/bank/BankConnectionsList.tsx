@@ -7,7 +7,7 @@ interface BankConnectionsListProps {
   connections: BankConnection[];
   isLoading: boolean;
   isConnecting: boolean;
-  onConnectBank: (e?: React.MouseEvent) => void;
+  onConnectBank: () => void;
 }
 
 export const BankConnectionsList = ({

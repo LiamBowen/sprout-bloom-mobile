@@ -26,33 +26,38 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
 
-  const handleConnectBank = async (e?: React.MouseEvent) => {
-    e?.preventDefault(); // prevent form submission
-    console.log("👉 Connect Bank clicked");
-
+  const handleConnectBank = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("truelayer", {
         body: { action: "generateAuthLink" },
       });
-      
-      console.log("👉 Supabase response:", data, error);
-      
-      if (error || !data?.authUrl) {
-        console.error("Failed to generate auth URL:", error || "No authUrl in response");
+
+      if (error) {
+        console.error("❌ Error from supabase.functions.invoke:", error);
         toast({
           title: "Error",
-          description: "Could not generate authentication link",
+          description: "Could not connect to bank",
           variant: "destructive"
         });
         return;
       }
-      
-      window.location.href = data.authUrl;
-    } catch (error: any) {
-      console.error("Error in handleConnectBank:", error);
+
+      if (data?.authUrl) {
+        console.log("✅ Redirecting to:", data.authUrl);
+        window.location.href = data.authUrl;
+      } else {
+        console.warn("⚠️ No authUrl received from function", data);
+        toast({
+          title: "Error",
+          description: "No authentication URL received",
+          variant: "destructive"
+        });
+      }
+    } catch (err: any) {
+      console.error("❌ Unexpected error in handleConnectBank:", err);
       toast({
         title: "Error",
-        description: error.message || "Failed to connect to bank",
+        description: err.message || "An unexpected error occurred",
         variant: "destructive"
       });
     }
