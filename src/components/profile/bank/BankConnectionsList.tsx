@@ -7,7 +7,7 @@ interface BankConnectionsListProps {
   connections: BankConnection[];
   isLoading: boolean;
   isConnecting: boolean;
-  onConnectBank: () => void;
+  onConnectBank: (e?: React.MouseEvent) => void;
 }
 
 export const BankConnectionsList = ({
@@ -44,6 +44,7 @@ export const BankConnectionsList = ({
           className="w-full flex items-center justify-center"
           onClick={onConnectBank}
           disabled={isConnecting}
+          type="button"
         >
           <Plus className="h-4 w-4 mr-2" />
           {isConnecting ? "Connecting..." : "Connect Bank"}
@@ -70,6 +71,7 @@ export const BankConnectionsList = ({
         className="w-full flex items-center justify-center mt-4"
         onClick={onConnectBank}
         disabled={isConnecting}
+        type="button"
       >
         <Plus className="h-4 w-4 mr-2" />
         {isConnecting ? "Connecting..." : "Connect Another Bank"}

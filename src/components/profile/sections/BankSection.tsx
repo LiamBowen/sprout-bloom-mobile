@@ -8,6 +8,7 @@ import { BankConnectionsList } from "@/components/profile/bank/BankConnectionsLi
 import { ConnectBankDialog } from "@/components/profile/bank/ConnectBankDialog";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BankSectionProps {
   isOpen: boolean;
@@ -20,24 +21,35 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     bankConnections, 
     isLoading, 
     isConnecting,
-    handleConnectBank
+    fetchBankConnections
   } = useBankConnections();
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
 
-  const initiateConnection = async () => {
+  const handleConnectBank = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault(); // stop form submission
+    
     try {
-      const authUrl = await handleConnectBank();
+      const { data, error } = await supabase.functions.invoke("truelayer", {
+        body: { 
+          action: "generateAuthLink",
+          redirectUri: `${window.location.origin}/app/bank-callback`
+        },
+      });
       
-      if (authUrl) {
-        window.location.href = authUrl; // ✅ Redirect to TrueLayer
-      } else {
+      if (error) {
+        console.error("Error getting auth URL:", error);
         toast({
           title: "Error",
-          description: "Failed to generate authentication link",
+          description: "Could not generate authentication link",
           variant: "destructive"
         });
+        return;
+      }
+      
+      if (data?.authUrl) {
+        window.location.href = data.authUrl;
       }
     } catch (error: any) {
       toast({
@@ -89,7 +101,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
             connections={bankConnections}
             isLoading={isLoading}
             isConnecting={isConnecting}
-            onConnectBank={initiateConnection}
+            onConnectBank={handleConnectBank}
           />
         </div>
       </CollapsibleContent>
