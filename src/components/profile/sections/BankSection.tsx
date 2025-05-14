@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ChevronRight, CreditCard } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -20,6 +21,7 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     bankConnections, 
     isLoading, 
     isConnecting,
+    setIsConnecting,
     fetchBankConnections
   } = useBankConnections();
   
@@ -28,8 +30,19 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
 
   const handleConnectBank = async () => {
     try {
+      setIsConnecting(true);
+      
+      // Get the current URL's origin for the redirect
+      const origin = window.location.origin;
+      const callbackUrl = `${origin}/app/bank-callback`;
+      
+      console.log("BankSection: Starting bank connection with callback:", callbackUrl);
+      
       const { data, error } = await supabase.functions.invoke("truelayer", {
-        body: { action: "generateAuthLink" },
+        body: { 
+          action: "generateAuthLink",
+          redirectUri: callbackUrl
+        },
       });
 
       if (error) {
@@ -60,6 +73,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         description: err.message || "An unexpected error occurred",
         variant: "destructive"
       });
+    } finally {
+      setIsConnecting(false);
     }
   };
 

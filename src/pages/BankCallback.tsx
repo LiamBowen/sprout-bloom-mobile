@@ -50,6 +50,7 @@ const BankCallback = () => {
         
         setStatus(ConnectionStatus.CONNECTING);
         
+        // Use the current origin for the callback URL to ensure consistency
         const origin = window.location.origin;
         const callbackUrl = `${origin}/app/bank-callback`;
         

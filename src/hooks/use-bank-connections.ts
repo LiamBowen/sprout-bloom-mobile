@@ -52,6 +52,7 @@ export function useBankConnections() {
     bankConnections,
     isLoading,
     isConnecting,
+    setIsConnecting,
     fetchBankConnections
   };
 }

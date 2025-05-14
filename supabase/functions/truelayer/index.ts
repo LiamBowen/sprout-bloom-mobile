@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const TRUELAYER_AUTH_URL = "https://auth.truelayer.com";
@@ -20,12 +19,17 @@ function getRequiredEnv(name: string): string {
 
 // Helper function to get a redirectUri with fallback
 function getRedirectUri(req: Request, providedUri?: string): string {
+  // If URI is explicitly provided, use it
   if (providedUri) {
     return providedUri;
   }
   
+  // Otherwise, try to construct from origin or use a fallback
   const origin = req.headers.get('origin') || '';
-  return `${origin}/app/bank-callback`;
+  
+  // Use the preview URL structure for development
+  const host = origin || 'http://localhost:3000';
+  return `${host}/app/bank-callback`;
 }
 
 // Helper function to create standardized responses
@@ -34,7 +38,10 @@ function createResponse(data: any, status = 200) {
     JSON.stringify(data),
     { 
       status, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      } 
     }
   );
 }
@@ -57,8 +64,12 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     
     console.log('TrueLayer generateAuthLink: Generated auth URL:', authUrl.toString());
     
+    // Always return proper JSON with content-type header
     return new Response(
-      JSON.stringify({ authUrl: authUrl.toString(), success: true }),
+      JSON.stringify({ 
+        authUrl: authUrl.toString(), 
+        success: true 
+      }),
       {
         status: 200,
         headers: {
