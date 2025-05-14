@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ChevronRight, CreditCard } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -28,18 +27,18 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
   const [roundUpsEnabled, setRoundUpsEnabled] = useState(false);
 
   const handleConnectBank = async (e?: React.MouseEvent) => {
-    if (e) e.preventDefault(); // stop form submission
-    
+    e?.preventDefault(); // prevent form submission
+    console.log("👉 Connect Bank clicked");
+
     try {
       const { data, error } = await supabase.functions.invoke("truelayer", {
-        body: { 
-          action: "generateAuthLink",
-          redirectUri: `${window.location.origin}/app/bank-callback`
-        },
+        body: { action: "generateAuthLink" },
       });
       
-      if (error) {
-        console.error("Error getting auth URL:", error);
+      console.log("👉 Supabase response:", data, error);
+      
+      if (error || !data?.authUrl) {
+        console.error("Failed to generate auth URL:", error || "No authUrl in response");
         toast({
           title: "Error",
           description: "Could not generate authentication link",
@@ -48,10 +47,9 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
         return;
       }
       
-      if (data?.authUrl) {
-        window.location.href = data.authUrl;
-      }
+      window.location.href = data.authUrl;
     } catch (error: any) {
+      console.error("Error in handleConnectBank:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to connect to bank",

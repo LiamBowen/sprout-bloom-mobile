@@ -48,49 +48,10 @@ export function useBankConnections() {
     }
   };
 
-  const handleConnectBank = async (): Promise<string | null> => {
-    try {
-      setIsConnecting(true);
-      
-      // Get the current origin for proper redirect
-      const origin = window.location.origin;
-      const callbackUrl = `${origin}/app/bank-callback`;
-      
-      console.log("useBankConnections: Initiating bank connection with callback URL:", callbackUrl);
-      
-      const { data, error } = await supabase.functions.invoke("truelayer", {
-        body: {
-          action: "generateAuthLink",
-          redirectUri: callbackUrl
-        },
-      });
-
-      if (error || !data?.authUrl) {
-        console.error("Error getting TrueLayer auth link:", error || data);
-        throw new Error(error?.message || "No authorization URL received from server");
-      }
-      
-      console.log("useBankConnections: Received auth URL from TrueLayer:", data.authUrl);
-      
-      return data.authUrl;
-    } catch (error: any) {
-      console.error("Error generating auth link:", error);
-      toast({
-        title: "Error",
-        description: "Could not initiate bank connection: " + (error.message || "Unknown error"),
-        variant: "destructive"
-      });
-      return null;
-    } finally {
-      setIsConnecting(false);
-    }
-  };
-
   return {
     bankConnections,
     isLoading,
     isConnecting,
-    fetchBankConnections,
-    handleConnectBank
+    fetchBankConnections
   };
 }
