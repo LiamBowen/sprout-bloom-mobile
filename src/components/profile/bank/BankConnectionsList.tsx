@@ -1,5 +1,5 @@
 
-import { Bank, Plus } from "lucide-react";
+import { Ban, CreditCard, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type BankConnection } from "@/hooks/use-bank-connections";
 
@@ -33,7 +33,7 @@ export const BankConnectionsList = ({
     return (
       <div className="text-center p-4 border rounded-lg bg-gray-50">
         <div className="flex justify-center">
-          <Bank className="h-10 w-10 text-gray-400 mb-2" />
+          <CreditCard className="h-10 w-10 text-gray-400 mb-2" />
         </div>
         <h3 className="text-sm font-medium mb-1">No bank accounts connected</h3>
         <p className="text-xs text-gray-500 mb-4">
@@ -61,7 +61,7 @@ export const BankConnectionsList = ({
             <h3 className="font-medium">{connection.account_name}</h3>
             <p className="text-sm text-gray-500">{connection.account_type} · {connection.currency}</p>
           </div>
-          <Bank className="h-5 w-5 text-gray-500" />
+          <CreditCard className="h-5 w-5 text-gray-500" />
         </div>
       ))}
       
