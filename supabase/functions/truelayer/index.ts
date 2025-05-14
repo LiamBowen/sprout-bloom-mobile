@@ -59,7 +59,7 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     console.log("TrueLayer generateAuthLink: Using redirect URI:", effectiveRedirectUri);
     console.log("TrueLayer generateAuthLink: Using client ID:", clientId);
     
-    // Build TrueLayer authorization URL with correct domain (no /auth path after domain)
+    // Build TrueLayer authorization URL - CORRECTED: no /auth path after domain
     const authUrl = new URL(`${TRUELAYER_AUTH_URL}/`);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('client_id', clientId.trim());
