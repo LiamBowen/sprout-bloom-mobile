@@ -58,12 +58,14 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     console.log("TrueLayer generateAuthLink: Using redirect URI:", effectiveRedirectUri);
     console.log("TrueLayer generateAuthLink: Using client ID:", clientId);
     
-    // Build TrueLayer authorization URL - using sandbox URL
-    const authUrl = new URL(`${TRUELAYER_AUTH_URL}/connect/token/authorize`);
+    // Build TrueLayer authorization URL - using just the sandbox domain as base URL
+    const authUrl = new URL(`${TRUELAYER_AUTH_URL}/`);
+    
+    // Properly encode each query parameter value
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('client_id', clientId.trim());
     authUrl.searchParams.append('scope', 'info accounts balance transactions');
-    authUrl.searchParams.append('redirect_uri', effectiveRedirectUri);
+    authUrl.searchParams.append('redirect_uri', encodeURIComponent(effectiveRedirectUri));
     authUrl.searchParams.append('providers', 'uk-oauth-all uk-ob-all');
     
     console.log('TrueLayer generateAuthLink: Generated auth URL:', authUrl.toString());
