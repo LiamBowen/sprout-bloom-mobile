@@ -2,9 +2,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Using correct URLs for TrueLayer
-// Auth should be auth.truelayer.com even in sandbox mode
-// For API, we use the sandbox version
-const TRUELAYER_AUTH_URL = "https://auth.truelayer.com";
+// For sandbox mode, use sandbox endpoints
+const TRUELAYER_AUTH_URL = "https://auth.truelayer-sandbox.com";
 const TRUELAYER_API_URL = "https://api.truelayer-sandbox.com";
 
 const corsHeaders = {
@@ -59,8 +58,8 @@ async function generateAuthLink(req: Request, redirectUri: string) {
     console.log("TrueLayer generateAuthLink: Using redirect URI:", effectiveRedirectUri);
     console.log("TrueLayer generateAuthLink: Using client ID:", clientId);
     
-    // Build TrueLayer authorization URL - CORRECTED: no /auth path after domain
-    const authUrl = new URL(`${TRUELAYER_AUTH_URL}/`);
+    // Build TrueLayer authorization URL - using sandbox URL
+    const authUrl = new URL(`${TRUELAYER_AUTH_URL}/connect/token/authorize`);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('client_id', clientId.trim());
     authUrl.searchParams.append('scope', 'info accounts balance transactions');
