@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Using correct URLs for TrueLayer
@@ -27,12 +26,8 @@ function getRedirectUri(req: Request, providedUri?: string): string {
     return providedUri;
   }
   
-  // For preview/development, use the current domain
-  const url = new URL(req.url);
-  const origin = url.origin;
-  
-  console.log("Using origin from request:", origin);
-  return `${origin}/app/bank-callback`;
+  // Use fixed redirect URI as default
+  return "https://app.getsproutapp.com/bank-callback";
 }
 
 // Helper function to create standardized responses

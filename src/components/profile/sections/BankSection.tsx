@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ChevronRight, CreditCard } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -33,9 +32,8 @@ export const BankSection = ({ isOpen, onOpenChange }: BankSectionProps) => {
     try {
       setIsConnecting(true);
       
-      // Get the current URL's origin for the redirect
-      const origin = window.location.origin;
-      const callbackUrl = `${origin}/app/bank-callback`;
+      // Use the updated redirect URL without /app prefix
+      const callbackUrl = "https://app.getsproutapp.com/bank-callback";
       
       console.log("BankSection: Starting bank connection with callback:", callbackUrl);
       

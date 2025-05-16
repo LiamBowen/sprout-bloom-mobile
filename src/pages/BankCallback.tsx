@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,9 +49,8 @@ const BankCallback = () => {
         
         setStatus(ConnectionStatus.CONNECTING);
         
-        // Use the current origin for the callback URL to ensure consistency
-        const origin = window.location.origin;
-        const callbackUrl = `${origin}/app/bank-callback`;
+        // Use the updated callback URL
+        const callbackUrl = "https://app.getsproutapp.com/bank-callback";
         
         console.log("BankCallback: Exchanging token with code", { 
           codeLength: code.length,

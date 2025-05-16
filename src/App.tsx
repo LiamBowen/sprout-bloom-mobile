@@ -96,6 +96,9 @@ function App() {
               } 
             />
             
+            {/* Add a direct route to bank-callback outside the app layout */}
+            <Route path="/bank-callback" element={<BankCallback />} />
+            
             <Route
               path="/app"
               element={
