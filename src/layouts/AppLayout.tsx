@@ -9,34 +9,34 @@ const AppLayout = () => {
   
   const tabs = [
     {
-      path: "/app",
+      path: "/",
       icon: <Home size={22} />,
       label: "Home",
     },
     {
-      path: "/app/invest",
+      path: "/invest",
       icon: <TrendingUp size={22} />,
       label: "Invest",
     },
     {
-      path: "/app/save",
+      path: "/save",
       icon: <PiggyBank size={22} />,
       label: "Save",
     },
     {
-      path: "/app/coach",
+      path: "/coach",
       icon: <MessagesSquare size={22} />,
       label: "Coach",
     },
     {
-      path: "/app/profile",
+      path: "/profile",
       icon: <User size={22} />,
       label: "Profile",
     },
   ];
 
   // Determine if we should show the logo in the header
-  const shouldShowLogo = location.pathname.includes("/app/profile");
+  const shouldShowLogo = location.pathname.includes("/profile");
 
   return (
     <div className="flex flex-col min-h-screen bg-sprout-background pb-16">
@@ -57,7 +57,7 @@ const AppLayout = () => {
           <NavLink
             key={tab.path}
             to={tab.path}
-            end={tab.path === "/app"} // This ensures exact matching for the home route
+            end={tab.path === "/"} // This ensures exact matching for the home route
             className={({ isActive }) =>
               cn("tab-item", isActive && "active")
             }

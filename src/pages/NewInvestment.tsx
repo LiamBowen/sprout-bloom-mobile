@@ -28,7 +28,7 @@ const NewInvestment = () => {
 
   const handleInvestmentSuccess = () => {
     triggerConfetti();
-    navigate("/app/invest");
+    navigate("/invest");
   };
 
   // Find selected category and risk level details
@@ -43,7 +43,7 @@ const NewInvestment = () => {
   return (
     <div className="space-y-6">
       <div className="animate-fade-in flex items-center">
-        <Link to="/app/invest">
+        <Link to="/invest">
           <Button variant="ghost" className="p-2 mr-2">
             <ChevronLeft size={20} />
           </Button>

@@ -10,7 +10,7 @@ export const GroupFundsCard = () => {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate("/app/save", { state: { activeTab: "groups" } });
+    navigate("/save", { state: { activeTab: "groups" } });
   };
   
   return (

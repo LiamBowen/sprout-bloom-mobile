@@ -23,11 +23,11 @@ const Home = () => {
   const navigate = useNavigate();
   
   const handleInvestmentClick = () => {
-    navigate('/app/invest');
+    navigate('/invest');
   };
   
   const handleSavingsClick = () => {
-    navigate('/app/save');
+    navigate('/save');
   };
   
   if (!user) return null;
@@ -152,7 +152,7 @@ const Home = () => {
       <div className="space-y-3 animate-slide-up" style={{ animationDelay: "0.25s" }}>
         <h3 className="font-semibold">Quick Links</h3>
         
-        <Card className="p-4" onClick={() => navigate("/app/save")}>
+        <Card className="p-4" onClick={() => navigate("/save")}>
           <div className="flex items-center">
             <div className="bg-sprout-lavender/20 rounded-full p-2 mr-3">
               <MessageSquare size={18} className="text-sprout-lavender" />
@@ -164,7 +164,7 @@ const Home = () => {
           </div>
         </Card>
         
-        <Card className="p-4" onClick={() => navigate("/app/invest")}>
+        <Card className="p-4" onClick={() => navigate("/invest")}>
           <div className="flex items-center">
             <div className="bg-sprout-green/20 rounded-full p-2 mr-3">
               <Sprout size={18} className="text-sprout-green" />
@@ -176,7 +176,7 @@ const Home = () => {
           </div>
         </Card>
         
-        <Card className="p-4" onClick={() => navigate("/app/coach")}>
+        <Card className="p-4" onClick={() => navigate("/coach")}>
           <div className="flex items-center">
             <div className="bg-sprout-blue/20 rounded-full p-2 mr-3">
               <Bot size={18} className="text-sprout-blue" />

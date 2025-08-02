@@ -82,7 +82,7 @@ const BankCallback = () => {
           description: "Your bank account was connected successfully"
         });
         
-        setTimeout(() => navigate("/app/profile"), 1500);
+        setTimeout(() => navigate("/profile"), 1500);
       } catch (error: any) {
         await logError(error, {
           component: 'BankCallback',
@@ -96,7 +96,7 @@ const BankCallback = () => {
           variant: "destructive"
         });
         
-        setTimeout(() => navigate("/app/profile"), 3000);
+        setTimeout(() => navigate("/profile"), 3000);
       }
     };
     

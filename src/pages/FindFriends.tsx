@@ -28,7 +28,7 @@ const FindFriends = () => {
   ];
 
   const handleBack = () => {
-    navigate('/app/profile');
+    navigate('/profile');
   };
 
   const handleSearch = (e) => {

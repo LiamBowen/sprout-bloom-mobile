@@ -92,7 +92,7 @@ const AddInvestment = ({
     // Fixed timeout to ensure state updates have completed
     setTimeout(() => {
       // Navigate with state information to ensure the correct tab is selected
-      navigate('/app/invest', { 
+      navigate('/invest', { 
         state: { 
           selectedType: investmentType,
           newInvestment: true,

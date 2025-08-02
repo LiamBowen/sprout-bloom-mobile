@@ -21,7 +21,7 @@ export const HelpSection = ({ isOpen, onOpenChange }: HelpSectionProps) => {
 
   const handleFaqClick = () => {
     logAnalyticsEvent('help_faq_clicked', { source: 'settings' });
-    navigate('/app/faq');
+    navigate('/faq');
   };
 
   const handleCommunityClick = () => {

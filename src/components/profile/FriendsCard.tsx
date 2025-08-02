@@ -65,7 +65,7 @@ export const FriendsCard = () => {
       source: 'profile_page',
       current_friends_count: friends.length
     });
-    navigate('/app/find-friends');
+    navigate('/find-friends');
   };
 
   const handleRemoveFriend = (friendId: number, event: React.MouseEvent) => {

@@ -15,8 +15,8 @@ const NotFound = () => {
   }, [location.pathname]);
 
   const handleGoHome = () => {
-    if (location.pathname.includes('/app')) {
-      navigate("/app");
+    if (location.pathname.includes('/invest') || location.pathname.includes('/save') || location.pathname.includes('/coach') || location.pathname.includes('/profile')) {
+      navigate("/");
     } else {
       navigate("/");
     }

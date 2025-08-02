@@ -13,7 +13,7 @@ const FAQ = () => {
   const navigate = useNavigate();
 
   const handleBackToProfile = () => {
-    navigate('/app/profile');
+    navigate('/profile');
   };
 
   return (

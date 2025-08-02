@@ -124,7 +124,7 @@ export const AuthForm = () => {
             description: "You've been successfully logged in.",
           });
           
-          navigate("/app");
+          navigate("/");
         }
       }
     } catch (error: any) {

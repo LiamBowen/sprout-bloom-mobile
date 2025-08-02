@@ -12,7 +12,7 @@ const Index = () => {
   
   useEffect(() => {
     if (isOnboarded) {
-      navigate("/app/home");
+      navigate("/");
     }
   }, [isOnboarded, navigate]);
   

@@ -179,7 +179,7 @@ const Onboarding = () => {
         description: "Your profile has been set up successfully."
       });
       
-      navigate("/app");
+      navigate("/");
       return;
     }
     
