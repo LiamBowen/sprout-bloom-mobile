@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface User {
   id: string;
@@ -27,46 +27,36 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Mock user for demo purposes
+const mockUser: User = {
+  id: "demo-user",
+  name: "Demo User",
+  email: "demo@example.com",
+  dateOfBirth: "1990-01-01",
+  referralCode: "DEMO123",
+  friendsReferred: 5,
+  rewardsEarned: 250,
+  avatar_url: "",
+  mobile_number: "+1234567890",
+  portfolioThemes: ["Technology", "ESG"],
+  riskLevel: "moderate"
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isOnboarded, setIsOnboarded] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const [user, setUser] = useState<User | null>(mockUser);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(true);
 
-  // Use useCallback to prevent the function from being recreated on every render
-  const initializeAuth = useCallback(() => {
-    // Only initialize once
-    if (initialized) return;
-    
-    setIsLoading(true);
-    const storedUser = localStorage.getItem("sprout_user");
-    const storedOnboarded = localStorage.getItem("sprout_onboarded");
-    
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    
-    if (storedOnboarded) {
-      setIsOnboarded(JSON.parse(storedOnboarded));
-    }
-    
-    setIsLoading(false);
-    setInitialized(true);
-  }, [initialized]);
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("sprout_user", JSON.stringify(user));
-    }
-    localStorage.setItem("sprout_onboarded", JSON.stringify(isOnboarded));
-  }, [user, isOnboarded]);
+  const initializeAuth = () => {
+    // No longer needed, but kept for compatibility
+  };
 
   return (
     <AuthContext.Provider
       value={{
         user,
         setUser,
-        isLoggedIn: !!user,
+        isLoggedIn: true,
         isLoading,
         isOnboarded,
         setIsOnboarded,
